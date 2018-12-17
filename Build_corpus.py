@@ -48,9 +48,7 @@ class Corpus(object):
          in which each sentence is a list of tokens"""
         try:
             text = self.data.open(filename).read()
-            sent = []
-            for s in sent_tokenize(text):
-                sent.append(word_tokenize(s))
+            sent = [word_tokenize(s) for s in sent_tokenize(text)]
         except FileNotFoundError:
             print("The file does not exist.")
         return sent
