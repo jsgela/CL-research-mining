@@ -1,4 +1,4 @@
-from . import Corpus
+from Corpus import Corpus
 corpusdir = './test'
 
 ACL_corpus = Corpus(corpusdir)

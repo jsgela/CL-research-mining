@@ -28,6 +28,24 @@ class Corpus(object):
             print("The file does not exist.")
         return word_tokenize(text)
 
+    def sentences_in_file(self, filename):
+        """Given a file, return a list of sentences"""
+        try:
+            text = self.data.open(filename).read()
+        except FileNotFoundError:
+            print("The file does not exist.")
+        return sent_tokenize(text)
+
+    def tokenized_sentences_in_file(self, filename):
+        """Given a file, return a list of sentences
+         in which each sentence is a list of tokens"""
+        try:
+            text = self.data.open(filename).read()
+            sent = [word_tokenize(s) for s in sent_tokenize(text)]
+        except FileNotFoundError:
+            print("The file does not exist.")
+        return sent
+
     def most_frequent_content_words(self, n_words):
         """Return a list with the most frequent content words and their
         frequencies in (word, frequency) pairs ordered by frequency"""
