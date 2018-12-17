@@ -1,0 +1,267 @@
+The 13th Conference of 
+
+The Association for Machine Translation 
+
+in the Americas 
+
+www.conference.amtaweb.org
+
+WORKSHOP PROCEEDINGSMarch 21, 2018Translation Quality Estimation andAutomatic Post-EditingOrganizers: Ramón Astudillo (Unbabel, INESC-ID)João Graça (Unbabel)André Martins (Unbabel, University of Lisbon)Contents 
+
+I 
+
+II 
+
+Introduction 
+
+Program 
+
+III 
+
+Invited Speakers 
+
+1 
+
+Automatic Post-Editing and Machine Translation Quality Estimation at eBay 
+
+Nicola Ueffing 
+
+35 
+
+Lightweight Word-Level Confidence Estimation for Neural Interactive Translation Prediction 
+
+Rebecca Knowles and Philipp Koehn 
+
+41 
+
+Unbabel: How to combine AI with the crowd to scale professional-quality translation 
+
+João Graça 
+
+86  Machine translation at Booking.com: what's next? 
+
+Maxim Khalilov 
+
+144 
+
+Are we experiencing the Golden Age of Automatic Post-Editing? 
+
+Marcin Junczys-Dowmunt 
+
+207 
+
+Challenges in Adaptive Neural Machine Translation 
+
+Marcello Federico 
+
+243 
+
+Fine-grained evaluation of Quality Estimation for Machine translation based on a linguistically-
+motivated Test Suite 
+
+Eleftherios Avramidis, Vivien Macketanz, Arle Lommel and Hans Uszkoreit 
+
+249  A Comparison of Machine Translation Paradigms for Use in Black-Box Fuzzy-Match Repair 
+
+Rebecca Knowles, John E. Ortega and Philipp Koehn 
+
+INTRODUCTION 
+
+The  goal  of  quality  estimation  is  to  evaluate  a  translation  system’s  quality  without 
+access to reference translations (Blatz et al., 2004; Specia et al., 2013). This has many 
+potential  usages:  informing  an  end  user  about  the  reliability  of  translated  content; 
+deciding  if  a  translation  is  ready  for  publishing  or  if  it  requires  human  post-editing; 
+highlighting  the  words  that  need  to  be  changed.  Quality  estimation  systems  are 
+particularly  appealing  for  crowd-sourced  and  professional  translation  services,  due  to 
+their potential to dramatically reduce post-editing times and to save labor costs (Specia, 
+2011).  The  increasing  interest  in  this  problem  from  an  industrial  angle  comes  as  no 
+surprise (Turchi et al., 2014; de Souza et al., 2015; Martins et al., 2016, 2017; Kozlova 
+et  al.,  2016).  A  related  task  is  that  of  automatic  post-editing  (Simard  et  al.  (2007), 
+Junczys-Dowmunt  and  Grundkiewicz  (2016)),  which  aims  to  automatically  correct  the 
+output of machine translation. Recent work (Martins, 2017, Kim et al., 2017, Hokamp, 
+2017) has shown that the tasks of quality estimation and automatic post-editing benefit 
+from being trained or stacked together. 
+
+In this workshop, we will bring together researchers and industry practitioners interested 
+in  the  tasks  of  quality  estimation  (word,  sentence,  or  document  level)  and  automatic 
+post-editing,  both  from  a  research  perspective  and  with  the  goal  of  applying  these 
+systems in industrial settings for routing, for improving translation quality, or for making 
+human post-editors more efficient. Special emphasis will be given to the case of neural 
+machine translation and the new open problems that it poses for quality estimation and 
+automatic post-editing. 
+
+The workshop will consist of one full day of technical presentations, including a tentative 
+number  of  6  invited  talks  and  1  contributed  talk,  followed  by  a  30-minutes  panel 
+discussion. There will be a poster session featuring the papers accepted for publication 
+in the workshop proceedings. 
+
+The workshop organizers, 
+
+André Martins (Unbabel and University of Lisbon) 
+andre.martins@unbabel.com 
+
+Ramon Astudillo (Unbabel and INESC-ID Lisboa) 
+ramon@unbabel.com 
+
+João Graça (Unbabel) 
+joao@unbabel.com 
+
+IPROGRAM 
+
+9:00 — Welcome 
+
+9:15 - 10:00 — Nicola Ueffing: “Automatic Post-Editing and  Machine Translation 
+Quality Estimation at eBay” 
+
+10:00 - 10:30 — Rebecca Knowles: “Lightweight Word-Level Confidence Estimation for 
+Neural Interactive Translation Prediction” 
+
+10:30 - 11:00 — Coffee Break 
+
+11:00 - 11:45 — João Graça: “Unbabel: How to combine AI with the crowd to scale 
+professional-quality translation” 
+
+11:45 - 12:30 — Maxim Khalilov: “Machine translation at Booking.com: what's next?” 
+
+12:30 - 14:00 — Lunch break 
+
+14:00 - 14:45 — Marcin Junczys-Dowmunt: “Are we experiencing the Golden Age of 
+Automatic Post-Editing?” 
+
+14:45 - 15:30 — Marcello Federico: “Challenges in Adaptive Neural Machine 
+Translation” 
+
+15:30 - 16:00 — Coffee Break 
+
+16:00 - 16:20 — Eleftherios Avramidis: “Fine-grained evaluation of Quality Estimation 
+for Machine translation based on a linguistically-motivated Test Suite” 
+
+16:20 - 16:40 — Rebecca Knowles: “A Comparison of Machine Translation Paradigms 
+for Use in Black-Box Fuzzy-Match Repair” 
+
+16:45 - 17:30 — Discussion Panel (Nicola Ueffing, Maxim Khalilov, Marcello Federico, 
+Marcin Junczys-Dowmunt, Alon Lavie)   
+
+IIINVITED SPEAKERS 
+
+ 
+Nicola Ueffing (eBay) 
+ 
+Title: Automatic Post-Editing and  Machine Translation Quality Estimation at eBay 
+ 
+Abstract: This presentation will give an overview of Automatic Post-Editing and Quality 
+Estimation research and development for e-commerce data at eBay. I will highlight two 
+projects: (1) Application of Automatic Post-Editing and Machine Translation for Natural 
+Language Generation for e-commerce browse pages, where the structured data 
+describing the products is automatically “translated” into natural language; and (2) 
+Quality Estimation for Machine Translation of eBay item titles, which compares general 
+models and models which are specifically trained for three different categories in the 
+inventory of eBay’s marketplace platform for prediction of post-edition effort. 
+ 
+Bio: Nicola joined eBay's machine translation research team in May 2016. Her focus is 
+on machine translation, both for e-commerce content and for natural language 
+generation, and quality estimation. Prior to working for eBay, Nicola was a language 
+modeling research scientist at Nuance Communications, leading the research and 
+development for dictation products like Dragon NaturallySpeaking. Nicola received a 
+PhD in computer science from RWTH Aachen University, specializing in confidence 
+estimation for machine translation. She then joined the Interactive Language 
+Technologies team at the National Research Council Canada as PostDoc research 
+associate. Her research interests include machine translation as well as most other 
+areas of computational natural language processing. 
+ 
+ 
+Maxim Khalilov (Booking) 
+ 
+Title: Machine translation at Booking.com: what's next? 
+ 
+Abstract: For many years, machine translation (MT) was primarily focused on the post-
+editing scenario, in which MT serves as a productivity increase element of a 
+professional translation pipeline. However, in e-commerce the most desirable 
+application of MT is direct publishing of MTed content that dictates different 
+requirements to MT and the MT quality evaluation model.  
+In this talk, Maxim Khalilov will discuss the Booking.com approach to MT and its 
+evaluation. He will also cover some scenarios in which e-commerce can benefit from 
+advancements in quality estimation and automatic post-editing. 
+ 
+
+IIIBio: Maxim Khalilov is a product owner - data science at Booking.com responsible for 
+business aspects of scaled content product development. Prior to his current role, 
+Maxim was a CTO at bmmt GmbH, an innovative German language service provider, 
+an R&D manager at TAUS and a post-doctoral researcher at the University of 
+Amsterdam. Maxim has a Ph.D. from Polytechnic University of Catalonia (Barcelona, 
+2009), an MBA from IE Business School (Madrid, 2016) and is the author of more than 
+30 scientific publications. 
+ 
+ 
+Marcello Federico (MMT Srl/FBK Trento, Italy) 
+ 
+Title: Challenges in Adaptive Neural Machine Translation 
+ 
+Abstract: Neural machine translation represents today the state of the art in terms of 
+performance. However, its deployment in a real-life and dynamic scenario, where 
+multiple users work on different tasks,  presents some important trade-offs and 
+challenges.  In my talk, I will describe the development and deployment of adaptive 
+neural machine translation within the ModernMT EU project, from phrase-based to 
+neural machine translation.  Besides discussing the technological solutions adopted in 
+ModernMT, I will  connect them to the underlying research efforts conducted at FBK in 
+the recent years, including online-learning, automatic post-editing, and translation 
+quality estimation.  
+ 
+Bio: Founder and CEO of MMT Srl, Trento, Italy.  Research director (on leave) and 
+Affiliated Fellow at Fondazione Bruno Kessler, Trento, Italy.  Lecturer at the ICT 
+International Doctoral School of the  University of Trento.  Co-founder and scientific 
+advisor of MateCat Srl. Research interests:  machine translation, natural language 
+processing, machine learning and artificial intelligence.    
+ 
+ 
+João Graça (Unbabel) 
+ 
+Title: Unbabel: How to combine AI with the crowd to scale professional-quality 
+translation 
+ 
+Abstract: Unbabel is accelerating the shift towards a world without language barriers by 
+enabling trustworthy, seamless and scalable translations between companies and their 
+customers. In this talk we will show how we combine different Machine Learning 
+techniques together with a crowd of non-professional translators and achieve 
+
+professional-quality translations in an unprecedented speed and scale. We will also 
+show how quality estimation is used in different steps of the pipeline. 
+ 
+Bio: João Graça is currently the CTO of Unbabel. He was previously the data scientist 
+and natural language processing expert at Dezine and Flashgroup. João did his PhD in 
+Natural Language Processing and Machine Learning at Instituto Superior Técnico 
+together with the University of Pennsylvania with Professors Fernando Pereira, Ben 
+Taskar and Luísa Coheur. He is the author of several papers in the area, his main 
+research topics are machine learning with side information, unsupervised learning and 
+machine translation. João is one of the co-founders of the Lisbon Machine Learning 
+Summer School (LxMLS).  
+ 
+ 
+Marcin Junczys-Dowmunt (Microsoft Research) 
+ 
+Title: Are we experiencing the Golden Age of Automatic Post-Editing? 
+ 
+Abstract: In this talk I will describe the rise of neural methods in Automatic Post-Editing 
+and why I believe that we might have reached a “Golden Age” of (neural) post-editing 
+methods. This will be mostly based on the example of the recent WMT shared tasks on 
+Automatic Post-Editing and my own contributions to that task. I will contrast current 
+architectures with historic solution and will argue that only now --- with the on-set of 
+neural sequence-to-sequence methods --- automatic post-editing has matured enough 
+to have the potential for practical applications. However, there is a risk that this Golden 
+Age might be very short lived and future results might be much less encouraging than 
+the last two WMT shared task on APE might imply. 
+ 
+Bio: Marcin has been working in the Machine Translation team at Microsoft AI and 
+Research -- Redmond as a Principal NLP Scientist since January 2018. Before joining 
+Microsoft he was an Assistant Professor at the Adam Mickiewicz University in Poznan, 
+Poland, and a visiting researcher in the MT group at the University of Edinburgh. He 
+also collaborated for many years with the World Intellectual Property Organization and 
+the United Nations, helping with the development of their in-house statistical and neural 
+machine translation systems. His main research interests are neural machine 
+translation, automatic post-editing and grammatical error correction. Most of his open-
+source activity is being eaten up by his NMT pet-project Marian 
+(http://github.com/marian-nmt/marian). 
+ 
+ 
+
+
