@@ -20,13 +20,6 @@ class Corpus(object):
         """Return a list of all documents in the corpus"""
         return sorted([i for i in os.listdir(self.data_root)])
 
-    def longest_words(self):
-        """Return an alphabetized list of the longest word(s)"""
-        sorted_words = sorted(self.words, key=len, reverse=True)
-        longest_words = [w.lower() for w in sorted_words
-                         if len(w) == len(sorted_words[0])]
-        return sorted(set(longest_words))
-
     def words_in_file(self, filename):
         """Given a file, return a list of tokenized words"""
         try:
@@ -70,14 +63,3 @@ class Corpus(object):
                        and k[0] not in self.stop and k[1] not in self.stop])
         return bigram_dict.most_common(n_bigrams)
 
-
-if __name__ == '__main__':
-
-    corpusdir = '../file/path'
-    ACL_corpus = Corpus(corpusdir)
-
-    print("The 100 most frequent words:")
-    print(ACL_corpus.most_frequent_content_words(100))
-    print()
-    print("The 100 most frequent two-word phrases: ")
-    print(ACL_corpus.most_frequent_bigrams(100))

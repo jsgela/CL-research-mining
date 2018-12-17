@@ -1,0 +1,1607 @@
+Identifying Key Sentences for Precision Oncology Using Semi-Supervised
+
+Learning
+
+Jurica ˇSeva, Martin Wackerbauer and Ulf leser
+
+Knowledge Managment in Bioinformatics
+
+Humboldt Universit¨at zu Berlin
+
+Berlin, Germany
+
+{seva,wackerbm,leser}@informatik.hu-berlin.de
+
+Abstract
+
+We present a machine learning pipeline
+that identiﬁes key sentences in abstracts
+of oncological articles to aid evidence-
+based medicine. This problem is charac-
+terized by the lack of gold standard data-
+sets, data imbalance and thematic differ-
+ences between available silver standard
+corpora. Additionally, available training
+and target data differs with regard to their
+domain (professional summaries vs. sen-
+tences in abstracts). This makes super-
+vised machine learning inapplicable. We
+propose the use of two semi-supervised
+machine learning approaches: To mit-
+igate difﬁculties arising from heterogen-
+eous data sources, overcome data imbal-
+ance and create reliable training data we
+propose using transductive learning from
+positive and unlabelled data (PU Learn-
+ing). For obtaining a realistic classiﬁca-
+tion model, we propose the use of abstracts
+summarised in relevant sentences as un-
+labelled examples through Self-Training.
+The best model achieves 84% accuracy
+and 0.84 F1 score on our dataset.
+
+Introduction
+
+1
+The ever-growing amount of biomedical literat-
+ure accessible online is a valuable source of in-
+formation for clinical decisions. The PubMed
+database (National Library of Medicine, 1946-
+2018), for instance, lists approximately 30 million
+articles’ abstracts. As a consequence, machine
+learning (ML) based text mining (TM) is increas-
+ingly employed to support evidence-based medi-
+cine by ﬁnding, condensing and analysing relev-
+ant information (Kim et al., 2011). Practitioners
+in this ﬁeld search for clinically relevant articles
+
+and ﬁndings, and are typically not interested in the
+bulk of search results which are devoted to basic
+research. However, deﬁning clinical relevance in a
+given abstract is not a trivial task. On top, although
+abstracts provide a very brief summary of their
+corresponding articles’ content, practitioners de-
+termine abstracts’ clinical relevance based on only
+a few key sentences (McKnight and Srinivasan,
+2003). To optimally support such users, it is thus
+necessary to ﬁrst retrieve only clinically relevant
+articles and next to identify the sentences in those
+articles which express their clinical relevance.
+
+Any survival beneﬁt of dMMR was lost in
+N2 tumors. Mutations in BRAF(V600E)
+(HR, 1.37; 95% CI, 1.08 to 1.70; P = .009)
+or KRAS (HR, 1.44; 95% CI, 1.21 to 1.70;
+P ¡ .001) were independently associated
+with worse DFS. The observed MMR by tu-
+mor site interaction was validated in an in-
+dependent cohort of stage III colon cancers
+(P(interaction) = .037).
+
+Example 1: Snippet of highlighted clin-
+ically relevant (or key; yellow background
+color) and irrelevant (no background color)
+sentences in a precision oncology setting.
+Source document with PMID 24019539.
+
+In this work, we present an ML pipeline to
+identify key (clinically relevant) sentences, in a
+precision oncology setting, in abstracts of oncolo-
+gical articles to aid evidence-based medicine. This
+setting is implied throughout the text when refer-
+ring to clinical relevance or key (clinically relev-
+ant) sentences. An example of relevant and ir-
+relevant sentences is shown in Example 1. For
+solving this problem no gold standard corpora
+is available. Additionally, clinical relevance has
+
+ProceedingsoftheBioNLP2018workshop,pages35–46Melbourne,Australia,July19,2018.c(cid:13)2018AssociationforComputationalLinguistics35only a vague deﬁnition and is a subjective meas-
+ure. As manually labelling text is expensive, semi-
+supervised learning offers the possibility to util-
+ize related annotated corpora. We focus on Self-
+Training (Wang et al., 2008), which mostly relies
+on supervised classiﬁers trained on labelled data
+and use of unlabelled examples to improve the de-
+cision boundary. Several corpora can be used to
+mitigate the issues arising from the lack of gold
+standard data set and data imbalance. These cor-
+pora implicitly deﬁne characteristics of key sen-
+tences, but cannot be considered as gold standards.
+In the following, we call them “silver standard”
+corpora - collections of sentences close to the in-
+tended semantic but with large amounts of noise.
+Speciﬁcally, we employ Clinical Interpretations of
+Variants in Cancer (CIViC) (Grifﬁth et al., 2017)
+for implicit notion of clinical relevance and posit-
+ive data points, i.e. sentences or abstracts which
+have clinical relevance. Unfortunately, negative
+data points, i.e. sentences or abstracts which do
+not have clinical relevance, are not present in this
+data set. PubMed abstracts, referenced by CIViC,
+are used as unlabelled data. Since we consider
+all sentences in CIViC to be positive examples
+and the corresponding abstracts are initially un-
+labelled, additional data for negative examples is
+required. We utilize the Hallmarks of Cancer
+Corpus (HoC) (Baker et al., 2016) as an auxili-
+ary source of noisy labelled data. To expand on
+our set of labelled data points we propose trans-
+ductive learning from positive and unlabelled data
+(PU Learning) to identify noise within HoC, with
+CIViC as a guide set for determining the relevance
+of sentences from HoC. This gives us additional,
+both positive and negative data points, used as an
+initialization for Self-Training. The pipeline is
+available at https://github.com/nachne/semisuper.
+
+2 Related Work
+
+Sentence classiﬁcation is a special case of text cat-
+egorisation. It has been used in a wide range of
+ﬁelds, like sentiment analysis (Yu and Hatzivassi-
+loglou, 2003; Go et al., 2009; Vosoughi et al.,
+2015), rhetorical annotation, and automated sum-
+marisation (Kupiec et al., 1995; Teufel and Moens,
+2002). Between the two, feature engineering has
+been reported as the major difference. For in-
+stance, common stop words like “but”, “was”, and
+“has” are often among the top features for sen-
+tence classiﬁcation, and verb tense is useful to
+
+determine a sentence’s precise meaning (Agarwal
+and Yu, 2009; Khoo et al., 2006). Additional fea-
+tures beyond the pure language level have also
+been proposed. For sentiment analysis, Yu and
+Hatzivassiloglou (2003) use a dictionary of se-
+mantically meaningful seed words to estimate the
+likely positive or negative polarity of co-occurring
+words, from which in turn a sentences’ polarity is
+determined. Teufel and Moens (2002) focus on
+identifying rhetorical roles of sentences for auto-
+matic summarisation of scientiﬁc articles. They
+use sentence length and location, the presence of
+citations and of words included in headlines, la-
+bels of preceding sentences, and predeﬁned cue
+words and formulaic expressions accompanying
+Bag of Words (BOW).
+
+Text represented as high dimensional BOW vec-
+tors has been reported to be often linearly separ-
+able, making Support Vector Machines (Joachims,
+1998) (SVM) a popular choice for classiﬁers.
+Conditional Random Fields (CRF) have been used
+to predict sequences of labels rather than labelling
+sentences one by one (Kim et al., 2011). In recent
+years, Neural Networks (NN) and Deep Learn-
+ing (DL) has increasingly been used, e.g. us-
+ing Convolutional Neural Networks (CNN) (Kim,
+2014; Rios and Kavuluru, 2015; Zhang et al.,
+2016; Conneau et al., 2017). Other authors employ
+various versions of Recurrent Neural Networks
+(RNN): LSTM (Hassan and Mahmood, 2017), bi-
+directional LSTM (Dernoncourt et al., 2017; Zhou
+et al., 2016) or convolutional LSTM (Zhou et al.,
+2015). The use of DL has also popularised the use
+of pre-trained word embedding vectors. Habibi
+et al. (2017) show that the use of word embed-
+dings, in general, increases the quality of biomed-
+ical named entity recognition pipelines.
+
+Speciﬁc to the biomedical domain, sentence
+classiﬁcation has been used to determine the rhet-
+orical role sentences play in an article or abstract.
+Ruch et al. (2007) propose using the “Conclu-
+sion” section of abstracts as examples for key sen-
+tences. McKnight and Srinivasan (2003) have
+classiﬁed sentences in abstracts of randomised
+control trials as belonging to the categories “Intro-
+duction”, “Methods”, “Results”, and “Discussion”
+(IMRaD), using section headlines as soft labels for
+training data in addition to a smaller hand annot-
+ated corpus. They also report that adding sentence
+location as a feature improved performance on the
+“Introduction” and “Discussion” categories. Kim
+
+36et al. (2011) used a CRF for sequential classiﬁca-
+tion, trained on the hand-annotated Population, In-
+tervention, Background, Outcome, Study Design
+of evidence-based medicine, or Other (PIBOSO)
+corpus, with sentences annotated with one of the
+aforementioned categories. Unfortunately, since
+sentences in our primary source of positive data
+are from a different context than the abstracts to be
+classiﬁed, section headings, preceding sentences,
+and location are not available for our task.
+
+2.1 Semi-Supervised Learning
+Semi-supervised learning has the potential
+to
+match the performance of supervised learning
+while requiring considerably less labelled data
+(Wang et al., 2008; Thomas et al., 2012; Liu
+et al., 2013). Soft labelling (e.g. aforementioned
+heuristics for using section headlines as labels)
+is sometimes subsumed under semi-supervised
+learning as Distant Supervision (Go et al., 2009;
+Vosoughi et al., 2015; Wallace et al., 2016). La-
+bel Propagation (Zhu and Ghahramani, 2002) and
+Label Spreading (Zhou et al., 2003) can be seen as
+largely unsupervised classiﬁcation, using labelled
+data to initialise and control clustering. Likewise,
+Nigam et al. (2011) propose Naive Bayes (NB)
+based variants of the unsupervised Expectation-
+Maximisation (EM) algorithm for utilising unla-
+belled data in semi-supervised text classiﬁcation.
+
+2.1.1 PU Learning
+PU Learning is a special case of semi-supervised
+learning where examples in the unlabelled set U
+are to be classiﬁed as positive (label 1) or neg-
+ative (label 0), with only positive labelled data
+P initially available. Therefore, the PU Learn-
+ing problem can be approximated by learning
+to discriminate P from U (Mordelet and Vert,
+2014). For that, learning should favour false pos-
+itive errors over false negatives, e.g. by using
+class-speciﬁc weights for error penalisation. Ap-
+proaches include one-class SVMs, which approx-
+imate the support of the positive class and treat
+negative examples as outliers; ranking methods,
+which rank unlabelled examples by their decreas-
+ing similarity to the mean positive example; and
+two-step heuristics, which try to identify reliable
+negative examples in the unlabelled data to ini-
+tialise semi-supervised learning. We consider the
+aforementioned heuristics useful for outlier detec-
+tion to reduce noise in our auxiliary data, and
+use variations of PU Learning algorithms in semi-
+
+supervised learning, as our problem of ﬁnding
+summary-like sentences without explicitly deﬁned
+negative sentences is closely related to PU Learn-
+ing. An overview is available in (Liu et al., 2003).
+Additional information can be found in (Elkan and
+Noto, 2008; Plessis et al., 2014, 2015). An ex-
+ample of the use of PU Learning, for spotting on-
+line fake reviews, is available in (Li et al., 2014).
+Without known negative examples, measuring
+classiﬁcation performance using accuracy or F1-
+score in PU Learning is not possible. Lee and
+Liu (2003) suggest an alternative score, called
+PU-score, deﬁned as P r[f (X) = 1|Y =
+1]2/P r[f (X) = 1], for comparing PU Learning
+classiﬁers that can be derived from positive and
+unlabelled data alone. The authors show theoretic-
+ally that maximising the PU-score is equivalent to
+maximising the F1-score and can be used to com-
+pare different models classifying the same data.
+Nonetheless, it should be noted that this metric is
+not bounded, making it viable only for comparing
+classiﬁers trained and tested on the same data; it is
+not an indicator for an individual classiﬁer’s per-
+formance.
+2.1.2 Self-Training
+Self-Training, used in this work, starts from an ini-
+tial classiﬁer trained on the labelled data. Previ-
+ously unlabelled examples that were labelled with
+high conﬁdence are added to the training data.
+This procedure repeats iteratively, retraining the
+classiﬁer until a terminating condition is met. NB
+is a popular classiﬁer for Self-Training because
+the probabilities it produces provide a conﬁdence
+ranking, but any other algorithm may be used as
+long as conﬁdence scores can be derived (Wang
+et al., 2008).
+
+3 Methods
+We present the data sources we use, the prepro-
+cessing pipeline and describe in detail the experi-
+ments performed with both PU Learning and Self-
+Training.
+
+3.1 Used Corpora
+CIViC is a database of clinical evidence summar-
+ies. Entries consist of evidence statements about
+gene variants, such as their association with dis-
+eases and the outcome of drug response trials. Ad-
+ditional information includes the names of the re-
+spective genes, variants, drugs, diseases, and a
+variant summary. Each entry contains the PubMed
+
+37ID of the respective publication the information is
+taken from. Evidence statements are prototypes
+of high-quality information in condensed form.
+However, they are not themselves contained in the
+abstracts they are based on, as they try to summar-
+ize the entire article. At time of writing, CIViC
+contains about 2,300 evidence statements consist-
+ing of 6,600 sentences (5,300 without duplicates).
+They make up our initial corpus of positive sen-
+tences (P ).
+
+PubMed abstracts referenced in CIViC. We ex-
+tract about 12,700 sentences from 1,300 abstracts
+referenced in CIViC, and use them as the unla-
+belled corpus (U). We use CIViC summaries and
+the PubMed abstract corpus to estimate the ac-
+ceptable range for the ratio of key sentences in
+an abstract. We use the ratio of overall sentence
+counts in the two corpora (CIViC summaries and
+PubMed abstracts) as an upper bound of ≈ 0.4
+(5,300/12,700). As a rough estimate for the lower
+bound, based on an informed guess that half of the
+sentences could be redundant, since one abstract
+may correspond to multiple CIViC entries for dif-
+ferent drug/variant combinations. This results in a
+lower bound ≈ 0.2. Although this is a simplifying
+assumption and disregards e.g. any differences in
+information density in our data sources’ sentences,
+it provides a rough guideline for the ratio of key
+sentences in U a classiﬁer should ﬁnd.
+
+Hallmarks of Cancer (HoC) describe common
+traits of all forms of cancer. We use it as a silver
+standard corpus consisting of about 13,000 sen-
+tences from 1,580 PubMed abstracts. Sentences
+not relevant to any of the hallmarks are left unla-
+belled. We assume unlabelled sentences are less
+likely to be clinically relevant than sentences with
+one or more labels, aggregating them in the likely
+negative set HoCn (about 8,900 sentences) and
+the likely positive set HoCp (about 4,300 sen-
+tences). In order to improve generalisation, as well
+as to be able to validate our classiﬁer, which re-
+quires positive as well as negative labelled data,
+we use HoC as auxiliary data. To utilise HoCp and
+HoCn as sources of realistic positive and negat-
+ive sentences for training and test data, but avoid-
+ing propagation of misclassiﬁcation errors result-
+ing from our simplifying assumption, they must be
+ﬁltered for noise (Section 3.3).
+
+3.2 Text Preprocessing and Feature Selection
+
+As features, we use word n-grams, character n-
+grams, and sentence length, concatenating them to
+form a mixed feature space. All tokens are con-
+verted to lower-case. Biomedical scientiﬁc text
+exhibits some particularities that have to be taken
+into consideration during text preprocessing. To
+normalise all text, before sentence splitting with
+the PunktSentenceTokenizer of the Python Natural
+Language Toolkit (NLTK) (Bird et al., 2009), we
+use regular expressions: we substitute spaces for
+full stops in common abbreviations followed by a
+space and lower-case letter or digit (e.g. “ca. 5”
+→ “ca 5”). As the pattern “patient no. V[123]”
+is quite frequent in CIViC, we introduce a special
+rule for not splitting it despite the upper-case. All
+whitespace characters are replaced by spaces to
+avoid splitting on newlines. Afterwards, to avoid
+character encoding-related problems and to reduce
+alphabet size, we normalize all text to ASCII be-
+fore tokenization.
+
+For word-level tokenization, we use NLTK’s
+TreebankWordTokenizer and split the resulting
+tokens at characters in {“-”, “/”, “.”, “,”, “—”, “¡”,
+“¿”}. Sentences below a minimum character count
+of 8 are denoted by a special “ empty sentence ”
+token. To prepare word n-grams, we replace
+tokens representing numbers or ordinals and their
+spelled out versions by a special “ num ” token
+and do the equivalent for e.g.
+ranges, inequal-
+ities, percentages, measurement units, and years.
+Tokens with sufﬁxes common for drugs but not
+found in common speech, such as “-inib”, are re-
+placed by “ chemical ”, and sequences that start
+with a letter, but contain digits, are replaced by
+“ abbrev ” in the hope of catching identiﬁers of
+biomedical entities. We evaluated the use of word
+n-grams with n bounded from (1,1) (the bag-of-
+words case) up to (1,4), thereby retaining inform-
+ation about the order of words in a sentence.
+
+We evaluated the use of character n-gram with
+n in ranges from (2,3) to (2,6). To reduce alphabet
+size and avoid overﬁtting, all sequences of non-
+word characters except those in {“-”, “%”, “=”},
+which may carry semantic information, are re-
+placed by single spaces, and all digits are replaced
+by 1.
+
+In feature vectors, word and character n-grams
+are weighted by their tf-idf score (Aizawa, 2003)
+and sentence length is represented as inverse char-
+acter count. Character n-grams proved to be more
+
+38expressive than word n-grams, yielding better ac-
+curacy scores when we tested each of them in
+isolation. However, a combination of character
+and word level n-grams and text length performed
+best.
+
+3.3 Noise reduction with PU Learning
+Using PU Learning, we ﬁlter HoCn and HoCp for
+sentences that are likely to be useful in our classi-
+ﬁcation task. We explored several approaches to
+PU Learning and subsequent noise reduction.
+
+3.3.1 PU Learning
+First, we explored several Two-Step techniques,
+which (1) identify a set of reliable negative ex-
+amples (RN) from U and (2) train a classiﬁer
+on P and RN and retrain the classiﬁer using the
+predicted labels until a stopping criterion is met.
+We present them next. i-EM is a variation of the
+Expectation-Maximisation algorithm that relies on
+a NB classiﬁer, with predicted probabilities of la-
+bels in range [0, 1]. s-EM is an extension to i-EM.
+Initially, a subset S ⊂ P is added to U as spy doc-
+uments. After training an initial classiﬁer on P \ S
+vs. U ∪ S, the predicted probabilistic labels for
+the known hidden positives in S are used to de-
+termine a threshold t; all u ∈ U with probabilistic
+labels p(yu) < t are moved to RN.
+In Step 2,
+starting from a classiﬁer trained to discriminate P
+from RN, the EM algorithm is iterated as in i-EM
+until it converges or the estimated classiﬁcation er-
+ror is deteriorating. Roc-SVM uses the Rocchio
+algorithm for Step 1: Firstly, prototype vectors ¯p
+for P and ¯u for U are computed as a weighted dif-
+ferences between the two sets’ respective average
+examples. Using these vectors, RN is deﬁned as
+{u ∈ U : cos(u, ¯u) < cos(u, ¯p)}, i.e. all unla-
+belled sentences that are more similar to the pro-
+totype of the unlabelled set than the positive sets.
+Step 2 uses SVMs to expand RN.
+Initially, an
+SVM is trained to discriminate P from RN. Af-
+terwards, all u ∈ U \ RN with predicted label
+0 are added to RN for iteratively retraining the
+classiﬁer as long as RN changes. This iteration
+may go wrong and result in poor recall on the pos-
+itive class; as a fallback strategy, if the classiﬁer
+at convergence misclassiﬁes too large a portion of
+P , the initial classiﬁer is returned instead. CR-
+SVM is a minor extension to Roc-SVM. P and
+U are each ranked by decreasing cosine similarity
+to the mean positive example; a probably negat-
+ive set P N is built from the u ∈ U with a lower
+
+score than a given ratio of least typical examples
+in P . The negative prototype vector is then com-
+puted using P N rather than U. Step 2 is the same
+as in Roc-SVM. Additionally, we explored Biased
+SVM, a soft-margin SVM that uses class-speciﬁc
+weights for positive and negative errors. Weight
+parameters are selected in a grid search manner
+to ﬁnd a combination that optimises the PU-score;
+this effectively assumes U to contain only negli-
+gible amounts of hidden positive examples.
+
+3.3.2 Noise reduction
+We experiment with two heuristics for noise re-
+duction in HoC. For both of them, let clf(P, U )(x)
+be the label for x predicted by classiﬁer clf trained
+on P and U. Appendix B (Figure 1) summarises
+corpora used for this task.
+
+Strict mode: Remove CIViC-like sentences,
+i.e.
+likely hidden positives, from HoCn for the
+reliable negative set HoC(cid:48)
+n. Keep only CIViC-
+like sentences in HoCp for a reliable positive set
+HoC(cid:48)
+p. This implies rather pessimistic assump-
+tions about HoCp’s relevance, considering only
+outliers as key sentences.
+
+HoC
+
+HoC
+
+n := HoCn \ {x ∈ HoCn : clf(CIV iC, HoCn)(x) = 1}
+(cid:48)
+p := {x ∈ HoCp : clf(CIV iC, HoCp)(x) = 1}
+(cid:48)
+
+Tolerant mode: Remove CIViC-like sentences
+from HoCn as before. But rather than requiring
+sentences from HoCp to be CIViC-like, remove
+those sentences from HoCp that are similar to re-
+liable negative sentences, i.e. the puriﬁed HoC(cid:48)
+n.
+In doing so, HoCp is assumed to be largely relev-
+ant, contaminated with non-key sentences.
+
+HoC
+
+HoC
+
+n := HoCn \ {x ∈ HoCn : clf(CIV iC, HoCn)(x) = 1}
+(cid:48)
+p := HoCp \ {x ∈ HoCp : clf(HoC
+n, HoCp)(x) = 1}
+(cid:48)
+(cid:48)
+
+3.4 Semi-supervised learning with
+
+Self-Training
+
+p and negative labelled set N := HoC(cid:48)
+
+In the following, let the labelled set be L :=
+P ∪ N, with positive labelled set P := CIV iC ∪
+HoC(cid:48)
+n. The
+unlabelled set of original abstracts is denoted by
+U. The puriﬁed sets HoC(cid:48)
+n are ob-
+tained using either of the above heuristics. Ap-
+pendix B (Figure 2) summarises corpora used
+for this task. We use: Standard Self-Training
+(ST) with a conﬁdence threshold. Having exper-
+imented with different values, we use a threshold
+
+p and HoC(cid:48)
+
+39Reliable negatives:
+
+P := CIV iC,
+U := HoCn
+
+Strict mode:
+P := CIV iC,
+U := HoCp
+
+Tolerant mode:
+P := HoC(cid:48)
+n
+U := HoCp
+
+PU-
+score
+Method
+2.06
+i-EM
+2.06
+s-EM
+2.19
+Roc-SVM
+2.19
+CR-SVM
+Biased-SVM 2.28
+
+pos. ratio
+in Utest
+0.11
+0.11
+0.07
+0.08
+0.03
+
+PU-
+score
+1.61
+1.61
+1.67
+1.67
+1.70
+
+pos. ratio
+in Utest
+0.06
+0.06
+0.06
+0.06
+0.05
+
+PU-
+score
+0.94
+0.94
+1.07
+1.04
+1.13
+
+pos. ratio
+in Utest
+0.36
+0.40
+0.31
+0.57
+0.31
+
+Table 1: Removing noise from HoCn and HoCp. Results for different PU Learning techniques, averaged
+over 10 runs, on 20% reserved test sets Ptest ⊂ P and Utest ⊂ U. To generate HoC(cid:48)
+n as required for
+tolerant mode, Roc-SVM (highlighted in bold) was used in the previous step.
+
+Algorithm 1 Self-Training
+1: procedure SELF-TRAINING(training data L
+
+with labels, unlabelled data U)
+
+while U is not empty do
+
+train classiﬁer clf on L
+predict labels for U with clf
+move examples with most conﬁdently
+
+2:
+3:
+4:
+5:
+
+predicted labels from U to L
+
+end while
+6:
+return clf
+7:
+8: end procedure
+
+of 0.75 for classiﬁers producing class probabilit-
+ies, and 0.5 for the absolute values of SVM’s de-
+cision function; “Negative” Self-Training (NST):
+Rather than using a conﬁdence criterion, all unla-
+belled examples classiﬁed as negative are added to
+the training data for the next iteration. This is ana-
+logous to the iterative SVM step of Roc-SVM, ex-
+cept for the predeﬁned rather than heuristically es-
+timated initial negative set, and has shown to help
+avoid an unrestricted propagation of positive la-
+bels; A variant of the Expectation-Maximisation
+(EM) algorithm as used in i-EM. Starting with
+P and N as initial ﬁxed-label examples,
+iter-
+ate a NB classiﬁer until convergence, using the
+class probabilities predicted for U as labels for
+the next training iteration; Label Propagation and
+Label Spreading: These algorithms propagate la-
+bels through high-density regions using a graph
+representation of the data. Both are implemen-
+ted in Scikit-learn with Radial Basis Function
+(RBF) and k-Nearest-Neighbour (kNN) kernels
+available. We were unable to obtain competitive
+results with these techniques. In the Self-Training
+
+algorithm (shown in Algorithm 1), we use Scikit-
+learn’s implementations of SVM, NB, and Lo-
+gistic Regression (LR) as underlying classiﬁers.
+
+4 Results
+
+Section 4.1 describes the effects of noise reduction
+heuristics using PU Learning. The performances
+of different semi-supervised approaches for train-
+ing a classiﬁer, with both strict and tolerant noise
+reduction scenarios, are shown in Section 4.2.
+
+4.1 PU Learning for Noisy Data
+Table 1 summarises the PU-scores and ratio of ex-
+amples in U classiﬁed as positive for different al-
+gorithms for reducing noise in HoCn and HoCp
+using the strict vs. tolerant heuristics.
+
+Cleaning up HoCn removes some 2 to 7% of
+examples, depending on the classiﬁer. Additional
+manual inspection of a subset of the sentences re-
+moved conﬁrms them as true negatives with re-
+spect to key sentences.
+Regarding HoCp,
+
+the strict heuristics keeps
+only 5.5%, some 250 sentences, of positive ex-
+amples. We suspect this is due to the different
+thematic foci of HoC and the articles summar-
+ised in CIV iC, as well as the summaries’ differ-
+ent writing style. This leaves us with N := 8,300
+sentences, P := 5,600 sentences and U := 12,700
+sentences. As our experiments show, choosing this
+very selective approach drastically improves the
+nominal accuracy of subsequent steps; however,
+it leaves a lack of real-world data in the positive
+training set and harbours the risk of overﬁtting.
+
+On the other hand, using the tolerant strategy,
+roughly 25% of HoCp are removed due to be-
+ing very similar to HoC(cid:48)
+n. This results in a 50%
+
+40parameters
+C = 0.3
+C = 6.0
+α = 0.1
+C = 0.4
+C = 4.0
+α = 0.1
+α = 0.1
+
+Method
+NST(SVM)
+NST(LR)
+NST(NB)
+ST(SVM)
+ST(LR)
+ST(NB)
+EM
+Label Propagation RBF kernel
+kNN kernel
+Label Propagation
+RBF kernel
+Label Spreading
+Label Spreading
+kNN kernel
+
+acc
+0.94
+0.89
+0.90
+0.96
+0.96
+0.92
+0.91
+0.83
+0.69
+0.85
+0.79
+
+Ptest :
+
+r
+
+0.90
+0.75
+0.78
+0.93
+0.94
+0.88
+0.85
+0.63
+0.22
+0.68
+0.54
+
+F1
+0.92
+0.84
+0.86
+0.95
+0.95
+0.90
+0.88
+0.74
+0.36
+0.79
+0.68
+
+p
+
+0.95
+0.99
+0.97
+0.97
+0.96
+0.93
+0.92
+0.91
+0.96
+0.93
+0.92
+
+Ntest :
+
+r
+
+0.97
+0.99
+0.98
+0.98
+0.98
+0.96
+0.95
+0.96
+0.99
+0.97
+0.96
+
+p
+
+0.93
+0.86
+0.87
+0.95
+0.96
+0.92
+0.91
+0.79
+0.66
+0.82
+0.76
+
+F1
+0.95
+0.92
+0.92
+0.97
+0.97
+0.94
+0.93
+0.87
+0.79
+0.89
+0.85
+
+U :
+
+pos. ratio
+
+0.33
+0.13
+0.31
+0.62
+0.62
+0.60
+0.62
+0.35
+0.03
+0.50
+0.32
+
+Table 2: Performance of different semi-supervised approaches trained on P , N, and U after strict noise
+ﬁltering. ST = Self-Training. NST = “Negative” Self-Training. Results averaged over 10 runs with
+randomised 20% validation sets from P and N; min-df threshold = 0.002, 25% of most relevant features
+selected with χ2.
+
+parameters
+
+C = 0.3
+C = 6.0
+α = 0.1
+C = 0.4
+C = 6.0
+α = 0.1
+α = 0.1
+
+Method
+NST(SVM)
+NST(LR)
+NST(NB)
+ST(SVM)
+ST(LR)
+ST(NB)
+EM
+Label Propagation RBF kernel
+kNN kernel
+Label Propagation
+Label Spreading
+RBF kernel
+kNN kernel
+Label Spreading
+
+acc
+0.84
+0.81
+0.76
+0.85
+0.86
+0.76
+0.74
+0.72
+0.58
+0.74
+0.68
+
+p
+0.84
+0.88
+0.85
+0.90
+0.87
+0.88
+0.88
+0.88
+0.90
+0.88
+0.91
+
+Ptest :
+
+r
+
+0.84
+0.72
+0.64
+0.81
+0.85
+0.62
+0.58
+0.50
+0.20
+0.56
+0.43
+
+F1
+0.84
+0.79
+0.73
+0.85
+0.85
+0.72
+0.70
+0.64
+0.32
+0.68
+0.58
+
+p
+0.84
+0.76
+0.70
+0.83
+0.84
+0.69
+0.68
+0.64
+0.54
+0.67
+0.62
+
+Ntest :
+
+r
+
+0.83
+0.90
+0.88
+0.89
+0.86
+0.91
+0.91
+0.92
+0.98
+0.92
+0.96
+
+U :
+
+pos. ratio
+
+0.32
+0.17
+0.30
+0.62
+0.66
+0.70
+0.70
+0.36
+0.02
+0.56
+0.34
+
+F1
+0.83
+0.82
+0.78
+0.86
+0.85
+0.79
+0.78
+0.76
+0.70
+0.77
+0.77
+
+Table 3: Performance of different semi-supervised approaches trained on P , N, and U after tolerant
+noise ﬁltering. Results averaged over 10 runs with randomised 20% validation sets from P and N;
+min-df threshold = 0.002, 25% of most relevant features selected with χ2. The model we consider most
+suitable for identifying key sentences is highlighted in bold.
+
+larger and less homogenous positive labelled set
+compared to strict noise ﬁltering, which we expect
+to provide greater generality and robustness to our
+classiﬁer. This leaves us with N := 8,300 sen-
+tences, P := 8,600 sentences and U := 12,700
+sentences. This is enough to assume a noticeable
+reduction of noise and easier distinction between
+HoC(cid:48)
+p, but it still contributes a con-
+siderable amount of data to the positive set and
+is not suspect to overﬁtting. Typical topics of
+sentences removed as irrelevant include biochem-
+ical research hypotheses and non-human study
+subjects; however, as this heuristic is indirectly
+
+n and HoC(cid:48)
+
+deﬁned, its decisions are not quite as clearly cor-
+rect as those directly linked to CIViC.
+
+Our results conﬁrm Biased-SVM nominally
+performs best among the PU Learning techniques
+described above; this is simply because the PU-
+score is maximised by minimising the amount of
+positive examples found in U, which Biased-SVM
+does by regarding U as negative and performing
+supervised classiﬁcation. However, we do not ﬁnd
+this to be useful for our purpose of noise detection,
+or for ﬁnding hidden positive data in unlabelled
+data in general. The EM-based techniques tend to
+go the opposite direction and consider comparably
+
+41large ratios of U as positive, were more sensitive
+to distributions, and misclassiﬁed positive labelled
+data. Roc-SVM, on the other hand, had stable per-
+formance in our tests and scores close to those of
+Biased-SVM, which is why we use this approach
+to ﬁlter HoC for the subsequent steps. Our res-
+ults also suggest the iterative second step is more
+crucial than the exact heuristics for choosing a re-
+liable negative set from the unknown data.
+
+4.2 Semi-Supervised classiﬁcation of key
+
+sentences with Self-Training
+
+We report accuracy (acc), precision (p), recall
+(r), F1-score (F 1) and the ratio of key sen-
+tences found in U (pos.ratio) of different semi-
+supervised learning methods for strict (Table 2)
+and tolerant (Table 3) noise ﬁltering scenarios.
+We consider classiﬁcation to have gone wrong if
+the ratio of positive sentences in U signiﬁcantly
+deviates from the acceptable range [0.2, 0.4] (as
+deﬁned in Section 3.1). Additionally, results of su-
+pervised ML pipeline on data sets generated after
+noise ﬁltering are available in Appendix A.
+
+Our experiments show that strict noise ﬁlter-
+ing leads to greatly improved classiﬁcation accur-
+acy; however, it may be fallacious to judge this
+approach only by the scores it produces. Given
+CIViC’s deviations from typical language in sci-
+entiﬁc articles, the different thematic foci of CIViC
+and HoC, and the negligible amount of realistic
+positive sentences added in this scenario (Table
+1), we suspect classiﬁers may overﬁt to superﬁ-
+cial and incidental differences rather than learning
+to generalise to correctly identify key sentences in
+unseen abstracts. In order to avoid this, we discard
+strict noise ﬁltering.
+
+On the other hand, tolerant ﬁltering of HoCn
+and HoCp still allows for reasonable classiﬁca-
+tion accuracy considering the data’s heterogen-
+eity. We expect additional positive sentences to
+provide improvements to generalisation that out-
+weigh the lower nominal performance scores and
+possible errors propagated due to remaining noise.
+Although HoC’s notion of relevant sentences is
+not identical to that implied by CIViC, our exper-
+iments show that removing only the least suitable
+sentences is enough to use HoC(cid:48)
+p as meaningful
+training data.
+
+Standard Self-Training yields performance res-
+ults very similar to supervised classiﬁcation, ana-
+logous to what can be observed in strict mode, but
+
+a larger ratio of positive predictions for U. The lin-
+ear classiﬁers SVM and Logistic Regression per-
+form much better than NB, the latter modelling an
+inaccurate probability distribution. In both strict
+and tolerant mode, methods with an emphasis on
+unsupervised clustering (EM, Label Propagation,
+and Label Spreading) underperform, with a strong
+bias towards the negative class. Label Propaga-
+tion with k-Nearest-Neighbours kernel performs
+particularly poorly, failing to ﬁnd any positive ex-
+amples in the unlabelled set.
+In contrast, NST
+with base classiﬁers leads to positive ratios in U
+close to our preliminary estimate, as well as ac-
+ceptable classiﬁcation accuracy. SVM performs
+better than Logistic Regression and has balanced
+precision and recall for both classes, appearing the
+more robust choice.
+
+5 Conclusion
+
+We have developed a pipeline for identifying the
+most informative key sentences in oncological ab-
+stracts, judging sentences’ clinical relevance im-
+plicitly by their similarity to clinical evidence
+summaries in the CIViC database. To account
+for deviations from typical content between pro-
+fessional summaries and sentences appearing in
+abstracts, we use the abstracts corresponding to
+these summaries as unlabelled data in an semi-
+supervised learning setting. An auxiliary silver
+standard corpus is used for more realistic training
+and validation data. To mitigate introducing er-
+rors due to miscategorised examples in partitions
+of the auxiliary data, we propose using PU Learn-
+ing techniques in a noise detection preprocessing
+step.
+
+We evaluate different heuristics for semi-
+supervised learning and measure their perform-
+ance with heterogenous data. While methods with
+an emphasis on unsupervised clustering perform
+poorly, (which we attribute to the data violating
+smoothness assumptions) Self-Training with lin-
+ear classiﬁers proved robust to unfavourably dis-
+tributed data, reaching performance scores similar
+to those of supervised classiﬁers trained without
+the unlabelled data. By adapting Self-Training
+with SVMs to iteratively expand only the negat-
+ive training set as in PU Learning, we were able
+to restrict the amount of hidden positive examples
+found in unlabelled data while maintaining good
+accuracy scores. Our best model using this method
+reaches 84% accuracy and 0.84 F1-score.
+
+42As a byproduct of the proposed pipeline, we ob-
+tain a silver standard corpus consisting of approx-
+imately 12,700 sentences from our unlabelled set,
+annotated with sentences’ estimated clinical relev-
+ance, which may be useful for future classiﬁcation
+tasks. Our ﬁnal pipeline can be used to help clini-
+cians quickly assess which articles are relevant to
+their work, e.g. by incorporating it into workﬂows
+for the retrieval of cancer-related literature. As
+such, it has been integrated in to Variant Inform-
+ation Search Tool1 (VIST), a query-based docu-
+ment retrieval system which ranks scientiﬁc ab-
+stracts according to the clinical relevance of their
+content given a (set of) variations and/or genes.
+
+We encountered various difﬁculties resulting
+from using a gold standard with atypical and
+solely positive examples and the heterogeneity of
+different training corpora. Although our problem
+of ﬁnding key sentences is a standard PU Learn-
+ing task, the methods described in the PU Learn-
+ing literature cannot be used in a veriﬁable way on
+real-world data without negative validation data.
+Even for semi-supervised learning with positive
+as well as negative labelled data, standard met-
+rics alone are not enough to judge a classiﬁer’s
+adequacy, since the amount of noise in automat-
+ically gathered training data is never completely
+certain and the way unlabelled data is handled by a
+classiﬁer is not represented in performance scores.
+By using heuristics for noise ﬁltering and adapt-
+ing self-training to incorporate unlabelled data in
+a way suitable to our goal, we alleviate these difﬁ-
+culties.
+
+References
+Shashank Agarwal and Hong Yu. 2009. Automatically
+classifying sentences in full-text biomedical articles
+into introduction, methods, results and discussion.
+Bioinformatics, 25(23):3174–3180.
+
+Akiko Aizawa. 2003. An information-theoretic per-
+spective of tf–idf measures. Information Processing
+& Management, 39(1):45–65.
+
+Simon Baker, Ilona Silins, Yufan Guo, Imran Ali, Jo-
+han H¨ogberg, Ulla Stenius, and Anna Korhonen.
+2016. Automatic semantic classiﬁcation of sci-
+entiﬁc literature according to the hallmarks of can-
+cer. Bioinformatics, 32(3):432–440.
+
+Steven Bird, Ewan Klein, and Edward Loper. 2009.
+Natural language processing with Python: analyz-
+ing text with the natural language toolkit. O’Reilly.
+
+1https://triage.informatik.hu-berlin.de:8080/
+
+Alexis Conneau, Holger Schwenk, Lo¨ıc Barrault, and
+Yann Lecun. 2017. Very deep convolutional net-
+works for text classiﬁcation. In Proceedings of the
+15th Conference of the European Chapter of the As-
+sociation for Computational Linguistics: Volume 1,
+Long Papers, volume 1, pages 1107–1116.
+
+Franck Dernoncourt, Ji Young Lee, and Peter Szo-
+lovits. 2017. Neural networks for joint sentence
+In Pro-
+classiﬁcation in medical paper abstracts.
+ceedings of the 15th Conference of the European
+Chapter of the Association for Computational Lin-
+guistics: Volume 2, Short Papers, pages 694–700.
+Association for Computational Linguistics.
+
+Charles Elkan and Keith Noto. 2008. Learning classi-
+ﬁers from only positive and unlabeled data. In Pro-
+ceedings of the 14th ACM SIGKDD international
+conference on Knowledge discovery and data min-
+ing, pages 213–220. ACM.
+
+Alec Go, Richa Bhayani, and Lei Huang. 2009. Twit-
+ter sentiment classiﬁcation using distant supervision.
+CS224N Project Report, Stanford, 1(12).
+
+Malachi Grifﬁth, Nicholas C Spies, Kilannin Krysiak,
+Joshua F McMichael, Adam C Coffman, Arpad M
+Danos, Benjamin J Ainscough, Cody A Ramirez,
+Damian T Rieke, Lynzey Kujan, et al. 2017. Civic
+is a community knowledgebase for expert crowd-
+sourcing the clinical interpretation of variants in can-
+cer. Nature genetics, 49(2):170.
+
+Maryam Habibi, Leon Weber, Mariana Neves,
+David Luis Wiegandt, and Ulf Leser. 2017. Deep
+learning with word embeddings improves biomed-
+Bioinformatics,
+ical named entity recognition.
+33(14):i37–i48.
+
+A. Hassan and A. Mahmood. 2017. Deep learning for
+sentence classiﬁcation. In 2017 IEEE Long Island
+Systems, Applications and Technology Conference
+(LISAT), pages 1–5.
+
+Thorsten Joachims. 1998. Text categorization with
+support vector machines: Learning with many rel-
+In Machine Learning: ECML-98,
+evant features.
+Chemnitz, Germany, volume 1398 of Lecture Notes
+in Computer Science, pages 137–142. Springer.
+
+Anthony Khoo, Yuval Marom, and David Albrecht.
+2006. Experiments with sentence classiﬁcation. In
+Proceedings of the Australasian Language Techno-
+logy Workshop 2006, pages 18–25.
+
+Su Kim, David Mart´ınez, Lawrence Cavedon, and Lars
+Yencken. 2011. Automatic classiﬁcation of sen-
+tences to support evidence based medicine. BMC
+Bioinformatics, 12(S-2):S5.
+
+Yoon Kim. 2014. Convolutional neural networks for
+sentence classiﬁcation. In Proceedings of the 2014
+Conference on Empirical Methods in Natural Lan-
+guage Processing (EMNLP), pages 1746–1751. As-
+sociation for Computational Linguistics.
+
+43Julian Kupiec, Jan O. Pedersen, and Francine Chen.
+1995. A trainable document summarizer.
+In
+SIGIR’95, Seattle, Washington, USA, pages 68–73.
+ACM Press.
+
+Wee Sun Lee and Bing Liu. 2003. Learning with
+positive and unlabeled examples using weighted
+In Machine Learning, Pro-
+logistic regression.
+ceedings of the Twentieth International Conference
+(ICML 2003), August 21-24, 2003, Washington, DC,
+USA, pages 448–455. AAAI Press.
+
+Huayi Li, Zhiyuan Chen, Bing Liu, Xiaokai Wei, and
+Jidong Shao. 2014. Spotting fake reviews via col-
+lective positive-unlabeled learning. In Proceedings
+of the 2014 IEEE International Conference on Data
+Mining, ICDM ’14, pages 899–904, Washington,
+DC, USA. IEEE Computer Society.
+
+Bing Liu, Yang Dai, Xiaoli Li, Wee Sun Lee, and
+Philip S. Yu. 2003. Building text classiﬁers using
+In Proceedings
+positive and unlabeled examples.
+of the 3rd IEEE International Conference on Data
+Mining (ICDM 2003), Melbourne, Florida, USA,
+pages 179–188. IEEE Computer Society.
+
+Zhiguang Liu, Xishuang Dong, Yi Guan, and Jin-
+feng Yang. 2013.
+Reserved self-training: A
+semi-supervised sentiment classiﬁcation method
+In Sixth International
+for chinese microblogs.
+Joint Conference on Natural Language Processing,
+Nagoya, Japan, pages 455–462. Asian Federation of
+Natural Language Processing / ACL.
+
+Larry McKnight and Padmini Srinivasan. 2003. Cat-
+egorization of sentence types in medical abstracts.
+In American Medical Informatics Association An-
+nual Symposium, Washington, DC, USA. AMIA.
+
+Fantine Mordelet and Jean-Philippe Vert. 2014. A bag-
+ging SVM to learn from positive and unlabeled ex-
+amples. Pattern Recognition Letters, 37:201–209.
+
+National Library of Medicine. 1946-2018. Pubmed.
+
+https://www.ncbi.nlm.nih.gov/
+pubmed. Accessed: 2018-02-01.
+
+Bhawna Nigam, Poorvi Ahirwal, Sonal Salve, and
+Swati Vamney. 2011. Document classiﬁcation us-
+ing expectation maximization with semi supervised
+learning. CoRR, abs/1112.2028.
+
+Marthinus Du Plessis, Gang Niu, and Masashi Sug-
+iyama. 2014. Analysis of learning from positive and
+unlabeled data. In Proceedings of the 27th Interna-
+tional Conference on Neural Information Processing
+Systems - Volume 1, NIPS’14, pages 703–711, Cam-
+bridge, MA, USA. MIT Press.
+
+Anthony Rios and Ramakanth Kavuluru. 2015. Con-
+volutional neural networks for biomedical text clas-
+siﬁcation: Application in indexing biomedical art-
+icles. In Proceedings of the 6th ACM Conference on
+Bioinformatics, Computational Biology and Health
+Informatics, BCB ’15, pages 258–267, New York,
+NY, USA. ACM.
+
+Patrick Ruch, C´elia Boyer, Christine Chichester,
+Imad Tbahriti, Antoine Geissb¨uhler, Paul Fabry,
+Julien Gobeill, Violaine Pillet, Dietrich Rebholz-
+Schuhmann, Christian Lovis,
+and Anne-Lise
+Veuthey. 2007. Using argumentation to extract key
+sentences from biomedical abstracts. I. J. Medical
+Informatics, 76(2-3):195–200.
+
+Simone Teufel and Marc Moens. 2002. Summariz-
+ing scientiﬁc articles: Experiments with relevance
+and rhetorical status. Computational Linguistics,
+28(4):409–445.
+
+Philippe Thomas, Tamara Bobi´c, Ulf Leser, Mar-
+tin Hofmann-Apitius, and Roman Klinger. 2012.
+Weakly labeled corpora as silver standard for drug-
+In Proceed-
+drug and protein-protein interaction.
+ings of the Workshop on Building and Evaluating
+Resources for Biomedical Text Mining (BioTxtM)
+on Language Resources and Evaluation Conference
+(LREC).
+
+Soroush Vosoughi, Helen Zhou, and Deb Roy. 2015.
+Enhanced Twitter Sentiment Classiﬁcation Using
+the
+Contextual Information.
+6th Workshop on Computational Approaches to
+Subjectivity, Sentiment and Social Media Analysis,
+pages 16–24, Stroudsburg, PA, USA. Association
+for Computational Linguistics.
+
+In Proceedings of
+
+Byron C. Wallace, Jo¨el Kuiper, Aakash Sharma,
+Mingxi (Brian) Zhu, and Iain James Marshall. 2016.
+Extracting PICO sentences from clinical trial reports
+Journal of
+using supervised distant supervision.
+Machine Learning Research, 17:132:1–132:25.
+
+Bin Wang, Bruce Spencer, Charles X. Ling, and Harry
+Zhang. 2008. Semi-supervised self-training for sen-
+tence subjectivity classiﬁcation. In Advances in Ar-
+tiﬁcial Intelligence , 21st Conference of the Cana-
+dian Society for Computational Studies of Intelli-
+gence Windsor, Canada, pages 344–355. Springer.
+
+Hong Yu and Vasileios Hatzivassiloglou. 2003. To-
+wards answering opinion questions: Separating facts
+from opinions and identifying the polarity of opin-
+ion sentences. In Proceedings of the 2003 Confer-
+ence on Empirical Methods in Natural Language
+Processing, EMNLP ’03, pages 129–136, Strouds-
+burg, PA, USA. Association for Computational Lin-
+guistics.
+
+Marthinus Du Plessis, Gang Niu, and Masashi Sug-
+iyama. 2015. Convex formulation for learning from
+positive and unlabeled data. In Proceedings of the
+32nd International Conference on Machine Learn-
+ing, volume 37 of Proceedings of Machine Learning
+Research, pages 1386–1394, Lille, France. PMLR.
+
+Ye Zhang, Stephen Roller, and Byron C. Wallace. 2016.
+MGNC-CNN: A simple approach to exploiting mul-
+tiple word embeddings for sentence classiﬁcation.
+In NAACL HLT 2016, San Diego California, USA,
+pages 1522–1527. The Association for Computa-
+tional Linguistics.
+
+44Chunting Zhou, Chonglin Sun, Zhiyuan Liu, and Fran-
+cis C. M. Lau. 2015. A c-lstm neural network for
+text classiﬁcation. CoRR, abs/1511.08630.
+
+Dengyong Zhou, Olivier Bousquet, Thomas Navin
+Lal, Jason Weston, and Bernhard Sch¨olkopf. 2003.
+Learning with local and global consistency. In Ad-
+vances in Neural Information Processing Systems
+16 [Neural Information Processing Systems, NIPS
+2003, December 8-13, 2003, Vancouver and Whist-
+ler, British Columbia, Canada], pages 321–328.
+MIT Press.
+
+Peng Zhou, Zhenyu Qi, Suncong Zheng, Jiaming Xu,
+Hongyun Bao, and Bo Xu. 2016. Text classiﬁcation
+improved by integrating bidirectional lstm with two-
+dimensional max pooling. pages 3485–3495.
+
+Xiaojin Zhu and Zoubin Ghahramani. 2002. Learning
+from labeled and unlabeled data with label propaga-
+tion.
+
+A Semi-supervised ML on ﬁltered
+
+datasets
+
+Table 4 shows results of supervised baseline clas-
+siﬁers trained on P and N after strict ﬁltering.
+Performance is very good for all classiﬁers tested,
+which is not surprising as CIViC and HoCn are
+easy to separate even without ﬁltering. The ra-
+tio of the unlabelled set U classiﬁed as positive,
+however, is outside of the acceptable range [0.2,
+0.4] for selecting key sentences, probably due to
+the more similar contents of CIViC and the corres-
+ponding abstracts compared to HoC.
+
+Table 5 shows the results of supervised classiﬁ-
+ers trained on only P and N after tolerant ﬁltering.
+Accuracies and F1-scores are about 10 percent
+points lower compared to results in the strict ﬁl-
+tering scenario, which can be explained by HoCp
+and HoCn being comparably difﬁcult to separate.
+However, performance is better compared to dis-
+tinguishing CIV iC ∪ HoCp vs. HoCn without
+any noise ﬁltering.
+
+B PU Learning and Self-Training: used
+
+corpora
+
+45Method
+SVM
+LR
+NB
+
+parameters
+C = 3.0
+C = 6.0
+α = 0.1
+
+acc
+0.96
+0.96
+0.94
+
+p
+
+0.97
+0.96
+0.95
+
+Ptest :
+
+r
+
+0.94
+0.94
+0.91
+
+F1
+0.95
+0.95
+0.93
+
+p
+
+0.96
+0.96
+0.94
+
+Ntest :
+
+r
+
+0.98
+0.97
+0.97
+
+F1
+0.97
+0.97
+0.95
+
+U:
+
+pos. ratio
+
+0.63
+0.64
+0.61
+
+Table 4: Supervised classiﬁers trained on P and N after strict noise ﬁltering. Results averaged over 10
+runs with randomised 20% reserved test sets; min-df threshold = 0.002, 25% of most relevant features
+selected with χ2.
+
+Method
+SVM
+LR
+NB
+
+parameters
+C = 3.0
+C = 6.0
+α = 0.1
+
+acc
+0.86
+0.86
+0.79
+
+p
+
+0.88
+0.88
+0.89
+
+Ptest :
+
+r
+
+0.84
+0.85
+0.67
+
+F1
+0.86
+0.86
+0.77
+
+p
+
+0.84
+0.85
+0.72
+
+Ntest :
+
+r
+
+0.88
+0.87
+0.91
+
+F1
+0.86
+0.86
+0.81
+
+U :
+
+pos. ratio
+
+0.63
+0.63
+0.70
+
+Table 5: Supervised classiﬁers trained on P and N after tolerant noise ﬁltering. Results averaged over
+10 runs with randomised 20% validation sets; min-df threshold = 0.002, 25% of most relevant features
+selected with χ2.
+
+Figure 1: PU Learning for noise reduction - used corpora
+
+Figure 2: Semi-supervised training with Self-Training - used corpora
+
+46
