@@ -78,8 +78,8 @@ if __name__ == '__main__':
     corpusdir = '../file/path'
     ACL_corpus = Corpus(corpusdir)
 
-    print("The 100 most frequent content words:")
+    print("The 100 most frequent words:")
     print(ACL_corpus.most_frequent_content_words(100))
     print()
-    print("The 100 most frequent bigrams containing only content words: ")
+    print("The 100 most frequent two-word phrases: ")
     print(ACL_corpus.most_frequent_bigrams(100))
