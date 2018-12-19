@@ -1,7 +1,6 @@
 from Corpus import Corpus
 from TaggedInstance import TaggedInstance
 
-
 class TaggedCorpus(Corpus):
     
     def __init__(self, data_root):
@@ -9,7 +8,7 @@ class TaggedCorpus(Corpus):
     
     def instances(self):
         insts = []
-        for id in self.documents()[:4]:
+        for id in self.documents():
             tags = []
             authors = []
             sents = self.tokenized_sentences_in_file(id)
@@ -22,5 +21,7 @@ class TaggedCorpus(Corpus):
 if __name__ == "__main__":
     corpusdir = './test'
     a = TaggedCorpus(corpusdir)
-    print(*a.instances())
-    
+    ai = a.instances()
+    print(*ai)
+    print(len(ai))    
+
