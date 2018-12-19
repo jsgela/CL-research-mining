@@ -27,7 +27,7 @@ def get_acronyms(ACL_corpus):
     full_text = ACL_corpus.words
     acronyms = {elm for elm in full_text if elm.isupper() and elm.isalpha() and len(elm) > 1}
 #    print(acronyms)
-    get_definitions(list(acronyms), full_text)
+    return get_definitions(list(acronyms), full_text)
 
 
 def get_definitions(acronyms, text):
@@ -42,27 +42,31 @@ def get_definitions(acronyms, text):
     # acronym_dictionary = dict()
     # acronyms_pos = {"NN", "NNS", "NNP", "VB", "JJ", "VB", "VBD", "VBG", "VBN", "VBP"}
     
-#    print(len(acronyms))
-    acronyms = acronyms[:5]
+    # print(len(acronyms))
+    # acronyms = acronyms[:5]
     acronym_dictionary = {}
 
     a = time.time()
+    k = 0
     for acro in acronyms:
+        if k%20 == 0:
+            print(k)
+        k += 1
         acro_len = len(acro)
-        matches = []
+        matches = set()
         for i in range(len(filtered_text) - acro_len):
             chosen = True
             for j in range(acro_len):
                 if not filtered_text[i+j][0] == acro[j]:
-                #if len(filtered_text[i+j]) < 2 or not filtered_text[i+j][0] == acro[j]:
+#                if len(filtered_text[i+j]) < 2 or not filtered_text[i+j][0] == acro[j]:
                     chosen = False
                     break
             if chosen:
                 word = ' '.join(filtered_text[i:i+acro_len])
-                matches.append(word)
+                matches.add(word)
+                #matches.append(word)
         if not len(matches) == 0:
             acronym_dictionary[acro] = list(set(matches))
-    
 #    for acro in acronyms:
 #        acronym_dictionary.fromkeys(acro, None)
 #        acro_length = len(acro)
@@ -98,14 +102,20 @@ def get_definitions(acronyms, text):
         #         print(gram)
 
     b = time.time()
-    print(len(acronym_dictionary))
-    print(acronym_dictionary)
-    print("Time", b - a)
-    print('\a')
+#    print(len(acronym_dictionary))
+#    print(acronym_dictionary)
+#    print("Time", b - a)
+#    print('\a')
 
     return acronym_dictionary
 
 
 if __name__ == '__main__':
     ACL_corpus = Corpus('test')
-    get_acronyms(ACL_corpus)
+    acro_dict = get_acronyms(ACL_corpus)
+    with open("acro_dict.txt", "w") as out_file:
+        for key in acro_dict.keys():
+            out_file.write(key)
+            for w in acro_dict[key]:
+                out_file.write("," + w)
+            out_file.write("\n")
