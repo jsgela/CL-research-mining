@@ -1,0 +1,967 @@
+Comparative Studies of Detecting Abusive Language on Twitter
+
+Younghun Lee∗
+
+Seunghyun Yoon∗ Kyomin Jung
+
+Dept. of Electrical and Computer Engineering
+
+younggnse@gmail.com {mysmilesh,kjung}@snu.ac.kr
+
+Seoul National University, Seoul, Korea
+
+Abstract
+
+The context-dependent nature of online ag-
+gression makes annotating large collections of
+data extremely difﬁcult. Previously studied
+datasets in abusive language detection have
+been insufﬁcient in size to efﬁciently train
+deep learning models. Recently, Hate and
+Abusive Speech on Twitter, a dataset much
+greater in size and reliability, has been re-
+leased. However, this dataset has not been
+comprehensively studied to its potential.
+In
+this paper, we conduct the ﬁrst comparative
+study of various learning models on Hate and
+Abusive Speech on Twitter, and discuss the
+possibility of using additional features and
+context data for improvements. Experimen-
+tal results show that bidirectional GRU net-
+works trained on word-level features, with La-
+tent Topic Clustering modules, is the most ac-
+curate model scoring 0.805 F1.
+
+Introduction
+
+1
+Abusive language refers to any type of insult, vul-
+garity, or profanity that debases the target; it also
+can be anything that causes aggravation (Spertus,
+1997; Schmidt and Wiegand, 2017). Abusive lan-
+guage is often reframed as, but not limited to, of-
+fensive language (Razavi et al., 2010), cyberbul-
+lying (Xu et al., 2012), othering language (Bur-
+nap and Williams, 2014), and hate speech (Djuric
+et al., 2015).
+
+Recently, an increasing number of users have
+been subjected to harassment, or have witnessed
+offensive behaviors online (Duggan, 2017). Major
+social media companies (i.e. Facebook, Twitter)
+have utilized multiple resources—artiﬁcial intelli-
+gence, human reviewers, user reporting processes,
+etc.—in effort to censor offensive language, yet
+it seems nearly impossible to successfully resolve
+the issue (Robertson, 2017; Musaddique, 2017).
+
+∗* Equal contribution.
+
+The major reason of the failure in abusive
+language detection comes from its subjectivity
+and context-dependent characteristics (Chatzakou
+et al., 2017). For instance, a message can be re-
+garded as harmless on its own, but when taking
+previous threads into account it may be seen as
+abusive, and vice versa. This aspect makes detect-
+ing abusive language extremely laborious even for
+human annotators; therefore it is difﬁcult to build
+a large and reliable dataset (Founta et al., 2018).
+
+Previously, datasets openly available in abu-
+sive language detection research on Twitter ranged
+from 10K to 35K in size (Chatzakou et al., 2017;
+Golbeck et al., 2017). This quantity is not sufﬁ-
+cient to train the signiﬁcant number of parameters
+in deep learning models. Due to this reason, these
+datasets have been mainly studied by traditional
+machine learning methods. Most recently, Founta
+et al. (2018) introduced Hate and Abusive Speech
+on Twitter, a dataset containing 100K tweets with
+cross-validated labels. Although this corpus has
+great potential in training deep models with its sig-
+niﬁcant size, there are no baseline reports to date.
+This paper investigates the efﬁcacy of differ-
+ent learning models in detecting abusive language.
+We compare accuracy using the most frequently
+studied machine learning classiﬁers as well as re-
+cent neural network models.1 Reliable baseline
+results are presented with the ﬁrst comparative
+study on this dataset. Additionally, we demon-
+strate the effect of different features and variants,
+and describe the possibility for further improve-
+ments with the use of ensemble models.
+
+2 Related Work
+
+The research community introduced various ap-
+proaches on abusive language detection. Razavi
+
+1The code can be found at: https://github.com/
+
+younggns/comparative-abusive-lang
+
+ProceedingsoftheSecondWorkshoponAbusiveLanguageOnline(ALW2),pages101–106Brussels,Belgium,October31,2018.c(cid:13)2018AssociationforComputationalLinguistics101et al. (2010) applied Na¨ıve Bayes, and Warner and
+Hirschberg (2012) used Support Vector Machine
+(SVM), both with word-level features to classify
+offensive language. Xiang et al. (2012) generated
+topic distributions with Latent Dirichlet Alloca-
+tion (Blei et al., 2003), also using word-level fea-
+tures in order to classify offensive tweets.
+
+More recently, distributed word representations
+and neural network models have been widely ap-
+plied for abusive language detection. Djuric et
+al. (2015) used the Continuous Bag Of Words
+model with paragraph2vec algorithm (Le and
+Mikolov, 2014) to more accurately detect hate
+speech than that of the plain Bag Of Words mod-
+els. Badjatiya et al. (2017) implemented Gradi-
+ent Boosted Decision Trees classiﬁers using word
+representations trained by deep learning mod-
+els. Other researchers have investigated character-
+level representations and their effectiveness com-
+pared to word-level representations (Mehdad and
+Tetreault, 2016; Park and Fung, 2017).
+
+As traditional machine learning methods have
+relied on feature engineering, (i.e. n-grams, POS
+tags, user information) (Schmidt and Wiegand,
+2017), researchers have proposed neural-based
+models with the advent of larger datasets. Con-
+volutional Neural Networks and Recurrent Neural
+Networks have been applied to detect abusive lan-
+guage, and they have outperformed traditional ma-
+chine learning classiﬁers such as Logistic Regres-
+sion and SVM (Park and Fung, 2017; Badjatiya
+et al., 2017). However, there are no studies inves-
+tigating the efﬁciency of neural models with large-
+scale datasets over 100K.
+
+3 Methodology
+
+This section illustrates our implementations on
+traditional machine learning classiﬁers and neural
+network based models in detail. Furthermore, we
+describe additional features and variant models in-
+vestigated.
+
+3.1 Traditional Machine Learning Models
+We implement ﬁve feature engineering based
+machine learning classiﬁers that are most often
+used for abusive language detection.
+In data
+preprocessing, text sequences are converted into
+Bag Of Words (BOW) representations, and nor-
+malized with Term Frequency-Inverse Document
+Frequency (TF-IDF) values. We experiment with
+word-level features using n-grams ranging from
+
+1 to 3, and character-level features from 3 to
+8-grams. Each classiﬁer is implemented with the
+following speciﬁcations:
+
+Na¨ıve Bayes (NB): Multinomial NB with additive
+smoothing constant 1
+Logistic Regression (LR): Linear LR with L2
+regularization constant 1 and limited-memory
+BFGS optimization
+Support Vector Machine (SVM): Linear SVM
+with L2 regularization constant 1 and logistic loss
+function
+Random Forests (RF): Averaging probabilistic
+predictions of 10 randomized decision trees
+Gradient Boosted Trees (GBT): Tree boosting
+with learning rate 1 and logistic loss function
+
+3.2 Neural Network based Models
+Along with traditional machine learning ap-
+proaches, we investigate neural network based
+models to evaluate their efﬁcacy within a larger
+In particular, we explore Convolutional
+dataset.
+Neural Networks
+(CNN), Recurrent Neural
+Networks (RNN), and their variant models. A
+pre-trained GloVe (Pennington et al., 2014)
+representation is used for word-level features.
+
+CNN: We adopt Kim’s (2014) implementation as
+the baseline. The word-level CNN models have 3
+convolutional ﬁlters of different sizes [1,2,3] with
+ReLU activation, and a max-pooling layer. For the
+character-level CNN, we use 6 convolutional ﬁl-
+ters of various sizes [3,4,5,6,7,8], then add max-
+pooling layers followed by 1 fully-connected layer
+with a dimension of 1024.
+
+Park and Fung (2017) proposed a HybridCNN
+model which outperformed both word-level and
+character-level CNNs in abusive language detec-
+tion. In order to evaluate the HybridCNN for this
+dataset, we concatenate the output of max-pooled
+layers from word-level and character-level CNN,
+and feed this vector to a fully-connected layer in
+order to predict the output.
+
+All three CNN models (word-level, character-
+level, and hybrid) use cross entropy with softmax
+as their loss function and Adam (Kingma and Ba,
+2014) as the optimizer.
+
+RNN: We use bidirectional RNN (Schuster and
+Paliwal, 1997) as the baseline, implementing a
+GRU (Cho et al., 2014) cell for each recurrent unit.
+
+102From extensive parameter-search experiments, we
+chose 1 encoding layer with 50 dimensional hid-
+den states and an input dropout probability of 0.3.
+The RNN models use cross entropy with sigmoid
+as their loss function and Adam as the optimizer.
+For a possible improvement, we apply a self-
+matching attention mechanism on RNN baseline
+models (Wang et al., 2017) so that they may better
+understand the data by retrieving text sequences
+twice. We also investigate a recently introduced
+method, Latent Topic Clustering (LTC) (Yoon
+et al., 2018). The LTC method extracts latent topic
+information from the hidden states of RNN, and
+uses it for additional information in classifying the
+text data.
+
+3.3 Feature Extension
+While manually analyzing the raw dataset, we no-
+ticed that looking at the tweet one has replied to
+or has quoted, provides signiﬁcant contextual in-
+formation. We call these, “context tweets”. As
+humans can better understand a tweet with the ref-
+erence of its context, our assumption is that com-
+puters also beneﬁt from taking context tweets into
+account in detecting abusive language.
+
+As shown in the examples below, (2) is la-
+beled abusive due to the use of vulgar language.
+However, the intention of the user can be better
+understood with its context tweet (1).
+
+(1) I hate when I’m sitting in front of the bus and somebody
+with a wheelchair get on.
+(cid:30) (2) I hate it when I’m trying to board a bus and there’s
+already an as**ole on it.
+
+Similarly, context
+
+in
+understanding the abusive tweet (4), especially in
+identifying the target of the malice.
+
+tweet (3) is important
+
+(3) Survivors of #Syria Gas Attack Recount ‘a Cruel Scene’.
+(cid:30) (4) Who the HELL is “LIKE” ING this post? Sick people....
+
+Huang et al. (2016) used several attributes of
+context
+tweets for sentiment analysis in order
+to improve the baseline LSTM model. How-
+ever, their approach was limited because the meta-
+information they focused on—author information,
+conversation type, use of the same hashtags or
+emojis—are all highly dependent on data.
+In order to avoid data dependency,
+
+text se-
+quences of context tweets are directly used as
+
+Labels Normal
+42,932
+(60.5)
+
+Number
+(%)
+
+Spam Hateful Abusive
+9,757
+15,115
+(21.3)
+(13.8)
+
+3,100
+(4.4)
+
+Table 1: Label distribution of crawled tweets
+
+an additional feature of neural network models.
+We use the same baseline model to convert con-
+text tweets to vectors, then concatenate these vec-
+tors with outputs of their corresponding labeled
+tweets. More speciﬁcally, we concatenate max-
+pooled layers of context and labeled tweets for the
+CNN baseline model. As for RNN, the last hidden
+states of context and labeled tweets are concate-
+nated.
+
+4 Experiments
+4.1 Dataset
+Hate and Abusive Speech on Twitter (Founta et al.,
+2018) classiﬁes tweets into 4 labels, “normal”,
+“spam”, “hateful” and “abusive”. We were only
+able to crawl 70,904 tweets out of 99,996 tweet
+IDs, mainly because the tweet was deleted or the
+user account had been suspended. Table 1 shows
+the distribution of labels of the crawled data.
+
+4.2 Data Preprocessing
+In the data preprocessing steps, user IDs, URLs,
+and frequently used emojis are replaced as special
+tokens. Since hashtags tend to have a high correla-
+tion with the content of the tweet (Lehmann et al.,
+2012), we use a segmentation library2 (Segaran
+and Hammerbacher, 2009) for hashtags to extract
+more information.
+
+For character-level representations, we apply
+the method Zhang et al. (2015) proposed. Tweets
+are transformed into one-hot encoded vectors us-
+ing 70 character dimensions—26 lower-cased al-
+phabets, 10 digits, and 34 special characters in-
+cluding whitespace.
+
+4.3 Training and Evaluation
+In training the feature engineering based machine
+learning classiﬁers, we truncate vector represen-
+tations according to the TF-IDF values (the top
+14,000 and 53,000 for word-level and character-
+level representations, respectively) to avoid over-
+ﬁtting. For neural network models, words that ap-
+pear only once are replaced as unknown tokens.
+
+2WordSegment module description page: https://
+
+pypi.org/project/wordsegment/
+
+103Model
+NB (word)
+NB (char)
+LR (word)
+LR (char)
+SVM (word)
+SVM (char)
+RF (word)
+RF (char)
+GBT (word)
+GBT (char)
+CNN (word)
+CNN (char)
+CNN (hybrid)
+RNN (word)
+RNN (char)
+RNN-attn (word)
+RNN-LTC (word)
+CNN (w/context)
+RNN (w/context)
+
+Normal
+Prec. Rec.
+.916
+.776
+.805
+.827
+.933
+.807
+.934
+.808
+.757
+.967
+.968
+.763
+.945
+.776
+.934
+.793
+.921
+.806
+.807
+.913
+.925
+.822
+.946
+.784
+.926
+.820
+.856
+.887
+.999
+.606
+.898
+.846
+.857
+.884
+.910
+.828
+.858
+.880
+
+F1
+.840
+.815
+.865
+.866
+.850
+.853
+.853
+.857
+.860
+.857
+.870
+.857
+.869
+.870
+.754
+.872
+.871
+.867
+.869
+
+Spam
+Prec. Rec.
+.378
+.573
+.609
+.467
+.365
+.616
+.363
+.618
+.678
+.190
+.680
+.198
+.213
+.581
+.252
+.568
+.320
+.581
+.560
+.346
+.323
+.625
+.180
+.604
+.322
+.616
+.589
+.514
+.000
+.000
+.469
+.593
+.525
+.583
+.341
+.609
+.527
+.577
+
+F1
+.456
+.528
+.458
+.457
+.296
+.306
+.311
+.349
+.413
+.428
+.418
+.264
+.407
+.547
+.000
+.520
+.551
+.429
+.549
+
+Hateful
+Prec. Rec.
+.034
+.502
+.061
+.452
+.161
+.620
+.183
+.636
+.836
+.034
+.805
+.070
+.109
+.556
+.150
+.563
+.194
+.506
+.472
+.187
+.182
+.563
+.124
+.663
+.180
+.628
+.577
+.194
+.000
+.000
+.194
+.579
+.210
+.564
+.246
+.505
+.534
+.175
+
+F1
+.063
+.107
+.254
+.283
+.065
+.129
+.182
+.236
+.279
+.267
+.263
+.204
+.265
+.287
+.000
+.283
+.302
+.309
+.256
+
+Abusive
+
+Prec. Rec.
+.744
+.828
+.832
+.788
+.844
+.868
+.873
+.848
+.865
+.757
+.876
+.775
+.819
+.852
+.856
+.853
+.863
+.854
+.859
+.859
+.916
+.846
+.864
+.848
+.910
+.853
+.934
+.844
+.000
+.000
+.925
+.849
+.932
+.846
+.914
+.840
+.937
+.840
+
+F1
+.784
+.803
+.856
+.860
+.807
+.822
+.835
+.854
+.858
+.859
+.879
+.856
+.880
+.887
+.000
+.886
+.887
+.875
+.885
+
+Total
+Prec. Rec.
+.767
+.747
+.751
+.752
+.802
+.786
+.804
+.788
+.773
+.775
+.781
+.778
+.781
+.757
+.789
+.765
+.794
+.772
+.770
+.791
+.808
+.789
+.787
+.768
+.807
+.790
+.804
+.815
+.605
+.367
+.814
+.800
+.815
+.804
+.804
+.786
+.801
+.813
+
+F1
+.741
+.744
+.780
+.783
+.730
+.740
+.745
+.760
+.773
+.772
+.783
+.747
+.781
+.804
+.457
+.800
+.805
+.784
+.801
+
+Table 2: Experimental results of learning models and their variants, followed by the context tweet models. The
+top 2 scores are marked as bold for each metric.
+
+Since the dataset used is not split into train, de-
+velopment, and test sets, we perform 10-fold cross
+validation, obtaining the average of 5 tries; we di-
+vide the dataset randomly by a ratio of 85:5:10,
+respectively. In order to evaluate the overall per-
+formance, we calculate the weighted average of
+precision, recall, and F1 scores of all four labels,
+“normal”, “spam”, “hateful”, and “abusive”.
+
+4.4 Empirical Results
+As shown in Table 2, neural network models
+are more accurate than feature engineering based
+models (i.e. NB, SVM, etc.) except for the LR
+model—the best LR model has the same F1 score
+as the best CNN model.
+
+Among traditional machine learning models,
+the most accurate in classifying abusive language
+is the LR model followed by ensemble models
+such as GBT and RF. Character-level represen-
+tations improve F1 scores of SVM and RF clas-
+siﬁers, but they have no positive effect on other
+models.
+
+For neural network models, RNN with LTC
+modules have the highest accuracy score, but there
+are no signiﬁcant improvements from its base-
+line model and its attention-added model. Simi-
+larly, HybridCNN does not improve the baseline
+CNN model. For both CNN and RNN models,
+character-level features signiﬁcantly decrease the
+accuracy of classiﬁcation.
+
+The use of context tweets generally have little
+
+effect on baseline models, however they notice-
+ably improve the scores of several metrics. For
+instance, CNN with context tweets score the high-
+est recall and F1 for “hateful” labels, and RNN
+models with context tweets have the highest recall
+for “abusive” tweets.
+
+5 Discussion and Conclusion
+
+While character-level features are known to im-
+prove the accuracy of neural network mod-
+els (Badjatiya et al., 2017), they reduce classiﬁ-
+cation accuracy for Hate and Abusive Speech on
+Twitter. We conclude this is because of the lack of
+labeled data as well as the signiﬁcant imbalance
+among the different labels. Unlike neural network
+models, character-level features in traditional ma-
+chine learning classiﬁers have positive results be-
+cause we have trained the models only with the
+most signiﬁcant character elements using TF-IDF
+values.
+
+Variants of neural network models also suffer
+from data insufﬁciency. However, these models
+show positive performances on “spam” (14%) and
+“hateful” (4%) tweets—the lower distributed la-
+bels. The highest F1 score for “spam” is from
+the RNN-LTC model (0.551), and the highest for
+“hateful” is CNN with context tweets (0.309).
+Since each variant model excels in different met-
+rics, we expect to see additional improvements
+with the use of ensemble models of these variants
+in future works.
+
+104In this paper, we report the baseline accuracy
+of different learning models as well as their vari-
+ants on the recently introduced dataset, Hate and
+Abusive Speech on Twitter. Experimental results
+show that bidirectional GRU networks with LTC
+provide the most accurate results in detecting abu-
+sive language. Additionally, we present the possi-
+bility of using ensemble models of variant models
+and features for further improvements.
+
+Acknowledgments
+
+K. Jung is with the Department of Electrical
+and Computer Engineering, ASRI, Seoul National
+University, Seoul, Korea. This work was sup-
+ported by the National Research Foundation of
+Korea (NRF) funded by the Korea government
+(MSIT) (No. 2016M3C4A7952632), the Tech-
+nology Innovation Program (10073144) funded
+by the Ministry of Trade, Industry & Energy
+(MOTIE, Korea).
+
+We would also like to thank Yongkeun Hwang
+and Ji Ho Park for helpful discussions and their
+valuable insights.
+
+References
+Pinkesh Badjatiya, Shashank Gupta, Manish Gupta,
+and Vasudeva Varma. 2017. Deep learning for hate
+In Proceedings of the
+speech detection in tweets.
+26th International Conference on World Wide Web
+Companion, pages 759–760. International World
+Wide Web Conferences Steering Committee.
+
+David M Blei, Andrew Y Ng, and Michael I Jordan.
+2003. Latent dirichlet allocation. Journal of ma-
+chine Learning research, 3(Jan):993–1022.
+
+Peter Burnap and Matthew Leighton Williams. 2014.
+Hate speech, machine classiﬁcation and statistical
+modelling of information ﬂows on twitter: Interpre-
+tation and communication for policy decision mak-
+ing.
+
+Despoina Chatzakou, Nicolas Kourtellis,
+
+Jeremy
+Blackburn, Emiliano De Cristofaro, Gianluca
+Stringhini, and Athena Vakali. 2017. Mean birds:
+Detecting aggression and bullying on twitter.
+In
+Proceedings of the 2017 ACM on web science con-
+ference, pages 13–22. ACM.
+
+Kyunghyun Cho, Bart Van Merri¨enboer, Caglar Gul-
+cehre, Dzmitry Bahdanau, Fethi Bougares, Holger
+Schwenk, and Yoshua Bengio. 2014.
+Learning
+phrase representations using rnn encoder-decoder
+for statistical machine translation. arXiv preprint
+arXiv:1406.1078.
+
+Nemanja Djuric, Jing Zhou, Robin Morris, Mihajlo Gr-
+bovic, Vladan Radosavljevic, and Narayan Bhamidi-
+pati. 2015. Hate speech detection with comment
+In Proceedings of the 24th interna-
+embeddings.
+tional conference on world wide web, pages 29–30.
+ACM.
+
+Maeve Duggan. 2017. Online harassment 2017. Pew
+
+Research Center; accessed 5-July-2018.
+
+Antigoni Founta, Constantinos Djouvas, Despoina
+Chatzakou, Ilias Leontiadis, Jeremy Blackburn, Gi-
+anluca Stringhini, Athena Vakali, Michael Siriv-
+ianos, and Nicolas Kourtellis. 2018. Large scale
+crowdsourcing and characterization of twitter abu-
+In Proceedings of the International
+sive behavior.
+AAAI Conference on Web and Social Media.
+
+Jennifer Golbeck, Zahra Ashktorab, Rashad O Banjo,
+Alexandra Berlinger, Siddharth Bhagwan, Cody
+Buntain, Paul Cheakalos, Alicia A Geller, Quint
+Gergory, Rajesh Kumar Gnanasekaran, et al. 2017.
+A large labeled corpus for online harassment re-
+In Proceedings of the 2017 ACM on Web
+search.
+Science Conference, pages 229–233. ACM.
+
+Minlie Huang, Yujie Cao, and Chao Dong. 2016. Mod-
+eling rich contexts for sentiment classiﬁcation with
+lstm. arXiv preprint arXiv:1605.01478.
+
+Yoon Kim. 2014.
+
+works for sentence classiﬁcation.
+arXiv:1408.5882.
+
+Convolutional neural net-
+arXiv preprint
+
+Diederik P Kingma and Jimmy Ba. 2014. Adam: A
+method for stochastic optimization. arXiv preprint
+arXiv:1412.6980.
+
+Quoc Le and Tomas Mikolov. 2014. Distributed rep-
+resentations of sentences and documents. In Inter-
+national Conference on Machine Learning, pages
+1188–1196.
+
+Janette Lehmann, Bruno Gonc¸alves, Jos´e J Ramasco,
+and Ciro Cattuto. 2012. Dynamical classes of col-
+In Proceedings of the
+lective attention in twitter.
+21st international conference on World Wide Web,
+pages 251–260. ACM.
+
+Yashar Mehdad and Joel Tetreault. 2016. Do charac-
+ters abuse more than words? In Proceedings of the
+17th Annual Meeting of the Special Interest Group
+on Discourse and Dialogue, pages 299–303.
+
+Shaﬁ Musaddique. 2017. Artist stencils hate speech
+tweets outside twitter hq to highlight failure to deal
+with offensive messages. Independent; accessed 5-
+July-2018.
+
+Ji Ho Park and Pascale Fung. 2017. One-step and two-
+step classiﬁcation for abusive language detection on
+In Proceedings of the First Workshop on
+twitter.
+Abusive Language Online, pages 41–45.
+
+105Computational Linguistics: Human Language Tech-
+nologies, volume 1, pages 1575–1584.
+
+Xiang Zhang, Junbo Zhao, and Yann LeCun. 2015.
+Character-level convolutional networks for text clas-
+In Advances in neural information pro-
+siﬁcation.
+cessing systems, pages 649–657.
+
+Jeffrey Pennington, Richard Socher, and Christopher
+Manning. 2014. Glove: Global vectors for word
+representation. In Proceedings of the 2014 confer-
+ence on empirical methods in natural language pro-
+cessing (EMNLP), pages 1532–1543.
+
+Amir H Razavi, Diana Inkpen, Sasha Uritsky, and Stan
+Matwin. 2010. Offensive language detection using
+multi-level classiﬁcation. In Canadian Conference
+on Artiﬁcial Intelligence, pages 16–27. Springer.
+
+Adi Robertson. 2017. Facebook explains why it’s bad
+at catching hate speech. The Verge; accessed 5-July-
+2018.
+
+Anna Schmidt and Michael Wiegand. 2017. A survey
+on hate speech detection using natural language pro-
+In Proceedings of the Fifth International
+cessing.
+Workshop on Natural Language Processing for So-
+cial Media, pages 1–10.
+
+Mike Schuster and Kuldip K Paliwal. 1997. Bidirec-
+tional recurrent neural networks. IEEE Transactions
+on Signal Processing, 45(11):2673–2681.
+
+Toby Segaran and Jeff Hammerbacher. 2009. Beautiful
+Data: The Stories Behind Elegant Data Solutions.
+O’Reilly Media.
+
+Ellen Spertus. 1997. Smokey: Automatic recognition
+In AAAI/IAAI, pages 1058–
+
+of hostile messages.
+1065.
+
+Wenhui Wang, Nan Yang, Furu Wei, Baobao Chang,
+and Ming Zhou. 2017. Gated self-matching net-
+works for reading comprehension and question an-
+swering. In Proceedings of the 55th Annual Meet-
+ing of the Association for Computational Linguis-
+tics, volume 1, pages 189–198.
+
+William Warner and Julia Hirschberg. 2012. Detecting
+In Proceed-
+hate speech on the world wide web.
+ings of the Second Workshop on Language in Social
+Media, pages 19–26. Association for Computational
+Linguistics.
+
+Guang Xiang, Bin Fan, Ling Wang, Jason Hong, and
+Carolyn Rose. 2012. Detecting offensive tweets
+via topical feature discovery over a large scale twit-
+In Proceedings of the 21st ACM inter-
+ter corpus.
+national conference on Information and knowledge
+management, pages 1980–1984. ACM.
+
+Jun-Ming Xu, Kwang-Sung Jun, Xiaojin Zhu, and
+Amy Bellmore. 2012. Learning from bullying traces
+in social media. In Proceedings of the 2012 confer-
+ence of the North American chapter of the associa-
+tion for computational linguistics: Human language
+technologies, pages 656–666. Association for Com-
+putational Linguistics.
+
+Seunghyun Yoon, Joongbo Shin, and Kyomin Jung.
+2018. Learning to rank question-answer pairs using
+hierarchical recurrent encoder with latent topic clus-
+In Proceedings of the 2018 Conference of
+tering.
+the North American Chapter of the Association for
+
+106

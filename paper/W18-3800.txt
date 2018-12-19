@@ -1,0 +1,203 @@
+COLING2018The27thInternationalConferenceonComputationalLinguisticsProceedingsoftheFirstWorkshoponLinguisticResourcesforNaturalLanguageProcessing(LR4NLP-2018)August20,2018SantaFe,NewMexico,USAii
+
+c(cid:13)2018TheAssociationforComputationalLinguisticsOrdercopiesofthisandotherACLproceedingsfrom:AssociationforComputationalLinguistics(ACL)209N.EighthStreetStroudsburg,PA18360USATel:+1-570-476-8006Fax:+1-570-476-0860acl@aclweb.orgISBN978-1-948087-54-4iii
+
+Copyrightofeachpaperstayswiththerespectiveauthors(ortheiremployers).ISBN978-1-948087-54-4AnabelaBarreiro,KristinaKocijan,PeterMachonisandMaxSilberztein(eds.)iv
+
+ProceedingsoftheFirstWorkshoponLinguisticResourcesforNaturalLanguageProcessingPrefaceLinguistsanddevelopersofNLPsoftwarehavebeenworkingseparatelyformanyyears.Sincestochasticmethods,suchasstatisticalandneural-networkbasedparsers,haveshowntobeoverwhelminglysuccessfulinthesoftwareindustry,NLPresearchershavetypicallyturnedtheirfocustowardstechnicalissuesspeciﬁctostochasticmethods,suchasimprovingrecallandprecision,anddevelopinglargerandlargertrainingcorpora.Atthesametime,linguistskeptfocusingonproblemsrelatedtothedevelopmentofexhaustiveandpreciseresourcesthataremainly“neutral”vis-a-visanyNLPapplication,suchasparsingandgeneratingsentences.However,recentprogressinbothﬁeldshasbeenreducingmanyofthesedifferences,withlarge-coveragelinguisticresourcesbeingusedmoreandmorebyrobustNLPsoftware.Forinstance,NLPresearchersnowuselargedictionariesofmultiwordunitsandexpressions,andseverallinguisticexperimentshaveshownthefeasibilityofusinglargephrase-structuregrammars(aprioriusedfortextparsing)in“generation”modetoautomaticallyproduceparaphrasesofsentencesthataredescribedbythesegrammars.TheFirstWorkshoponLinguisticResourcesforNaturalLanguageProcessing(LR4NLP)ofthe27thInternationalConferenceonComputationalLinguistics(COLING2018)heldatSantaFe,NewMexico,August20,2018,broughttogetherparticipantsinterestedindevelopinglarge-coveragelinguisticresourcesandresearcherswithaninterestindevelopingreal-worldNaturalLanguageProcessing(NLP)software.ThepresentationsattheLR4NLPWorkshopwereorganizedintofoursessions,asfollows:•ClashoftheTitans:Linguisticsvs.Statisticsvs.NeuralNetworks•MaytheForceBewithNooJ•OnefortheRoad:MonolingualResources•LanguageResourcesWithoutBordersTheﬁrstsession,ClashoftheTitans:Linguisticsvs.Statisticsvs.NeuralNetworks,focusedonlinguisticandstochasticapproachesandresults.Ourinvitedspeaker,MarkLiberman,showedhowsemi-automaticanalysisoflargedigitalspeechcollectionsistransformingthescienceofphonetics,andofferedexcitingopportunitiestoresearchersinotherﬁelds,suchasthepossibilityofimprovingparsingalgorithmsbyincorporatingfeaturesfromspeechaswellastext.HewasfollowedbySilberztein,whopresentedaseriesofexperimentsaimedatevaluatingreferencecorpora,suchastheOpenAmericanNationalCorpus,andproposedaseriesoftaskstoenhancethem.Zhang&Moldovanthenmadeanassessmentonthelimitationsandstrengthsofneuralnetsystemstorule-basedsystemsonSemanticTextualSimilaritybycomparingitsperformancewithtraditionalrule-basedsystemsagainsttheSemEval2012benchmark.SeveralworkshopparticipantshavebeenusingtheNooJsoftwaretodevelopthelarge-coveragelinguisticresourcesneededbytheirNLPapplications.NooJwasparticularlygermanetothisworkshop,becauseitisnotonlybeingusedbylinguiststodevelopresourcesintheformofelectronicdictionaries,andmorphologicalandsyntacticgrammars,butbycomputationallinguiststoparseandannotatelargecorpora,aswellasbysoftwareengineerstodevelopNLPapplications.Thus,weallocatedtheentiresecondsession,MaytheForceBewithNooJ,toresearchersusingthisplatform.MachonisshowedhowalexicongrammardictionaryofEnglishphrasalverbscanbetransformedintoaNooJdictionary,inordertoaccuratelyidentifythesestructuresinlargecorpora.Phrasalverbsarelocatedbymeansv
+
+ofagrammar,andtheresultsarethenreﬁnedwithaseriesofdictionaries,disambiguatinggrammars,andﬁlters.Likewise,Kocijanetal.demonstratedhowtheyuseNooJtodetectanddescribethemajorderivationalprocessesusedintheformationofperfective,imperfective,andbi-aspectualCroatianverbs.Annotatedchainsareexportedintoaformatadequateforaweb-basedsystemandfurtherusedtoenhancetheaspectualandderivationalinformationforeachverb.Next,Boudhina&Fehripresentedarule-basedsystemfordisambiguatingFrenchlocativeverbsinordertoaccuratelytranslatethemintoArabic.TheyusedtheDubois&DuboisCharlierFrenchVerbdictionary,asetofFrenchsyntacticgrammars,aswellasabilingualFrench-ArabicdictionarydevelopedwithintheNooJplatform.Finally,Rodrigoetal.presentedaNooJapplicationaimedatteachingSpanishasaforeignlanguagetonativespeakersofItalian.Theirpresentationincludedananalysisofajournalisticcorpusoverathirty-yeartimespanfocusingonadjectivesusedintheArgentineRioplatensevarietyofSpanish.Inthethirdsession,OnefortheRoad:MonolingualResources,researchersexaminedavarietyoflarge-coverage,monolinguallinguisticresourcesforNLPapplications.Dorr&VossdescribedthelinguisticresourceSTYLUS(SysTematicallYDerivedLanguageUSe),whichtheyproducedthroughextractionofasetofargumentrealizationsfromlexical-semanticrepresentationsforarangeof500Englishverbclasses.TheirVerbDatabasecontainsatotalof9,525entriesandincludesinformationaboutcomponentsofmeaningandcollocations.STYLUSenablessystematicderivationofregularpatternsoflanguageusagewithoutrequiringmanualannotation.Then,Gezmuetal.presentedacorpusofcontemporaryAmharic,automaticallytaggedformorpho-syntacticinformation.Textswerecollectedfrom25,199documentsfromdifferentdomainsandabout24millionorthographicwordsweretokenized.Malireddyetal.discussedanewsummarizationtechnique,calledTelegraphicSummarization,that,insteadofselectingwholesentences,picksshortsegmentsoftextspreadacrosssentencesinordertobuildtheresultingsummary.Theyproposedasetofguidelinestocreatesuchsummariesandannotatedagoldcorpusof200Englishshortstories.Finally,Aberaetal.describedtheproceduresthatwereusedforthecreationoftheﬁrstspeechcorpusofTigrinyaaSemiticlanguagespokenintheHornofAfricaforspeechrecognitionpurposes.Theclosingsession,LanguageResourcesWithoutBorders,focusedonthedevelopmentoflarge-coverage,multilinguallinguisticresourcesforMachineTranslation(MT).Abateetal.describedthedevelopmentofparallelcorporaforﬁveEthiopianLanguagesAmharic,Tigrigna,Afan-Oromo,WolayttaandGeez.Theauthorsconductedstatisticalmachinetranslationexperimentsforsevenlanguagepairsthatshowedthatthemorphologicalcomplexityoftheselanguageshasanegativeimpactontheperformanceofthetranslation,especiallyforthetargetlanguages.Then,usingtheFrameNetandSALSAcorpora,Sikos&PadóexaminedEnglishandGerman,highlightinghowinferencescanbemadeaboutcross-lingualframeapplicabilityusingavectorspacemodel.Theyshowedhowmultilingualvectorrepresentationsofframeslearnedfrommanuallyannotatedcorporacanaddresstheneedofaccessingbroad-coverageresourcesforanylanguagepair.Next,Zhaietal.presentedaparallelmultilingualoralcorpustheTEDTalksinEnglish,French,andChinese.Theauthorscategorizedandannotatedtranslationrelations,todistinguishliteraltranslationfromothertranslationtechniques.Theydevelopedaclassiﬁertoautomaticallydetecttheserelations,withthelong-termobjectivebeingtohavebettersemanticcontrolwhendealingwithparaphrasesortranslationalequivalencies.Tomokiyoetal.aimedatimprovingtheCesselin,awell-known,opensourceJapanese-Frenchdictionary.TheyhypothesizedthatthedegreeoflexicalsimilaritybetweenresultsofMTintoathirdlanguagemightprovideinsightonhowtobetterannotateproverbs,idiomaticconstructions,andphrasescontainingquantiﬁers.Totestthis,theyusedGoogleTranslatetotranslateboththeCesselinJapaneseexpressionsandtheirFrenchtranslationsintoEnglish.Theirresultsshowedmuchpromise,inparticularfordistinguishingnormalusagefromidiomaticexamples.Barreiro&BatistapresentedadetailedanalysisonPortuguesecontractionsinanalignedbilingualPortuguese-Englishcorpusandarguedthatthechoicetodecomposecontractionsornotdependedontheircontext,forwhichtheoccurrenceofmultiwordunitsiskey.Finally,Dharetal.presentedanewlycreatedparallelcorpusofEnglishandcode-mixedEnglish-Hindi.Using6,088code-mixedEnglish-Hindisentencespreviouslyavailable,theycreatedaparallelEnglishcorpususinghumantranslators.Theythenpresentedatechniquetoaugmentvi
+
+run-of-the-millMTapproaches,whichachievessuperiortranslationswithouttheneedforspeciallydesignedtranslationsystems,andwhichcanbepluggedintoanyexistingMTsystem.Thecommonthemeofallofthepaperspresentedinthisworkshopwashowtobuildlargelinguisticresourcesintheformofannotatedcorpora,dictionaries,andmorphologicalandsyntacticgrammarsthatcanbeusedbyNLPapplications.LinguistsaswellasComputationalLinguistswhoworkonNLPapplicationsbasedonlinguisticmethodswillﬁndadvanced,up-to-the-minutestudiesforthesethemesinthisvolume.Wehopethatreaderswillappreciatetheimportanceofthisvolume,bothfortheintrinsicvalueofeachlinguisticformalizationandtheunderlyingmethodology,aswellasforthepotentialfordevelopingautomaticNLPapplications.Editors:AnabelaBarreiro,INESC-ID,Lisbon,PortugalKristinaKocijan,UniversityofZagreb,Zagreb,CroatiaPeterMachonis,FloridaInternationalUniversity,Miami,USAMaxSilberztein,UniversitédeFranche-Comté,Besançon,Francevii
+
+OrganizersandReviewCommitteeWorkshopOrganizersAnabelaBarreiro,INESC-ID,Lisbon,PortugalKristinaKocijan,UniversityofZagreb,CroatiaPeterMachonis,FloridaInternationalUniversity,USAMaxSilberztein,UniversitédeFranche-Comté,FrancePeerReviewCommitteeProgramCommitteeChairMaxSilberztein,UniversitédeFranche-Comté,FranceJorgeBaptista,UniversityofAlgarve,PortugalAnabelaBarreiro,INESC-IDLisbon,PortugalXavierBlanco,AutonomousUniversityofBarcelona,SpainNicolettaCalzolari,IstitutodiLinguisticaComputazionale,ItalyChristianeFellbaum,PrincetonUniversity,USAHélaFehri,UniversityofSfax,TunisiaYurasHetsevich,NationalAcademyofSciences,BelarusKristinaKocijan,UniversityofZagreb,CroatiaMarkLiberman,UniversityofPennsylvania,USAElenaLloretPastor,UniversidaddeAlicante,SpainPeterMachonis,FloridaInternationalUniversity,USASlimMesfar,CarthagaUniversity,TunisiaSimonMille,UniversitatPompeuFabra,SpainMarioMonteleone,UniversityofSalerno,ItalyJohannaMonti,UniversityofNaples-L’Orientale,ItalyBernardScott,LogosInstitute,USAInvitedSpeakerMarkLiberman,UniversityofPennsylvania,USASessionChairsAnabelaBarreiro,INESC-ID,Lisbon,PortugalKristinaKocijan,UniversityofZagreb,CroatiaPeterMachonis,FloridaInternationalUniversity,USAMaxSilberztein,UniversitédeFranche-Comté,FranceTable of Contents
+
+Corpus Phonetics: Past, Present, and Future
+
+Mark Liberman . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+
+Using Linguistic Resources to Evaluate the Quality of Annotated Corpora
+
+Max Silberztein. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .2
+
+Rule-based vs. Neural Net Approaches to Semantic Textual Similarity
+
+Linrui Zhang and Dan Moldovan . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+
+Linguistic Resources for Phrasal Verb Identiﬁcation
+
+Peter Machonis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+
+Designing a Croatian Aspectual Derivatives Dictionary: Preliminary Stages
+
+Kristina Kocijan, Krešimir Šojat and Dario Poljak. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .28
+
+A Rule-Based System for Disambiguating French Locative Verbs and Their Translation into Arabic
+
+Safa Boudhina and Héla Fehri. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .38
+
+A Pedagogical Application of NooJ in Language Teaching: The Adjective in Spanish and Italian
+
+Andrea Rodrigo, Mario Monteleone and Silvia Reyes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 47
+
+STYLUS: A Resource for Systematically Derived Language Usage
+
+Bonnie Dorr and Clare Voss . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+
+Contemporary Amharic Corpus: Automatically Morpho-Syntactically Tagged Amharic Corpus
+
+Andargachew Mekonnen Gezmu, Binyam Ephrem Seyoum, Michael Gasser and Andreas Nürnberger. .65
+
+Gold Corpus for Telegraphic Summarization
+
+Chanakya Malireddy, Srivenkata N M Somisetty and Manish Shrivastava . . . . . . . . . . . . . . . . . . . . . 71
+
+Design of a Tigrinya Language Speech Corpus for Speech Recognition
+
+Hafte Abera and Sebsibe H/Mariam . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 78
+
+Parallel Corpora for bi-Directional Statistical Machine Translation for Seven Ethiopian Language Pairs
+Solomon Teferra Abate, Michael Melese, Martha Yiﬁru Tachbelie, Million Meshesha, Solomon
+Atinafu, Wondwossen Mulugeta, Yaregal Assabie, Hafte Abera, Binyam Ephrem, Tewodros Abebe,
+Wondimagegnhue Tsegaye, Amanuel Lemma, Tsegaye Andargie and Seifedin Shifaw. . . . . . . . . . . . . .83
+
+Using Embeddings to Compare FrameNet Frames Across Languages
+
+Jennifer Sikos and Sebastian Padó . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 91
+
+Construction of a Multilingual Corpus Annotated with Translation Relations
+
+Yuming Zhai, Aurélien Max and Anne Vilnat . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 102
+
+Towards an Automatic Classiﬁcation of Illustrative Examples in a Large Japanese-French Dictionary
+Obtained by OCR
+
+Christian Boitet, Mathieu Mangeot and Mutsuko Tomokiyo . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 112
+
+Contractions: To Align or Not to Align, That Is the Question
+
+Anabela Barreiro and Fernando Batista . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 122
+
+Enabling Code-Mixed Translation: Parallel Corpus Creation and MT Augmentation Approach
+
+Mrinal Dhar, Vaibhav Kumar and Manish Shrivastava . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 131
+
+ix
+
+Conference Program
+
+Monday, August 20, 2018
+
+9:00–10:30
+
+Session S1: Clash of the Titans: Linguistics vs. Statistics vs. Neural-nets
+
+9:10–9:50
+
+Corpus Phonetics: Past, Present, and Future
+Mark Liberman
+
+9:50–10:10
+
+Using Linguistic Resources to Evaluate the Quality of Annotated Corpora
+Max Silberztein
+
+10:10–10:30
+
+Rule-based vs. Neural Net Approaches to Semantic Textual Similarity
+Linrui Zhang and Dan Moldovan
+
+11:00–12:20
+
+Session S2: May the Force Be with NooJ
+
+11:00–11:20
+
+Linguistic Resources for Phrasal Verb Identiﬁcation
+Peter Machonis
+
+11:20–11:40 Designing a Croatian Aspectual Derivatives Dictionary: Preliminary Stages
+
+Kristina Kocijan, Krešimir Šojat and Dario Poljak
+
+11:40–12:00
+
+A Rule-Based System for Disambiguating French Locative Verbs and Their
+Translation into Arabic
+Safa Boudhina and Héla Fehri
+
+12:00–12:20
+
+A Pedagogical Application of NooJ in Language Teaching: The Adjective in Spanish
+and Italian
+Andrea Rodrigo, Mario Monteleone and Silvia Reyes
+
+xi
+
+Monday, August 20, 2018 (continued)
+
+14:00–15:20
+
+Session S3: One for the Road: Monolingual Resources
+
+14:00–14:20
+
+STYLUS: A Resource for Systematically Derived Language Usage
+Bonnie Dorr and Clare Voss
+
+14:20–14:40 Contemporary Amharic Corpus: Automatically Morpho-Syntactically Tagged
+
+Amharic Corpus
+Andargachew Mekonnen Gezmu, Binyam Ephrem Seyoum, Michael Gasser and
+Andreas Nürnberger
+
+14:40–15:00 Gold Corpus for Telegraphic Summarization
+
+Chanakya Malireddy, Srivenkata N M Somisetty and Manish Shrivastava
+
+15:00–15:20 Design of a Tigrinya Language Speech Corpus for Speech Recognition
+
+Hafte Abera and Sebsibe H/Mariam
+
+16:00–18:00
+
+Session S4: Language Resources without Borders
+
+16:00–16:20
+
+Parallel Corpora for bi-Directional Statistical Machine Translation for Seven
+Ethiopian Language Pairs
+Solomon Teferra Abate, Michael Melese, Martha Yiﬁru Tachbelie, Million
+Meshesha, Solomon Atinafu, Wondwossen Mulugeta, Yaregal Assabie, Hafte
+Abera, Binyam Ephrem, Tewodros Abebe, Wondimagegnhue Tsegaye, Amanuel
+Lemma, Tsegaye Andargie and Seifedin Shifaw
+
+16:20–16:40 Using Embeddings to Compare FrameNet Frames Across Languages
+
+Jennifer Sikos and Sebastian Padó
+
+16:40–17:00 Construction of a Multilingual Corpus Annotated with Translation Relations
+
+Yuming Zhai, Aurélien Max and Anne Vilnat
+
+17:00–17:20
+
+Towards an Automatic Classiﬁcation of Illustrative Examples in a Large Japanese-
+French Dictionary Obtained by OCR
+Christian Boitet, Mathieu Mangeot and Mutsuko Tomokiyo
+
+17:20–17:40 Contractions: To Align or Not to Align, That Is the Question
+
+Anabela Barreiro and Fernando Batista
+
+17:40–18:00
+
+Enabling Code-Mixed Translation:
+Augmentation Approach
+Mrinal Dhar, Vaibhav Kumar and Manish Shrivastava
+
+Parallel Corpus Creation and MT
+
+xii
+
+

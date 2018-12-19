@@ -1,0 +1,612 @@
+EMNLP2018The2018EMNLPWorkshopBlackboxNLP:AnalyzingandInterpretingNeuralNetworksforNLPProceedingsoftheFirstWorkshopNovember1,2018Brussels,Belgiumii
+
+Sponsoredby:c(cid:13)2018TheAssociationforComputationalLinguisticsOrdercopiesofthisandotherACLproceedingsfrom:AssociationforComputationalLinguistics(ACL)209N.EighthStreetStroudsburg,PA18360USATel:+1-570-476-8006Fax:+1-570-476-0860acl@aclweb.orgISBN978-1-948087-71-1iii
+
+IntroductionBlackboxNLPistheﬁrstworkshoponanalyzingandinterpretingneuralnetworksforNLP,hostedbythe2018ConferenceonEmpiricalMethodsinNaturalLanguageProcessing(EMNLP2018)inBrussels,Belgium.Thegoalofthisworkshopistobringtogetherpeoplewhoareattemptingtopeekinsidetheneuralnetworkblackbox,takinginspirationfrommachinelearning,psychology,linguisticsandneuroscience.Neuralnetworkshaverapidlybecomeacentralcomponentinlanguageandspeechunderstandingsystemsinthelastfewyears.Theimprovementsinaccuracyandperformancebroughtbytheintroductionofneuralnetworkshastypicallycomeatthecostofourunderstandingofthesystem:whataretherepresentationsandcomputationsthatthenetworklearns?Wereceivedanimpressivenumberof76submissions(includingbotharchivalpapersandextendedabstracts),suggestingthattheissueofinterpretabilityofneuralnetworksistimelyandimportantwithintheNLPcommunity.Theﬁnalprogramcontainsthreekeynotetalks,eightoralpresentationsand47posters.Wehopethisworkshopprovidesavenueforbringingtogetherideasandstimulatenewwaysofbuildingmethodsandresourcesforfacilitatingbetteranalysisandunderstandingoftheinner-dynamicsofneuralnetworksforNLP.BlackboxNLPwouldnothavebeenpossiblewithoutthededicationofitsprogramcommittee.Wewouldliketothankthemfortheirinvaluableeffortinprovidinghigh-qualityreviewsinaveryshortperiodoftimeandforahighernumberofsubmissionoriginallyexpected.Wearealsogratefultoourinvitedspeakers,LeilaWehbe,GrahamNeubigandYoavGoldbergforcontributingtoourprogram.Finally,weareverythankfultooursponsors,AmazonandtheDepartmentofCognitiveScience,JohnsHopkinsUniversityforsupportingtheworkshop.TalLinzen,GrzegorzChrupałaandAfraAlishahiv
+
+Organizers:TalLinzen,JohnsHopkinsUniversityGrzegorzChrupała,TilburgUniversityAfraAlishahi,TilburgUniversityProgramCommittee:ŽeljkoAgi´c,ITUniversityofCopenhagenNiranjanBalasubramanian,StonyBrookUniversityRobertoBasili,UniversityofRoma,TorVergataLaurentBesacier,LIGYonatanBelinkov,MITCSAILOrBiran,n-JoinPraveshBiyani,IIITDelhiAriannaBisazza,LeidenUniversitySamuelBowman,NewYorkUniversityBillByrne,UniversityofCambridgeKyunghyunCho,NewYorkUniversityRyanCotterell,JohnsHopkinsUniversityBarryDevereux,Queen’sUniversity,BelfastEwanDunbar,EcoleNormaleSupérieureetEcoledesHautesEtudesenSciencesSocialesIndranilDutta,TheEnglishandForeignLanguagesUniversityAllysonEttinger,UniversityofMarylandAntskeFokkens,VUAmsterdamRobertFrank,YaleUniversityAlonaFyshe,UniversityofAlbertaLiekeGelderloos,TilburgUniversityYoavGoldberg,BarIlanUniversityJohnHale,CornellUniversityandGoogleDeepMindDavidHarwath,MassachusettsInstituteofTechnologyÁkosKádár,TilburgUniversityPhilippKoehn,JohnsHopkinsUniversityAdhigunaKuncoro,UniversityofOxfordandDeepMindIgnacioIacobacci,SapienzaUniversityofRomeAngelikiLazaridou,DeepMindMiryamdeLhoneux,UppsalaUniversityNelsonF.Liu,UniversityofWashingtonAdamLopez,UniversityofEdinburghDavidMareˇcek,CharlesUniversityinPragueRebeccaMarvin,JohnsHopkinsUniversityPaolaMerlo,UniversityofGenevaMarie-FrancineMoens,KULeuvenYvesPeirsman,NLPTownMohammadTaherPilehvar,UniversityofCambridgeBarbaraPlank,ITUniversityofCopenhagenDelipRao,JohnsHopkinsUniversityBrianRoark,GoogleInc.vi
+
+JanŠnajder,UniversityofZagrebWhitneyTabor,UniversityofConnecticutAdinaWilliams,NewYorkUniversityFabioMassimoZanzotto,UniversityofRomeTorVergataWillemZuidema,UniversityofAmsterdamInvitedSpeakers:YoavGoldberg,BarIlanUniversityGrahamNeubig,CarnegieMellonUniversityLeilaWehbe,CarnegieMellonUniversityTable of Contents
+
+Keynote Talks
+
+Trying to Understand Recurrent Neural Networks for Language Processing.
+
+Yoav Goldberg . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . xvi
+
+Learning with Latent Linguistic Structure.
+
+Graham Neubig . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . xvii
+
+Language representations in human brains and artiﬁcial neural networks.
+
+Leila Wehbe . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . xviii
+
+Archival Papers
+
+When does deep multi-task learning work for loosely related document classiﬁcation tasks?
+
+Emma Kerinec, Chloé Braud and Anders Søgaard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+
+Analyzing Learned Representations of a Deep ASR Performance Prediction Model
+
+Zied Elloumi, Laurent Besacier, Olivier Galibert and Benjamin Lecouteux . . . . . . . . . . . . . . . . . . . . . 9
+
+Explaining non-linear Classiﬁer Decisions within Kernel-based Deep Architectures
+
+Danilo Croce, Daniele Rossini and Roberto Basili . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+
+Nightmare at test time: How punctuation prevents parsers from generalizing
+
+Anders Søgaard, Miryam de Lhoneux and Isabelle Augenstein . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+
+Evaluating Textual Representations through Image Generation
+
+Graham Spinks and Marie-Francine Moens . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+
+On the Role of Text Preprocessing in Neural Network Architectures: An Evaluation Study on Text Cate-
+gorization and Sentiment Analysis
+
+Jose Camacho-Collados and Mohammad Taher Pilehvar . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+
+Jump to better conclusions: SCAN both left and right
+
+Joost Bastings, Marco Baroni, Jason Weston, Kyunghyun Cho and Douwe Kiela . . . . . . . . . . . . . . 47
+
+Understanding Convolutional Neural Networks for Text Classiﬁcation
+
+Alon Jacovi, Oren Sar Shalom and Yoav Goldberg . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 56
+
+Linguistic representations in multi-task neural networks for ellipsis resolution
+
+Ola Rønning, Daniel Hardt and Anders Søgaard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 66
+
+Unsupervised Token-wise Alignment to Improve Interpretation of Encoder-Decoder Models
+
+Shun Kiyono, Sho Takase, Jun Suzuki, Naoaki Okazaki, Kentaro Inui and Masaaki Nagata . . . . . 74
+
+Rule induction for global explanation of trained models
+
+Madhumita Sushil, Simon Suster and Walter Daelemans . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 82
+
+vii
+
+Can LSTM Learn to Capture Agreement? The Case of Basque
+
+Shauli Ravfogel, Yoav Goldberg and Francis Tyers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 98
+
+Rearranging the Familiar: Testing Compositional Generalization in Recurrent Networks
+
+Joao Loula, Marco Baroni and Brenden Lake . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 108
+
+Evaluating the Ability of LSTMs to Learn Context-Free Grammars
+
+Luzi Sennhauser and Robert Berwick . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 115
+
+Interpretable Neural Architectures for Attributing an Ad’s Performance to its Writing Style
+
+Reid Pryzant, Sugato Basu and Kazoo Sone . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 125
+
+Interpreting Neural Networks with Nearest Neighbors
+
+Eric Wallace, Shi Feng and Jordan Boyd-Graber . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 136
+
+’Indicatements’ that character language models learn English morpho-syntactic units and regularities
+
+Yova Kementchedjhieva and Adam Lopez . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 145
+
+LISA: Explaining Recurrent Neural Network Judgments via Layer-wIse Semantic Accumulation and Ex-
+ample to Pattern Transformation
+
+Pankaj Gupta and Hinrich Schütze . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 154
+
+Analysing the potential of seq-to-seq models for incremental interpretation in task-oriented dialogue
+
+Dieuwke Hupkes, Sanne Bouwmeester and Raquel Fernández. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .165
+
+An Operation Sequence Model for Explainable Neural Machine Translation
+
+Felix Stahlberg, Danielle Saunders and Bill Byrne . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 175
+
+Introspection for convolutional automatic speech recognition
+
+Andreas Krug and Sebastian Stober . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 187
+
+Learning and Evaluating Sparse Interpretable Sentence Embeddings
+
+Valentin Trifonov, Octavian-Eugen Ganea, Anna Potapenko and Thomas Hofmann. . . . . . . . . . .200
+
+What do RNN Language Models Learn about Filler–Gap Dependencies?
+
+Ethan Wilcox, Roger Levy, Takashi Morita and Richard Futrell. . . . . . . . . . . . . . . . . . . . . . . . . . . . .211
+
+Do Language Models Understand Anything? On the Ability of LSTMs to Understand Negative Polarity
+Items
+
+Jaap Jumelet and Dieuwke Hupkes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 222
+
+Closing Brackets with Recurrent Neural Networks
+
+Natalia Skachkova, Thomas Trost and Dietrich Klakow. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .232
+
+Under the Hood: Using Diagnostic Classiﬁers to Investigate and Improve how Language Models Track
+Agreement Information
+
+Mario Giulianelli, Jack Harding, Florian Mohnert, Dieuwke Hupkes and Willem Zuidema . . . . 240
+
+Iterative Recursive Attention Model for Interpretable Sequence Classiﬁcation
+
+Martin Tutek and Jan Šnajder . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 249
+
+Interpreting Word-Level Hidden State Behaviour of Character-Level LSTM Language Models
+
+Avery Hiebert, Cole Peterson, Alona Fyshe and Nishant Mehta . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 258
+
+Importance of Self-Attention for Sentiment Analysis
+
+Gaël Letarte, Frédérik Paradis, Philippe Giguère and François Laviolette . . . . . . . . . . . . . . . . . . . . 267
+
+viii
+
+Firearms and Tigers are Dangerous, Kitchen Knives and Zebras are Not: Testing whether Word Embed-
+dings Can Tell
+
+Pia Sommerauer and Antske Fokkens . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 276
+
+An Analysis of Encoder Representations in Transformer-Based Machine Translation
+
+Alessandro Raganato and Jörg Tiedemann. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .287
+
+Evaluating Grammaticality in Seq2seq Models with a Broad Coverage HPSG Grammar: A Case Study
+on Machine Translation
+
+Johnny Wei, Khiem Pham, Brendan O’Connor and Brian Dillon . . . . . . . . . . . . . . . . . . . . . . . . . . . . 298
+
+Context-Free Transductions with Neural Stacks
+
+Yiding Hao, William Merrill, Dana Angluin, Robert Frank, Noah Amsel, Andrew Benz and Simon
+Mendelsohn . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 306
+
+Extended Abstracts
+
+Learning Explanations from Language Data
+
+David Harbecke, Robert Schwarzenberg and Christoph Alt . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 316
+
+How much should you ask? On the question structure in QA systems.
+
+Barbara Rychalska, Dominika Basaj, Anna Wróblewska and Przemyslaw Biecek . . . . . . . . . . . . 319
+
+Does it care what you asked? Understanding Importance of Verbs in Deep Learning QA System
+
+Barbara Rychalska, Dominika Basaj, Anna Wróblewska and Przemyslaw Biecek . . . . . . . . . . . . 322
+
+Interpretable Textual Neuron Representations for NLP
+
+Nina Poerner, Benjamin Roth and Hinrich Schütze . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 325
+
+Language Models Learn POS First
+
+Naomi Saphra and Adam Lopez. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .328
+
+Predicting and interpreting embeddings for out of vocabulary words in downstream tasks
+
+Nicolas Garneau, Jean-Samuel Leboeuf and Luc Lamontagne . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 331
+
+Probing sentence embeddings for structure-dependent tense
+
+Geoff Bacon and Terry Regier . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 334
+
+Collecting Diverse Natural Language Inference Problems for Sentence Representation Evaluation
+
+Adam Poliak, Aparajita Haldar, Rachel Rudinger, J. Edward Hu, Ellie Pavlick, Aaron Steven White
+and Benjamin Van Durme . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 337
+
+Interpretable Word Embedding Contextualization
+
+Kyoung-Rok Jang and Sung-Hyon Myaeng . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 341
+
+State Gradients for RNN Memory Analysis
+
+Lyan Verwimp, Hugo Van hamme, Vincent Renkens and Patrick Wambacq . . . . . . . . . . . . . . . . . . 344
+
+Extracting Syntactic Trees from Transformer Encoder Self-Attentions
+
+David Mareˇcek and Rudolf Rosa . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 347
+
+Portable, layer-wise task performance monitoring for NLP models
+
+Tom Lippincott . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 350
+
+ix
+
+GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language Understanding
+
+Alex Wang, Amanpreet Singh, Julian Michael, Felix Hill, Omer Levy and Samuel Bowman . . . 353
+
+Explicitly modeling case improves neural dependency parsing
+
+Clara Vania and Adam Lopez . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 356
+
+Language Modeling Teaches You More than Translation Does: Lessons Learned Through Auxiliary Syn-
+tactic Task Analysis
+
+Kelly Zhang and Samuel Bowman. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .359
+
+Representation of Word Meaning in the Intermediate Projection Layer of a Neural Language Model
+
+Steven Derby, Paul Miller, Brian Murphy and Barry Devereux . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 362
+
+Interpretable Structure Induction via Sparse Attention
+
+Ben Peters, Vlad Niculae and André F. T. Martins. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .365
+
+Debugging Sequence-to-Sequence Models with Seq2Seq-Vis
+
+Hendrik Strobelt, Sebastian Gehrmann, Michael Behrisch, Adam Perer, Hanspeter Pﬁster and
+Alexander Rush . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 368
+
+Grammar Induction with Neural Language Models: An Unusual Replication
+
+Phu Mon Htut, Kyunghyun Cho and Samuel Bowman . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 371
+
+Does Syntactic Knowledge in Multilingual Language Models Transfer Across Languages?
+
+Prajit Dhar and Arianna Bisazza . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 374
+
+Exploiting Attention to Reveal Shortcomings in Memory Models
+
+Kaylee Burns, Aida Nematzadeh, Erin Grant, Alison Gopnik and Tom Grifﬁths . . . . . . . . . . . . . . 378
+
+End-to-end Image Captioning Exploits Distributional Similarity in Multimodal Space
+
+Pranava Swaroop Madhyastha, Josiah Wang and Lucia Specia. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .381
+
+Limitations in learning an interpreted language with recurrent models
+
+Denis Paperno. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .384
+
+x
+
+Conference Program
+
+09:00-09:10 Opening Remarks
+
+09:10-10:00
+
+Invited Talk: Yoav Goldberg
+
+10:00-11:00
+
+Poster Session 1
+When does deep multi-task learning work for loosely related document classiﬁcation
+tasks?
+Emma Kerinec, Chloé Braud and Anders Søgaard
+
+Analyzing Learned Representations of a Deep ASR Performance Prediction Model
+Zied Elloumi, Laurent Besacier, Olivier Galibert and Benjamin Lecouteux
+
+Learning Explanations from Language Data
+David Harbecke, Robert Schwarzenberg and Christoph Alt
+
+Nightmare at test time: How punctuation prevents parsers from generalizing
+Anders Søgaard, Miryam de Lhoneux and Isabelle Augenstein
+
+How much should you ask? On the question structure in QA systems.
+Barbara Rychalska, Dominika Basaj, Anna Wróblewska and Przemyslaw Biecek
+
+Does it care what you asked? Understanding Importance of Verbs in Deep Learning
+QA System
+Barbara Rychalska, Dominika Basaj, Anna Wróblewska and Przemyslaw Biecek
+
+Interpretable Textual Neuron Representations for NLP
+Nina Poerner, Benjamin Roth and Hinrich Schütze
+
+Evaluating Textual Representations through Image Generation
+Graham Spinks and Marie-Francine Moens
+
+On the Role of Text Preprocessing in Neural Network Architectures: An Evaluation
+Study on Text Categorization and Sentiment Analysis
+Jose Camacho-Collados and Mohammad Taher Pilehvar
+
+Language Models Learn POS First
+Naomi Saphra and Adam Lopez
+
+Jump to better conclusions: SCAN both left and right
+Joost Bastings, Marco Baroni, Jason Weston, Kyunghyun Cho and Douwe Kiela
+
+xi
+
+Linguistic representations in multi-task neural networks for ellipsis resolution
+Ola Rønning, Daniel Hardt and Anders Søgaard
+
+Unsupervised Token-wise Alignment to Improve Interpretation of Encoder-Decoder
+Models
+Shun Kiyono, Sho Takase, Jun Suzuki, Naoaki Okazaki, Kentaro Inui and Masaaki
+Nagata
+
+Rule induction for global explanation of trained models
+Madhumita Sushil, Simon Suster and Walter Daelemans
+
+Predicting and interpreting embeddings for out of vocabulary words in downstream
+tasks
+Nicolas Garneau, Jean-Samuel Leboeuf and Luc Lamontagne
+
+Can LSTM Learn to Capture Agreement? The Case of Basque
+Shauli Ravfogel, Yoav Goldberg and Francis Tyers
+
+Rearranging the Familiar: Testing Compositional Generalization in Recurrent Net-
+works
+Joao Loula, Marco Baroni and Brenden Lake
+
+Probing sentence embeddings for structure-dependent tense
+Geoff Bacon and Terry Regier
+
+Evaluating the Ability of LSTMs to Learn Context-Free Grammars
+Luzi Sennhauser and Robert Berwick
+
+Collecting Diverse Natural Language Inference Problems for Sentence Representa-
+tion Evaluation
+Adam Poliak, Aparajita Haldar, Rachel Rudinger, J. Edward Hu, Ellie Pavlick,
+Aaron Steven White and Benjamin Van Durme
+
+Interpretable Neural Architectures for Attributing an Ad’s Performance to its Writ-
+ing Style
+Reid Pryzant, Sugato Basu and Kazoo Sone
+
+Interpretable Word Embedding Contextualization
+Kyoung-Rok Jang, Sung-Hyon Myaeng and Sang-Bum Kim
+
+Interpreting Neural Networks with Nearest Neighbors
+Eric Wallace, Shi Feng and Jordan Boyd-Graber
+
+’Indicatements’ that character language models learn English morpho-syntactic
+units and regularities
+Yova Kementchedjhieva and Adam Lopez
+
+10:30-11:00
+
+Coffee Break
+
+xii
+
+11:00-12:30 Oral Presentations
+
+Interpretable Structure Induction via Sparse Attention
+Ben Peters, Vlad Niculae and André F. T. Martins
+
+Understanding Convolutional Neural Networks for Text Classiﬁcation
+Alon Jacovi, Oren Sar Shalom and Yoav Goldberg
+
+Extracting Syntactic Trees from Transformer Encoder Self-Attentions
+David Mareˇcek and Rudolf Rosa
+
+Context-Free Transductions with Neural Stacks
+Yiding Hao, William Merrill, Dana Angluin, Robert Frank, Noah Amsel, Andrew
+Benz and Simon Mendelsohn
+
+Explaining non-linear Classiﬁer Decisions within Kernel-based Deep Architectures
+Danilo Croce, Daniele Rossini and Roberto Basili
+
+Firearms and Tigers are Dangerous, Kitchen Knives and Zebras are Not: Testing
+whether Word Embeddings Can Tell
+Pia Sommerauer and Antske Fokkens
+
+12:30-14:00
+
+Lunch Break
+
+14:00-14:50
+
+Invited Talk: Graham Neubig
+
+14:50-16:00
+
+Poster Session 2
+State Gradients for RNN Memory Analysis
+Lyan Verwimp, Hugo Van hamme, Vincent Renkens and Patrick Wambacq
+
+LISA: Explaining Recurrent Neural Network Judgments via Layer-wIse Semantic
+Accumulation and Example to Pattern Transformation
+Pankaj Gupta and Hinrich Schütze
+
+Analysing the potential of seq-to-seq models for incremental interpretation in task-
+oriented dialogue
+Dieuwke Hupkes, Sanne Bouwmeester and Raquel Fernández
+
+An Operation Sequence Model for Explainable Neural Machine Translation
+Felix Stahlberg, Danielle Saunders and Bill Byrne
+
+Introspection for convolutional automatic speech recognition
+Andreas Krug and Sebastian Stober
+
+xiii
+
+Portable, layer-wise task performance monitoring for NLP models
+Tom Lippincott
+
+GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language Un-
+derstanding
+Alex Wang, Amanpreet Singh, Julian Michael, Felix Hill, Omer Levy and Samuel
+Bowman
+
+Explicitly modeling case improves neural dependency parsing
+Clara Vania and Adam Lopez
+
+Learning and Evaluating Sparse Interpretable Sentence Embeddings
+Valentin Trifonov, Octavian-Eugen Ganea, Anna Potapenko and Thomas Hofmann
+
+Language Modeling Teaches You More than Translation Does: Lessons Learned
+Through Auxiliary Syntactic Task Analysis
+Kelly Zhang and Samuel Bowman
+
+Do Language Models Understand Anything? On the Ability of LSTMs to Under-
+stand Negative Polarity Items
+Jaap Jumelet and Dieuwke Hupkes
+
+Representation of Word Meaning in the Intermediate Projection Layer of a Neural
+Language Model
+Steven Derby, Paul Miller, Brian Murphy and Barry Devereux
+
+Closing Brackets with Recurrent Neural Networks
+Natalia Skachkova, Thomas Trost and Dietrich Klakow
+
+Iterative Recursive Attention Model for Interpretable Sequence Classiﬁcation
+Martin Tutek and Jan Šnajder
+
+Interpreting Word-Level Hidden State Behaviour of Character-Level LSTM Lan-
+guage Models
+Avery Hiebert, Cole Peterson, Alona Fyshe and Nishant Mehta
+
+Debugging Sequence-to-Sequence Models with Seq2Seq-Vis
+Hendrik Strobelt, Sebastian Gehrmann, Michael Behrisch, Adam Perer, Hanspeter
+Pﬁster and Alexander Rush
+
+Grammar Induction with Neural Language Models: An Unusual Replication
+Phu Mon Htut, Kyunghyun Cho and Samuel Bowman
+
+xiv
+
+Importance of Self-Attention for Sentiment Analysis
+Gaël Letarte, Frédérik Paradis, Philippe Giguère and François Laviolette
+
+Does Syntactic Knowledge in Multilingual Language Models Transfer Across Lan-
+guages?
+Prajit Dhar and Arianna Bisazza
+
+Diagnosing Failures in Question Answering Tasks with Attention
+Aida Nematzadeh, Kaylee Burns, Erin Grant and Tom Grifﬁths
+
+An Analysis of Encoder Representations in Transformer-Based Machine Translation
+Alessandro Raganato and Jörg Tiedemann
+
+End-to-end Image Captioning Exploits Distributional Similarity in Multimodal
+Space
+Pranava Swaroop Madhyastha, Josiah Wang and Lucia Specia
+
+Evaluating Grammaticality in Seq2seq Models with a Broad Coverage HPSG
+Grammar: A Case Study on Machine Translation
+Johnny Wei, Khiem Pham, Brendan O’Connor and Brian Dillon
+
+Limitations in learning an interpreted language with recurrent models
+Denis Paperno
+
+16:00-16:50
+
+Invited Talk: Leila Wehbe
+
+16:50-17:20 Oral Presentations Session 2
+
+What do RNN Language Models Learn about Filler–Gap Dependencies?
+Ethan Wilcox, Roger Levy, Takashi Morita and Richard Futrell
+
+Under the Hood: Using Diagnostic Classiﬁers to Investigate and Improve how Lan-
+guage Models Track Agreement Information
+Mario Giulianelli, Jack Harding, Florian Mohnert, Dieuwke Hupkes and Willem
+Zuidema
+
+17:20-17:30
+
+Best Paper Announcement and Closing Remarks
+
+xv
+
+Keynote Talk
+
+Trying to Understand Recurrent Neural Networks for Language Processing.
+
+Yoav Goldberg
+
+Bar Ilan University
+
+Abstract
+
+Recurrent neural networks (RNNs), and in particular LSTM networks, emerge as very capable learners
+for sequential data. Thus, my group started using them everywhere, achieving strong results on many
+language understanding and modeling tasks. However, little is known about how RNNs represent
+sequences, what they actually encode, and what they are capable representing. In this talk, I will
+describe some attempts at trying to shed light on the inner-working of RNNs. Particularly, I plan to
+describe at least two of the following: a method for comparing what is captured in vector
+representations of sentences based on different encoders (Adi et al, ICLR 2017, and more generally the
+notion of diagnostic classiﬁcation), a framework for extracting a ﬁnite-state automata from trained
+RNNs (Weiss et al, ICML 2018), and a formal difference between the representation capacity of
+different RNN variants (Weiss et al, ACL 2018).
+
+Biography of the Speaker
+
+Yoav Goldberg is a Senior Lecturer at Bar Ilan University’s Computer Science Department. Before that,
+he was a Research Scientist at Google Research New York. He works on problems related to Natural
+Language Processing and Machine Learning. In particular he is interested in syntactic parsing,
+structured-prediction models, learning for greedy decoding algorithms, multilingual language
+understanding, and cross domain learning. Lately, he is also interested in neural network based methods
+for NLP. He recently published a book on the subject.
+
+xvi
+
+Keynote Talk
+
+Learning with Latent Linguistic Structure
+
+Graham Neubig
+
+Carnegie Mellon University
+
+Abstract
+
+Neural networks provide a powerful tool to model language, but also depart from standard methods of
+linguistic representation, which usually consist of discrete tag, tree, or graph structures. These structures
+are useful for a number of reasons: they are more interpretable, and also can be useful in downstream
+tasks. In this talk, I will discuss models that explicitly incorporate these structures as latent variables,
+allowing for unsupervised or semi-supervised discovery of interpretable linguistic structure, with
+applications to part-of-speech and morphological tagging, as well as syntactic and semantic parsing.
+
+Biography of the Speaker
+
+Graham Neubig is an assistant professor at the Language Technologies Intitute of Carnegie Mellon
+University. His work focuses on natural language processing, speciﬁcally multi-lingual models that
+work in many different languages, and natural language interfaces that allow humans to communicate
+with computers in their own language. Much of this work relies on machine learning to create these
+systems from data, and he is also active in developing methods and algorithms for machine learning
+over natural language data. He publishes regularly in the top venues in natural language processing,
+machine learning, and speech, and his work occasionally wins awards such as best papers at EMNLP,
+EACL, and WNMT. He is also active in developing open-source software, and is the main developer of
+the DyNet neural network toolkit.
+
+xvii
+
+Keynote Talk
+
+Language representations in human brains and artiﬁcial neural networks
+
+Leila Wehbe
+
+Carnegie Mellon University
+
+Abstract
+
+When studying language in the brain, it has become more common to image the brain of humans while
+they process naturalistic language stimuli consisting of rich, natural text. To analyse the brain
+representation of such complex stimuli, vector representations derived from various NLP methods are
+extremely useful as a model of the information being processed in the brain. The recent deep learning
+revolution has ignited a lot of interest in using artiﬁcial neural networks as a source of high dimensional
+vector representation for modeling brain processes. However, these representations are hard to interpret
+and the problem becomes increasingly difﬁcult: how do we study complex brain activity – a black box
+we want to understand – using hard-to-interpret artiﬁcial neural network representations – another black
+box we want to understand? In this talk, I will summarize the recent effort in modeling the brain
+processing of language, the use of artiﬁcial neural networks in this process, and how inferences about
+brain processes and about artiﬁcial neural network representations can still be made under this setup.
+
+Biography of the Speaker
+
+Leila Wehbe is an assistant professor of Machine Learning at Carnegie Mellon University. Previously,
+we was a postdoctoral researcher at the Gallant Lab in the Helen Wills Neuroscience Institute at UC
+Berkeley. She obtained her PhD from the Machine Learning Department and the Center for the Neural
+Basis of Cognition at Carnegie Mellon University, where she worked with Tom Mitchell. She works on
+studying language representations in the brain when subjects engage in naturalistic language tasks.
+Speciﬁcally, she combines functional neuroimaging with natural language processing and machine
+learning tools to build spatiotemporal maps of the information represented in the brain during language
+processing.
+
+xviii
+
+

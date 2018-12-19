@@ -44,8 +44,8 @@ def extract_email(corpus):
 
 # Generator frequent topic lists from the corpus
 # single_word_list = ACL_corpus.most_frequent_content_words(100)
-bigram_list = ACL_corpus.most_frequent_bigrams(100)
-trigram_list = ACL_corpus.most_frequent_trigrams(100)
+# bigram_list = ACL_corpus.most_frequent_bigrams(100)
+# trigram_list = ACL_corpus.most_frequent_trigrams(100)
 # print("Top 100 most frequent words:")
 # print(single_word_list)
 # print()
