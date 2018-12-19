@@ -26,6 +26,7 @@ class Corpus(object):
 
     def documents(self):
         """Return a list of all documents in the corpus"""
+	return sorted([i for i in os.listdir(self.data_root)])
 
     def tokenized_sentences_in_file(self, filename):
 	"""Given a file name, return a list of word tokenized sentences"""
