@@ -1,0 +1,1135 @@
+Maxim Khalilov, Ph.D.
+
+Machine translation that makes sense: 
+the Booking.com use case
+
+Technical presentation
+
+Proceedings for AMTA 2018 Workshop: Translation Quality Estimation and Automatic Post-Editing
+
+March 6, 2018
+Cambridge, UK
+
+Boston, March 21, 2018   |   Page 86
+
+Booking.com.
+
+The world’s #1 website for booking hotels and other accommodations.
+
+• Founded in 1996 in Amsterdam
+• Part of the Priceline Group (NASDAQ:
+
+•
+
+PCLN) since 2005
+1,500,000+ properties in more than 220
+countries and territories representing over
+27M rooms
+
+• Over 1,550,000 room nights every 24 hours
+• Number of unique destinations worldwide:
+
+120,000+
+
+• Total number of guest reviews:
+
+173,000,000+
+• 43 languages
+•
+• More than 15,500 employees
+
+198 offices worldwide
+
+Use case of MT 
+at Booking.com
+
+Mission: Empower people to experience the world 
+without any language barrier.
+
+of daily bookings on Booking.com is made in a 
+language other than English
+
+… thus it is important to have locally relevant content at scale
+
+How Locally Relevant?
+Allow partners and guests to 
+consume and produce content 
+in their own language
+
+▸ Hotel Descriptions
+▸ Customer Reviews
+▸ Customer Service
+
+Support
+
+Why At Scale?
+
+● One Million+ properties and
+
+growing very fast
+
+● Frequent change requests to
+
+update the content
+
+● 43 languages and more
+● New user-generated
+
+customer reviews / tickets
+every second
+
+Why MT?
+
+Limited 
+domain
+
+One product
+
+Lots of in-
+domain 
+
+data
+
+Av. 10M 
+
+parallel sent. 
+
+for big 
+languages
+
+Language 
+expertise
+
+In-house 
+
+evaluators for 
+43 languages
+
+Use Case #1: Hotel descriptions – currently translated by 
+human in 43 languages based on visitor demand.
+
+Hotel in 
+Japan
+
+German 
+Visitor
+
+Human
+
+Translation
+
+Pipeline
+
+Sees English 
+description
+
+Drops
+
+Off
+
+Lost Business
+
+Machine 
+Translation
+
+Use Case #2: Customer Reviews – currently not 
+translated; available only if user leaves a review in that 
+language.
+
+Hotel in 
+Japan
+
+German 
+Visitor
+
+No German 
+
+Reviews
+
+Drops
+
+Off
+
+Lost Business
+
+Machine 
+Translation
+
+Use Case #3: Partner support – Partner-facing 
+localization and customer/partner support.
+
+Use Case #4: Translation support – make 
+translation cheaper by providing high-quality 
+productivity tools.
+
+And there is even more..
+
+Messages.
+
+Room 
+descriptions.
+
+Attractions .
+
+Why not general 
+purpose MT engines?
+
+3 
+
+Reasons
+
+1. Quality
+
+Customized MT can do much better for our own 
+content.
+
+MT 
+Quality
+
+General-purpose
+
+Customized MT 1
+
+Customized MT 2
+
+Customized MT 3
+
+Domain
+
+Hotel Description: Evaluation Results
+English        German
+
+General-
+General-purpose
+Booking
+Human
+
+Customer Review: Evaluation Results
+
+General purpose
+
+English        German
+
+1. Quality
+2. Risk
+
+Look at me! 
+
+I’m so 
+innocent!
+
+Can machine 
+translation be
+
+dangerous?
+
+Yes!
+
+The imperfection of MT might 
+mislead users, have legal 
+consequences for the company or 
+damage brand's reputation and 
+customer’s confidence of translated 
+content.
+
+Examples of business sensitive errors
+
+Offering a restaurant with WiFi, Hodor 
+Ecolodge is located in Winterfell. On-
+site parking is free.
+
+Die Hodor Ecolodge in Winterfell bietet
+ein Restaurant mit WLAN. Parkplatz
+vor Ort ist verfügbar.
+
+The hotel offers 24-hour concierge 
+service and free-use bicycles. Pets 
+can be accommodated with 
+advance reservation.
+
+Der Conciergeservice steht rund um die
+Uhr
+zu Ihrer Verfügung und die
+Leihfahrräder nutzen Sie kostenfrei.
+
+1. Quality
+2. Risk
+3. Cost
+
+But why neural?
+
+Adequacy / Fluency Scores for EN->DE 
+hotel description translations
+
+Our In-domain NMT system 
+outperforms all other MT 
+engines
+
+Both Neural systems still 
+consistently outperform 
+their statistical counterparts
+
+General Purpose NMT beats 
+In-domain SMT
+
+Particularly fluency score of 
+our NMT engine is close to 
+human level
+
+The
+Data
+
+Hotel descriptions translated by human in 43 
+languages resulting in lots of in-domain data for 
+MT
+
+50%
+
+Translation 
+Coverage
+
+90%
+
+Demand
+Coverage
+
+10M
+
+Average 
+Corpus Size
+
+* Approximate numbers based 
+on average of some languages
+
+Monolingual reviews never translated in 43 
+languages resulting in lots of out-of-domain data 
+potentially useful for MT
+
+173M
+
+Total reviews
+
+17
+
+Languages 
+>1M reviews
+
+37%
+
+Properties 
+w/o reviews
+
+Few specific challenges 
+and proposed solutions
+
+Our NMT Model Configuration Details
+
+Our challenges
+
+Real-world content
+
+• Named entities
+• Rare words
+
+Customer facing output
+
+• Human loop
+•
+•
+
+BLEU & human evaluation correlation
+Business sensitive issues
+
+Lack of parallel training 
+data
+
+• Use and sources of data
+• Domain adaptation
+
+Our challenges
+
+Real-world content
+
+• Named entities
+• Rare words
+
+Customer facing output
+
+• Human loop
+•
+•
+
+BLEU & human evaluation correlation
+Business sensitive issues
+
+Lack of parallel training 
+data
+
+• Use and sources of data
+• Domain adaptation
+
+End-to-end approach insufficient to handle Named 
+Entities, pre-processing improves performance
+
+Hotel name
+
+Time
+
+Landmark name
+
+Landmark name
+
+Problem
+
+Hotel Shirakawa is just a 5-minute walk from Fushimi Subway Station. Nagoya 
+
+Castle is a 10-minute drive, and the Sakae shopping area is 500 m away. 
+
+Time
+
+Landmark name
+
+Distance
+
+Approach
+
+Results
+
+Search for 
+named entities 
+in source
+- Regular expression for distance, date, time
+- Hybrid dictionary, conditional random field NER for names
+
+Replace with 
+placeholders
+
+Translate
+
+Substitute as 
+per target 
+format
+
+Raw source
+Pure NMT Translation
+NMT with distance 
+placeholders
+
+Winterfell Railway Station can be reached in a 55-minute car ride.
+Den Bahnhof Winterfell erreichen Sie nach einer 5-mintigen Autofahrt.
+
+Den Bahnhof Winterfell erreichen Sie nach einer 55-mintigen Autofahrt.
+
+Better handling of rare words and 4 points BLEU 
+score improvement with Byte Pair Encoding (BPE)
+Raw source
+Tokenized source
+Tokenized output
+De-tokenized output
+
+Offering a restaurant with WiFi, Hodor Ecolodge is located in Winterfell.
+
+Die Hodor Ecolodge in Winterfell bietet ein Restaurant mit WLAN.
+
+BLEU
+
+Epoch 5
+Epoch 10
+Epoch 15
+Epoch 20
+
+50K-Vocab 
+baseline
+
+39.54
+40.95
+42.01
+42.15
+
+30K
+43.75
+44.55
+45.08
+46.31
+
+Joint BPE
+70K
+43.40
+43.81
+46.14
+46.61
+
+50K
+43.46
+44.52
+45.91
+46.43
+
+90K
+41.23
+43.81
+45.75
+45.62
+
+30K
+42.81
+43.39
+43.58
+45.22
+
+Separate BPE
+70K
+39.73
+43.51
+45.17
+45.90
+
+50K
+42.35
+43.48
+43.23
+46.00
+
+90K
+
+N/A
+
+Translation of informal language of customer 
+reviews and partner-(company)-user comms
+
+Examples
+
+- The stuff
+- The night guy aund the girl in the morning who looks like 
+manage the hotel
+- They keep your luggage for free if you for some days to Sapa
+- And as well the offered us a breakfast in the morning asap
+- Thans for the detail
+
+Approach
+
+Correct typos 
+which are easy 
+to fix
+
+Adapt to the 
+UGC domain
+
+Translate
+
+Iterate
+
+Adequacy score
+
+Positive reviews
+
+Negative reviews
+
+Results
+
+Baseline
++typos correction+DA
+
+80 %
+95 %
+
+27 %
+96 %
+
+Our challenges
+
+Real-world content
+
+• Named entities
+• Rare words
+
+Customer facing output
+
+• Human loop
+•
+•
+
+BLEU & human evaluation correlation
+Business sensitive issues
+
+Lack of parallel training 
+data
+
+• Use and sources of data
+• Domain adaptation
+
+How can we control (M)T 
+quality in eCommerce
+environment?
+
+Integrated approach to MT evaluation.
+
+Adequacy/Fluency 
+
+scoring
+
+BLEU
+
+Entity analysis
+
+Rough assessment of the 
+MT-ed content in terms of 
+
+its publishability
+
+A/B testing
+
+Applicable to make sure 
+there are no new bugs 
+introduced as the result 
+
+of the MT engine 
+
+retraining and some 
+
+experiments.
+
+Scoring the quality of 
+
+entity handling. 
+
+Two-sample hypothesis 
+testing where business 
+
+metrics are to be 
+
+optimized
+
+Business Sensitivity 
+
+Analysis
+
+Links MT quality with 
+
+potential threats for the 
+
+business
+
+Improvement with more data is better seen from 
+human evaluation... 
+
+...which doesn’t seem to be completely aligned 
+
+with BLEU
+
+Business Sensitivity Framework to detect if aspects and 
+sub-aspects match between source & translated 
+content
+
+Input 
+Brochure
+
+Sensitive Aspect 
+
+Detection
+Word2Vec
+
+Does the hotel description 
+talk about parking?
+
+Source
+
+Sub-Aspect 
+Classifier
+
+TFIDF Based
+
+Is parking free / not free / 
+available as per source?
+
+Target
+
+Sub-Aspect 
+Classifier
+
+TFIDF Based
+
+Is parking free / not free / 
+available as per target?
+
+Match 
+
+Evaluation
+
+Error 
+or Not
+
+Business Sensitivity Framework: results
+
+FREE/NOT FREE 
+
+PARKING
+
+source
+
+Correction 
+
+moule
+
+translation
+
+free parking
+
+not free parking
+
+free parking
+
+99.4%
+
+not free 
+parking
+not about 
+parking
+
+5.1%
+
+<0.1%
+
+0.5%
+
+94.6%
+
+<0.1%
+
+not about 
+parking
+
+0.1%
+
+0.3%
+
+99.9%
+
+Our challenges
+
+Real-world content
+
+• Named entities
+• Rare words
+
+Customer facing output
+
+• Human loop
+•
+•
+
+BLEU & human evaluation correlation
+Business sensitive issues
+
+Lack of parallel training 
+data
+
+• Use and sources of data
+• Domain adaptation
+
+Method.
+
+- A few thousand of in domain 
+
+sentences.
+
+-In addition to the hotel descriptions data, 
+available external open data is used 
+including data from:
+-Movie subtitles
+-Wikipedia
+-TED talks
+-New commentary
+-EuroParl
+
+-Synthetic Data
+
+-Gradual downsampling (Wees et al., 
+2017)
+
+Data generation for customer reviews based on mono -
+lingual  /  non-parallel bilingual data
+
+Data 
+
+Idea
+
+Methodology
+
+Use in-domain language model 
+to select most relevant 
+sentences from external corpus
+
+Bilingual Cross Entropy Difference (Axelrod et al) 
+- To select sentences that are most similar to in-
+domain but different to out-of-domain. 
+
+External 
+Corpus
+
+Synthetic 
+
+Data
+
+Use large amount of mono-
+lingual data to create some 
+synthetic in-domain data
+
+Rico Sennrich et al. – Back translate target 
+language in-domain data into source by reversing 
+our MT model. 
+
+In-domain 
+
+Data
+
+Create a small amount of in-
+domain corpus as well, to test 
+for additional impact
+
+Human Translation
+
+Domain Adaptation using gradual downsampling to 
+most relevant data selected by in-domain language 
+model
+Data 
+
+Epoch 
+5 & 6
+
+Epoch 
+3 & 4
+
+Epoch 
+7 & 8
+
+Epoch 
+1 & 2
+Most
+
+Out-of-
+domain 
+Data
+
+External
+
+Data
+
+Synthetic 
+
+Data
+In-
+
+domain 
+
+Relevant
+
+Least
+
+Relevant
+
+80%
+
+80%
+
+100%
+
+80%
+
+100%
+
+Gradual downsampling vs fine tuning
+
+Gradual downsampling
+
+Fine tuning
+
+Faster iteration
+
+Takes time to get the General Model trained
+
+Trained for specific use case from the 
+beginning
+
+Can be adapted to multiple use cases
+
+Applicable without In-domain parallel data
+
+Needs In-domain parallel data 
+
+Less accurate
+
+More accurate
+
+No answer yet
+
+Human Evaluation Results for Domain Adapted Model to 
+translate customer reviews (gradual downsampling)
+
+Adequacy Score for Positive Reviews
+
+Adequacy Score for Negative Reviews
+
+Want to know
+more?
+Machine Translation at Booking.com: 
+Journey and Lessons Learned
+EAMT (User Track)
+Prague, May 2017
+Best Paper Award
+
+Toward a full-scale neural machine 
+translation in production: the 
+Booking.com use case
+MT Summit XVI (Commercial Track)
+Nagoya, Sep 2017
+
+Technology
+Automatic post-editing and 
+Quality Estimation
+
+What is the business rationale?
+
+•
+
+The Whys:
+
+▸ Reduce monetary and legal risks
+▸ Increase user trust
+▸ Increase traction with partners and customers (B2B and B2C)
+▸ As a part of the better integrated MT system, improve user 
+
+experience
+
+Complete MT-QE-APE architecture
+
+Content
+generation
+
+Manual
+
+Automatic
+
+Machine 
+translation
+
+Scorer
+
+QE
+
+Good enough
+
+Publishing
+
+Development stage
+
+Scorer
+
+Sample-based
+
+Iterative improvements
+
+Not good 
+enough
+
+Changes 
+introduced
+
+Post-editing
+
+None
+Manual
+
+Automatic
+
+No change
+
+Exclude
+
+How can we validate?
+
+Content
+generation
+
+Manual
+
+Automatic
+
+Machine 
+translation
+
+Development stage
+
+Machine translation
+
+Scorer
+
+Iterative 
+improvements
+
+Sample-based
+
+APE
+
+Publishing
+
+Scorer
+
+Good 
+enough
+
+Sample-based
+
+BSF
+
+# of OOV
+NE analysis
+
+Not good 
+enough
+
+Exclude
+
+How can we design an APE system, which would address 
+the most important problems?
+
+Sentence level APE
+
+MT 
+input
+
+Machine 
+translation
+
+Machine translation
+
+Sent Level APE
+
+Negative=raw MT
+
+Positive=PE
+
+Raw MT 
+output and 
+post-edited 
+
+data
+
+MT 
+output
+
+Credit: MT research group at the University of Edinburgh
+
+Negative and Positive training examples
+
+Source
+
+Offering a restaurant with WiFi, Hodor Ecolodge is 
+located in Winterfell. On-site parking is free.
+
+Raw MT
+
+Die Hodor Ecolodge in Winterfell bietet ein
+Restaurant mit WLAN. Parkplatz vor Ort ist
+verfügbar.
+
+Negative 
+example
+
+Post-edited MT
+
+Die Hodor Ecolodge in Winterfell bietet ein
+Restaurant mit WLAN. Parkplatz vor Ort ist
+kostenlos.
+
+Positive example
+
+How can we design an APE system, which would 
+address the most important problems?
+
+Word level
+
+MT 
+input
+
+Machine translation
+
+Machine translation
+
+Word Level APE
+
+Negative=contrastive
+
+Positive=raw MT
+
+Contrastive 
+references
+
+MT 
+output
+
+Credit: MT research group at the University of Edinburgh
+
+Contrastive references
+
+Source
+
+On-site parking is free.
+
+Translation
+
+Parkplatz vor Ort ist verfügbar.
+
+Positive example
+
+Contrastive 
+
+Parkplatz vor Ort ist nicht verfügbar
+
+Parkplatz vor Ort ist kostenlos.
+
+or
+
+Negative 
+example
+
+Future Directions (applied research and technology)
+
+Explore alternative NMT technologies
+
+- “Transformer” by (Vaswani et al., 2017)
+
+Ensure high quality of translations
+
+- Named Entities 
+- NMT with reconstruction (Tu et al., 2017)
+- Optimization for UGC
+- Conditioning MT output on structured data
+
+Reinforcement learning (Nguyen et al., 2017)
+
+TAUS
+
+MT Survey 
+
+2018
+
+http://info.taus.net/tau
+s-mt-survey-2018
+
+Deadline: Friday, April 14th
+
+Thank You
+Questions?
+
+Maxim Khalilov
+
+maxim.khalilov@booking.com
+
+www.linkedin.com/nl/maximkhalilov
+
+Proceedings for AMTA 2018 Workshop: Translation Quality Estimation and Automatic Post-Editing
+
+Boston, March 21, 2018  |  Page 143
+
+

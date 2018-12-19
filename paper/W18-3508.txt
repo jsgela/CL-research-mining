@@ -1,0 +1,740 @@
+ 
+
+Text 
+
+ 
+
+EmotionX-SmartDubai_NLP: Detecting User Emotions In Social Media 
+
+ 
+                       Rahul Venkatesh Kumar, Shahram Rahmanian, Hessa Albalooshi  
+                                                     Smart Services Department  
+                                           Smart Dubai Government Establishment 
+                                                    Dubai, United Arab Emirates 
+ 
+ 
+
+Abstract 
+
+ 
+
+ 
+This  paper  describes 
+the  working  note  on 
+“EmotionX” shared task. It is hosted by SocialNLP 
+2018.  The  objective  of  this  task  is  to  detect  the 
+emotions,  based  on  each  speaker’s  utterances  that 
+are  in  English.  Taking  this  as  multiclass  text 
+classification  problem,  we  have  experimented  to 
+develop  a  model  to  classify  the  target  class.  The 
+primary  challenge  in  this  task  is  to  detect  the 
+emotions in short messages, communicated through 
+social media. This paper describes the participation 
+of SmartDubai_NLP team in EmotionX shared task 
+and  our  investigation to  detect  the  emotions  from 
+utterance  using  Neural  networks  and  Natural 
+language understanding. 
+
+in 
+
+for 
+
+the 
+
+recently 
+
+challenge 
+
+any  machine 
+
+1   Introduction  
+Emotions  play  a  vital  part  in  communication 
+when people interact between each other. The 
+exchange of emotions through text message and 
+blog  post  in  an  informal  way  of  writing  is  a 
+bigger 
+to 
+understand.  Detecting  emotions  from  text  is 
+widely  used 
+fields  of 
+neuroscience and cognitive services to analyze 
+the consumer behaviors. [6] Emotion detection 
+task is similar to analyzing the sentiment in a 
+text. In this task we aim to detect and recognize 
+types of feelings through the utterance such as 
+“Neutral” ”Joy” “Sadness” and “Anger”. These 
+four  emotions  types  are  related  to  the  facial 
+expression analysis in image recognition field. 
+One  of 
+in 
+determining emotion is the context dependence 
+of  emotions  within  the  text  [6].  Another 
+challenge is linguistic co-reference, word sense 
+disambiguation  and  ambiguity.  Here,  we 
+describe the method and ideology of detecting 
+the  emotion  from  the  text.  The  regular  text 
+classification  works  by  stacking 
+text 
+the 
+representations 
+the 
+learned 
+features. By considering the above discussion, 
+our research model is given in Figure 1. 
+
+the  most  colossal  challenges 
+
+followed  by 
+
+ 
+
+ 
+
+ 
+
+ 
+             Figure 1: Experimental model  
+ 
+The description of task approach is explained in 
+detail 
+in  the  following  sections  2.  Task 
+description,  Section  3.  Corpus  Description, 
+Section  4.  Corpus  Statistics,  Section  5. 
+Methodology  Section  6.  Feature  Engineering, 
+Section  7.  Experiment,  Section  8.  Result 
+Analysis and 9.  Error Analysis and Conclusion. 
+
+2   Task Description 
+The  given  dataset  consists  of  “Speaker”, 
+“Utterance”  and  “Emotion”.  Utterance  text 
+tagged  with  the  emotion  information,  the 
+objective is to detect the emotion information 
+for  the  utterance  in  the  validation  set.  The 
+equation tag ϵ {Neutral, Joy, Sadness, Anger} 
+and (n) represent the total number of target class 
+in the dataset.  
+ 
+),  utterance2,target2
+(
+train_corpus =   utterance1,target1
+validation_corpus =   utterance1,utterance2, ...,utterancen
+ 
+3   Corpus Description  
+ 
+Corpus  is  provided  by  Emotion  X SocialNLP 
+2018  shared task  organizers.  Training  set  and 
+validation set both are in the Json format. Input 
+utterance  is  annotated  with  target  class in the 
+training  set.  The  training  data  contains  total 
+
+), ..., utterancen,targetn
+(
+}  2( )
+
+}  1( ) 
+)
+
+{
+(
+
+{
+
+ 
+
+ProceedingsoftheSixthInternationalWorkshoponNaturalLanguageProcessingforSocialMedia,pages45–49,Melbourne,Australia,July20,2018.c(cid:13)2018AssociationforComputationalLinguistics45utterances  without  target  class.  The  sample 
+training and validation set are mentioned in  
+table 1. 
+
+Utterance 
+
+ 
+
+9113 utterance with 4 emotion categories and 
+validation and test data contains 1023 and 5573  
+
+ 
+
+ 
+
+joy 
+
+neutral 
+
+Emotion 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+                                                  
+ 
+people 
+ 
+
+sadness 
+
+Oh cool 
+
+anger 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+If I do have it, I never used it 
+
+Maybe your love for me doesn't fly 
+
+Can't you just not put me in such situations in front of 
+
+                                                                   
+
+least  belongs 
+
+                                                               Table 1: Training data sample 
+ 
+ 
+4   Corpus Statistics  
+ 
+The  dataset  is  primarily  the  conversation 
+between  two  speakers.  In  training  set  most 
+belongs  to  neutral  utterance  (78  percentage) 
+and 
+to  anger  utterance  (1 
+percentage)  Table  2.  In  training  and  test  set 
+utterance  is  mixed  with  digits,  punctuations, 
+and  emoji’s.  Quality  of  utterance  are  most 
+challenging task here because of social media 
+content user own text scripts. In training data, 
+we  see  that  longer  sentences  belong  to  the 
+neutral  category  and  shorter  sentences  belong 
+to  the  anger  category.  Using  Term  frequency 
+method, we can see that there are larger number 
+of numeric values and internet slang term like 
+‘lol’,’haha’ and ‘idk’ are used in the utterances. 
+The utterance word count and target correlation 
+are showed in the figure 2 using violin plot. 
+ 
+
+ 
+Training 
+Set Size 
+Validatio
+n Set Size 
+
+neutral 
+
+ 
+7148 
+ 
+825 
+
+Joy 
+
+ 
+
+1482 
+ 
+160 
+
+ 
+389 
+ 
+38 
+
+ 
+               Table 2: Corpus Count  
+
+sadness 
+
+anger 
+
+ 
+
+94 
+ 
+9 
+
+ 
+
+  
+               Figure 2: Word count vs Target  
+ 
+ 
+5   Methodology  
+ 
+The figure 3 gives a picture of the architecture 
+that  we  have  currently  implemented  for  this 
+task.  We  are  primarily  focused  on  data  pre- 
+processing to improve the quality of utterances 
+and  also  enhance  feature  representations.  We 
+started  our  approach  with  simple 
+term 
+frequency based on CNN+BiLSTM; the same 
+methods are discussed next. 
+ 
+
+Figure 3: Architecture of our approach 
+
+ 
+
+ 
+
+ 
+ 
+
+ 
+
+ 
+
+466   Feature Engineering 
+ 
+We have improved our model accuracy on each 
+step of stacking and modifying the features. Our 
+whole  approach  is  based  on  the  architecture 
+model  figure  3.  Below  are  the  steps  followed 
+before  building 
+the  model.  Performance 
+improved after data cleansing. 
+ 
+6.1 Data Normalization 
+ 
+In  data  normalization  step  we  have  mainly 
+focused  on  cleaning  the  utterance  to  improve 
+the performance of the model. We have created 
+the custom list of words to replace the internet 
+slang  tokens  with  proper  words  and  the same 
+method is followed for replacing the emoji’s in 
+utterances  with  corresponding  meaning.  In 
+addition  to  this,  shorthand’s  text  is  replaced 
+with proper abbreviation and mutli spaces with 
+single space. Some of the speakers have empty 
+utterance we have replaced the empty utterance 
+with  word  “empty  line”.  Sample  data  set  is 
+show in the table 3. 
+ 
+
+Utterance Before 
+Preprocessing 
+
+lol 
+
+long  you  been 
+
+do  you  even  have  the 
+page liked?  :) 
+how 
+working? :-( 
+i can't  understand  all too 
+smart hahahahaha 
+
+Utterance After 
+Preprocessing 
+
+ 
+lots of laughs 
+do  you  even  have  the 
+page liked?  smile 
+how 
+working? sad 
+i  cannot  understand  all 
+too smart smile 
+
+long  you  been 
+
+ngram  Term  Frequency 
+
+ngram  Term  Frequency 
+
+ 
+            Table 3: Utterance after cleaning 
+ 
+6.2 Count Based model  
+ 
+Our first approach is the Concatenates of Word 
+level 
+Inverse 
+Document  Frequency(TFIDF)  and  Character 
+level 
+Inverse 
+Document Frequency(TFIDF) as single feature 
+using sklearn FeatureUnion. 
+ 
+6.3    NLP Features 
+ 
+As a part of feature engineering, we have added 
+hand  craft  features  from  the  utterances  to 
+improve our model. The sample of the features 
+are shown in below points. 
+ 
+
+•  Length of each utterance 
+
+ 
+
+ 
+
+ 
+
+ 
+
+•  Number of words in each utterance 
+•  Number of stop words in each 
+
+utterance 
+
+•  Percentage of unique words each 
+•  Sentiment polarity of each utterance 
+
+like  Logistic 
+
+ 
+7   Experiment 
+ 
+As  a  part  of  experiment  analysis,  we  ran  few 
+best  algorithms 
+regression, 
+Support Vector with ‘rbf’ kernel, Multinomial 
+Navi  Bayes.  In  deep  learning  we  tried  with 
+Convolutional  Neural  Network  -  Bilateral 
+(Long Short-Term Memory) and Convolutional 
+Neural  Network 
+Short-Term 
+Memory(LSTM)  with  fastText  word  vector. 
+The main advantage of using neural network is 
+that the necessity of heavy lifting on the feature 
+engineering  side  is  minimum.  Training  set  is 
+split  into  training  and  validation  data  with 
+ration 0.2 in below approaches. 
+ 
+
+-  Long 
+
+(1)  The  word  count  based  approach  is 
+taken as baseline approach, for this we 
+have  considered 
+the  Concatenates 
+Word level and Character level matrix 
+as  feature  using  Logistic  regression 
+with accuracy of 91%. We have used 
+ngram_range = 1,1 in Word level and 
+ngram_range = 1,3. 
+
+ 
+
+of 
+
+combination  of  Word 
+
+(2)  The second approach we have used is 
+the 
+and 
+Character level ngram Term Frequency 
+Inverse  Document  Frequency(TFIDF) 
+with  handcrafted  NLP  features  using 
+GridSearchCV  on  Logistic  regression 
+with 
+and 
+XGBClassifier with accuracy of 85%. 
+ 
+
+accuracy 
+
+(3)  The  third  approach  is  using  neural 
+networks  with 
+hyper 
+parameters.  After  prepressing  each 
+utterance  is  given  as  an  input  to  the 
+network. CNN+BiLSTM – accuracy of 
+84%. CNN+LSTM with fast Text word 
+vector – accuracy of 86%. 
+
+custom 
+
+77% 
+
+ 
+Result  of  each  model  run  is  evaluated  using 
+precision,  recall,  accuracy  and  F1  score.  The 
+result is mentioned in the table 5. 
+
+ 
+
+47Model  
+
+Accuracy % 
+
+Logistic Regression 
+(Char+Word Tfidf) 
+Multinomial Naive Bayes 
+(Char+Word Tfidf) 
+Xgboost 
+Features) 
+CNN+BiLSTM 
+CNN+LSTM(fastText 
+wordvector) 
+
+(TFIDF+NLP 
+
+0.91 
+ 
+0.85 
+ 
+0.85 
+ 
+0.84.9  
+0.85.7 
+
+ 
+
+Precision 
+ 
+0.92 
+ 
+0.83 
+ 
+0.89 
+
+0.80 
+0.81 
+
+Recall 
+ 
+0.92 
+ 
+0.83 
+
+0.90 
+
+0.85 
+0.86 
+
+F1-score 
+ 
+0.92 
+
+0.78 
+
+0.89 
+
+0.82 
+0.83 
+
+        Table :5 Cross validation results with different classifiers 
+
+ 
+ 
+
+ 
+ 
+
+8   Result Analysis 
+ 
+The combined feature of Character level with 
+trigram  and  word  level  ngram  using  logistic 
+regression  model  achieved  overall  91.83% 
+accuracy for this multiclass text classification, 
+followed by CNN-LSTM. To classify the text 
+properly  we  have  used  custom  parameters  in 
+term  frequency-inverse  document  frequency 
+and logistic regression. Due to imbalanced data 
+set and social media format contents we have 
+concentrated more on the data preparation and 
+it help us to improved our overall accuracy and 
+our  model  performance.  Our  approach  for 
+detecting  the  emotion  in  the  text  has  been 
+evaluated  based  on  the  unweighted  accuracy 
+and class wise metrics precision, recall and F1 
+measure scores are mentioned in the table 6.  
+ 
+
+Precision % 
+ 
+
+Recall % 
+ 
+
+Target 
+Class 
+ 
+neutral 
+ 
+joy 
+ 
+sadness 
+ 
+anger 
+ 
+Average 
+% 
+
+0.84 
+ 
+0.82 
+ 
+0.94 
+ 
+0.82 
+ 
+0.92 
+
+0.94 
+ 
+0.77 
+ 
+0.96 
+ 
+0.80 
+ 
+0.92 
+
+F1-score 
+% 
+ 
+0.89 
+ 
+0.79 
+ 
+0.95 
+ 
+0.81 
+ 
+0.92 
+
+ 
+Table :6 Target wise performance analysis 
+ 
+We  have  obtained  an  overall  accuracy  of 
+91.83%  using  Stacked  Tf-idf  features  logistic 
+regression-based  approach 
+for  EmotionX" 
+shared task SocialNLP 2018 -  Detecting User 
+Emotions in Social Media Text.  
+ 
+ 
+ 
+
+ 
+
+ 
+
+8.1 Evaluation Result 
+ 
+The test data contains two files Emotion push 
+and  Friends  utterances  with  50571  unlabeled 
+data and submission of labeled was evaluated 
+by the task organizer final ranking is based on 
+the  Unweighted  Accuracy  mentioned  on  the 
+below table 7. It was quite disappointment our 
+model didn’t perform well on the test data. 
+ 
+
+Test data  
+Emotion Push  
+Friends  
+
+Unweighted Accuracy  
+26.55 
+25.52 
+
+  
+9 Error Analysis and Conclusion  
+ 
+In this paper, a supervised system for we have 
+presented an approach to detect the emotion in 
+speaker  utterances  which  is  in  social  media 
+format.  Our 
+experimented  methodology, 
+Charterer  and  Word  level  ngram  stacked 
+feature  extracted  from  utterances.  Then  the 
+logistic  regression  with  custom  parameters  is 
+trained using extracted features. Our system is 
+evaluated  using  the  test  utterances  given 
+EmotionX  shared  task  organizers.  We  have 
+obtained an overall accuracy of 91.83% in the 
+training  set  but  fails  to  capture  generalized 
+features and performs poorly on the test set. The 
+major drawback is imbalanced data for training 
+set.  Another  issue  dealing  with  large  amount 
+internet  slang  in  dataset.  The  system  could 
+further have improved by replacing the internet 
+slang with proper lexical and experiment with 
+different  techniques  used  on  the  supervised 
+approach in Machine learning. 
+ 
+ 
+ 
+ 
+ 
+
+48to 
+
+thankful 
+
+the  support  and 
+
+ACKNOWLEDGMENTS 
+ 
+We  are 
+the  Smart  Dubai 
+Government  Establishment  authorities 
+for 
+providing 
+infrastructure 
+facilities  to  pursing  the  work  done  for  this 
+research project. 
+ 
+References 
+ 
+[1] KP Soman Rahul Venkatesh Kumar, Anand 
+Kumar M,AmritaCEN_NLP@ FIRE 2015 
+Language Identification for Indian Languages in 
+Social Media Text. 
+ 
+[2] Rongyu Li, Feng Zhou, Jing Wang, Xiaojian 
+Yang, "Application of improved multiple 
+convolution neural network in emotion polarity 
+classification model", Chinese Automation 
+Congress (CAC) 2017, pp. 644-649, 2017. 
+ 
+[3] Yuanye He,Liang-Chih Yu1,K.Robert Lai and 
+Weiyi Liu4YZU-NLP at EmoInt-
+2017:Determining.  
+ 
+[4] Barathi Ganesh HB, Reshma U, Anand Kumar 
+M and Soman KP,Representation of Target Classes 
+for Text Classification. 
+  
+[5] Vivek Vinayan, Naveen J R, Harikrishnan NB, 
+Anand Kumar M and Soman 
+KP,AmritaNLP@PAN-RusProfiling : Author 
+Profiling using Machine Learning Techniques. 
+ 
+[6] Emotion Detection and Recognition from Text 
+Using Deep Learning by CY Yam. 
+ 
+[7] Text Based Emotion Recognition: A Survey by 
+Chetan R Chopade. 
+ 
+ 
+
+ 
+
+ 
+
+ 
+
+49

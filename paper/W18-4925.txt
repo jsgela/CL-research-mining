@@ -1,0 +1,5658 @@
+Edition 1.1 of the PARSEME Shared Task
+
+on Automatic Identiﬁcation of Verbal Multiword Expressions
+
+Carlos Ramisch
+Aix Marseille
+
+University, France
+
+Silvio Ricardo Cordeiro
+
+Aix Marseille
+
+University, France
+
+Verginica Barbu Mititelu
+
+Romanian Academy,
+
+Romania
+
+Archna Bhatia
+Florida IHMC,
+
+USA
+
+Agata Savary
+
+University of Tours,
+
+France
+
+Veronika Vincze
+
+University of Szeged,
+
+Hungary
+
+Maja Buljan
+
+Marie Candito,
+
+University of Stuttgart,
+
+Paris Diderot University,
+
+Germany
+
+France
+
+Polona Gantar
+Faculty of Arts,
+
+Slovenia
+
+Voula Giouli
+
+Tunga Güngör
+
+Athena Research Center,
+
+Bo˘gaziçi University,
+
+Greece
+
+Turkey
+
+Abdelati Hawwari
+George Washington
+
+University, USA
+
+Uxoa Iñurrieta
+
+University of the Basque
+
+Country, Spain
+
+Jolanta Kovalevskait˙e
+
+Vytautas Magnus
+
+University, Lithuania
+
+Simon Krek
+
+Timm Lichte
+
+Jožef Stefan Institute,
+
+University of Düsseldorf,
+
+Slovenia
+
+Germany
+
+Chaya Liebeskind
+Jerusalem College
+of Technology, Israel
+
+Johanna Monti
+
+“L’Orientale” University
+
+of Naples, Italy
+
+Behrang QasemiZadeh
+University of Düsseldorf,
+
+Renata Ramisch
+
+Interinstitutional Center
+
+Germany
+
+for Computational Linguistics, Brazil
+
+Ivelina Stoyanova
+
+Bulgarian Academy of Sciences,
+
+Bulgaria
+
+Ashwini Vaidya
+
+IIT Delhi,
+
+India
+
+Carla Parra Escartín
+Dublin City University,
+
+Ireland
+
+Nathan Schneider
+
+Georgetown University,
+
+USA
+
+Abigail Walsh
+
+Dublin City University,
+
+Ireland
+
+Abstract
+
+This paper describes the PARSEME Shared Task 1.1 on automatic identiﬁcation of verbal multi-
+word expressions. We present the annotation methodology, focusing on changes from last year’s
+shared task. Novel aspects include enhanced annotation guidelines, additional annotated data for
+most languages, corpora for some new languages, and new evaluation settings. Corpora were
+created for 20 languages, which are also brieﬂy discussed. We report organizational principles
+behind the shared task and the evaluation metrics employed for ranking. The 17 participating
+systems, their methods and obtained results are also presented and analysed.
+
+1
+
+Introduction
+
+Across languages, multiword expressions (MWEs) are widely recognized as a signiﬁcant challenge
+for natural language processing (NLP) (Sag et al., 2002; Baldwin and Kim, 2010). An international
+and highly multilingual research community, forged via regular workshops and initiatives such as the
+PARSEME network (Savary et al., 2015), has rallied around the goals of characterizing MWEs in lexi-
+cons, grammars and corpora and enabling systems to process them. Recent shared tasks, namely DiM-
+SUM (Schneider et al., 2016) and the ﬁrst edition of the PARSEME Shared Task on automatic identiﬁ-
+cation of verbal multiword expressions in 2017 (Savary et al., 2017), have helped drive MWE research
+forward, yielding new corpora and testbeds for MWEs identiﬁcation systems.
+
+This work is licensed under a Creative Commons Attribution 4.0 International License.
+creativecommons.org/licenses/by/4.0/.
+
+License details: http://
+
+ProceedingsoftheJointWorkshopon,LinguisticAnnotation,MultiwordExpressionsandConstructions(LAW-MWE-CxG-2018),pages222–240SantaFe,NewMexico,USA,August25-26,2018.222This paper describes edition 1.1 of the PARSEME Shared Task, which builds on this momentum. We
+amalgamated organizational experience from last year’s task, a more polished version of the annotation
+methodology and an extended set of linguistic data, yielding an event that attracted 12 teams from 9
+countries. Novel aspects in this year’s task include additional annotated data for most of the languages,
+some new languages with annotated datasets and enhanced annotation guidelines.
+
+The structure of the paper is the following. First, related work is presented, then details on the anno-
+tation methodology are described, focusing on changes from last year’s shared task. We have annotated
+corpora for 20 languages, which are brieﬂy discussed. Main organizational principles behind the shared
+task, as well as the evaluation metrics are reported next. Finally, participating systems are introduced
+and their results are discussed before we draw our conclusions.
+
+2 Related Work
+
+In the last few years, there have been several evaluation campaigns for MWE identiﬁcation. First, the
+2008 MWE workshop contained an MWE-targeted shared task. However, the goal of participants was
+to rank the provided MWE candidates instead of identifying them in raw texts. The recent DiMSUM
+2016 shared task (Schneider et al., 2016) challenged participants to label English sentences in tweets,
+user reviews of services, and TED talks both with MWEs and supersenses for nouns and verbs. Last, the
+1.0 edition of the PARSEME Shared Task in 2017 (Savary et al., 2017) provided annotated datasets for
+18 languages, where the goal was to identify verbal MWEs in context. Our current shared task is similar
+in vein to the previous edition. However, the annotation methodology has been enhanced (see Section 3)
+and the set of languages covered has also been changed.
+
+Rosén et al. (2015) reports on a survey of MWE annotation in 17 treebanks for 15 languages, col-
+laboratively documented according to common guidelines. They highlight the heterogeneity of MWE
+annotation practices. Similar conclusions have been drawn for Universal Dependencies (McDonald et
+al., 2013). With regard to these conclusions, we intended to provide uniﬁed guidelines for all the partic-
+ipating languages, in order to avoid heterogeneous, hence incomparable, datasets.
+
+MWE identiﬁcation in syntactic parsing has also gained some popularity in recent years. While often
+treated as a pre-processing step for parsing, both tasks are now more and more integrated (Finkel and
+Manning, 2009; Green et al., 2011; Green et al., 2013; Candito and Constant, 2014; Le Roux et al., 2014;
+Nasr et al., 2015; Constant and Nivre, 2016). Although fewer works deal with verbal MWEs, there are
+some notable exceptions (Wehrli et al., 2010; Vincze et al., 2013; Wehrli, 2014; Waszczuk et al., 2016).
+Some systems that participated in edition 1.0 of the PARSEME Shared Task are also based on parsing
+(Al Saied et al., 2017; Nerima et al., 2017; Simkó et al., 2017). Other approaches to MWE identiﬁcation
+include sequence labeling using CRFs (Boro¸s et al., 2017; Maldonado et al., 2017) and neural networks
+(Klyueva et al., 2017).
+
+3 Enhanced Annotation Methodology
+
+The ﬁrst PARSEME annotation campaign (Savary et al., forthcoming) generated a rich feedback from an-
+notators and language team leaders. It also attracted the interest of new teams, working on languages not
+covered by the previous version of the PARSEME corpora. About 80 issues were raised and discussed
+among dozens of contributors.1 This boosted our efforts towards a better understanding of VMWE-
+related phenomena, and towards a better synergy of terminologies across languages and linguistic tradi-
+tions. The annotation guidelines were gradually enhanced, so as to achieve more clear-cut distinctions
+among categories, and make the decision process easier and more reliable. As a result, we expected
+higher-quality annotated corpora and better VMWE identiﬁcation systems learned on them.
+
+3.1 Deﬁnitions
+We maintain all major deﬁnitions (uniﬁed across languages) introduced in edition 1.0 of the annota-
+tion campaign (Savary et al., forthcoming, Sec. 2). In particular, we understand multiword expressions
+
+1The issues can be found at Gitlab: https://gitlab.com/parseme/sharedtask-guidelines/issues
+
+223as expressions with at least two lexicalized components (i.e. always realised by the same lexemes), in-
+cluding a head word and at least one other syntactically related word. Thus, lexicalized components of
+MWEs must form a connected dependency graph. Such expressions must display some degree of lexical,
+morphological, syntactic and/or semantic idiosyncrasy, formalised by the annotation procedures.
+
+As previously, syntactic variants of MWE candidates are normalised to their least marked form (called
+the canonical form) maintaining the idiomatic reading, before it is submitted to linguistic tests. A verbal
+MWE is deﬁned as a MWE whose head in a canonical form is a verb, and which functions as a verbal
+phrase, unlike e.g. FR peut-être ‘may-be’⇒‘maybe’ (which is always an adverbial). As in edition 1.0,
+we account for single-token VMWEs with multiword variants, e.g. ES hacerse ‘make-self’⇒‘become’
+vs. se hace ‘self makes’⇒‘becomes’.
+3.2 Typology
+Major changes in the annotation guidelines between edition 1.0 and 1.1 include redesigning the VMWE
+typology, which is now deﬁned as follows:2
+
+1. Two universal categories, that is, valid for all languages participating in the task:
+
+(a) LIGHT VERB CONSTRUCTIONS (LVC), divided into two subcategories:
+
+i. LVCs in which the verb is semantically totally bleached (LVC.full), DE eine Rede hal-
+
+ten ‘hold a speech’⇒‘give a speech’,
+
+ii. LVCs in which the verb adds a causative meaning to the noun (LVC.cause),3 e.g. PL
+
+narazi´c na straty ‘expose to losses’
+
+(b) VERBAL IDIOMS (VID),4 grouping all VMWEs not belonging to other categories, and most
+often having a relatively high degree of semantic non-compositionality, e.g. LT našta gula ant
+savivaldybiu˛ peˇciu˛ ‘the burden lies on the shoulders of the municipality’⇒‘the municipality
+is in charge of the burden’
+
+2. Three quasi-universal categories, valid for some language groups or languages, but not all:
+
+(a) INHERENTLY REFLEXIVE VERBS (IRV)5 – pervasive in Romance and Slavic languages, and
+present in Hungarian and German – in which the reﬂexive clitic (REFL) either always co-
+occurs with a given verb, or markedly changes its meaning or subcategorisation frame, e.g.
+PT se formar ‘REFL form’⇒‘graduate’
+
+(b) VERB-PARTICLE CONSTRUCTIONS (VPC) – pervasive in Germanic languages and Hungarian,
+
+rare in Romance and absent in Slavic languages – with two subcategories:
+i. fully non-compositional VPCs (VPC.full),6 in which the particle totally changes the mean-
+
+ing of the verb, e.g. HU berúg ‘in-kick’⇒‘get drunk’
+
+ii. semi non-compositional VPCs (VPC.semi),7 in which the particle adds a partly predictable
+
+but non-spatial meaning to the verb, e.g. EN wake up
+
+(c) MULTI-VERB CONSTRUCTIONS (MVC)8 – close to semantically non-compositional serial
+verbs in Asian languages like Chinese, Hindi, Indonesian and Japanese (but also attested in
+Spanish), e.g. HI kar le ‘do take’⇒‘do (for one’s own beneﬁt)’, kar de ‘do give’⇒‘do (for
+other’s beneﬁt)’
+
+3. One language-speciﬁc category, introduced for Italian:
+
+2In-line examples contain a two-letter language code, a literal translation into English, and an idiomatic translation. The
+
+lexicalized components are highlighted in bold.
+
+includes many previously non-annotated ones.
+
+3This subcategory is new in edition 1.1. It absorbs some verb-noun combinations previously annotated as IDs, but also
+
+4This category largely overlaps with IDs introduced in edition 1.0. Major changes include: (i) shifting some verb+noun
+combinations into the LVC.cause category, (ii) absorbing the previously used OTH category (covering verbs not having a single
+verbal head) due to its very restricted use.
+
+5In edition 1.0 the acronym IReﬂV was used for this category. It was changed to IRV for easier pronunciation.
+6This subcategory corresponds to the VPC category from edition 1.0.
+7This subcategory is new in edition 1.1.
+8This subcategory is new in edition 1.1. It absorbs some rare cases of previously annotated verb-verb combinations like FR
+
+laisser tomber ‘let fall’⇒‘abandon’.
+
+224(a) INHERENTLY CLITIC VERBS (LS.ICV),9 in which at least one non-reﬂexive clitic (CLI) either
+always accompanies a given verb or markedly changes its meaning or its subcategorisation
+frame, e.g.
+
+IT prenderle ‘take-them’⇒‘get beaten up’
+
+4. One optional experimental category, to be considered in the post-annotation step:
+
+(a) INHERENTLY ADPOSITIONAL VERBS (IAV) - they include idiomatic combinations of verbs
+with prepositions or post-positions, depending on the language, e.g. HR ne do ¯de do uspora-
+vanja ‘it will not come to delay’⇒‘no delay will occur’10
+
+3.3 Decision tree for annotation
+Edition 1.0 featured a two-stage annotation process, according to which VMWEs were supposed to be
+ﬁrst identiﬁed in a category-neutral fashion, then classiﬁed into one of the VMWE categories. Since the
+annotation practice showed that VMWE identiﬁcation is virtually always done in a category-speciﬁc way,
+for this year’s task we constructed a uniﬁed decision tree, shown in Fig. 1.11 Note that the ﬁrst 4 tests
+are structural. They ﬁrst hypothesize as VIDs those candidates which: (S.1) do not have a unique verb
+as head, e.g. HE britanya nas’a ve-natna ’im micrayim ‘Britain carried and gave with Egypt’⇒‘Britain
+negotiated with Egypt’, (S.2) have more than one lexicalized dependent of the head verb, EL ρίχνω λάδι
+στη φωτιά ‘pour oil to-the ﬁre’⇒‘make a bad or negative situation feel worse’, (S.3) have a lexicalized
+subject, e.g. EU deabruak eraman ‘devil-the.ERG12 take’⇒‘be taken by the devil, go to hell’. The
+remaining candidates, i.e. those having exactly one head verb and one lexicalized non-subject dependent,
+trigger category speciﬁc tests depending on the part-of-speech of this dependent (S.4).
+
+Figure 1: Decision tree for joint VMWE identiﬁcation and classiﬁcation.
+
+9This subcategory is new in edition 1.1. It absorbs some cases of previously annotated IDs in Italian.
+10This category is considered experimental since, so far, we did not manage to come up with satisfactory tests clearly
+
+distinguishing such cases from regular verbal valency.
+
+11For Italian and Hindi, this tree is slightly modiﬁed to account for: (i) the Italian-speciﬁc LS.ICV category, (ii) Hindi MVCs
+
+in which an adjective is morphologically identical to an eventive noun.
+
+12ERG: ergative case, which is generally attached to the subject of transitive verbs in Basque.
+
+225Annotation guidelines shared task on automatic identiﬁcation of verbal MWEs - edition 1.1 (2018)Annotation process and decision treeWe propose the following methodology for VMWE annotation:Step 1 - identify a candidate, that is, a combination of a verb  with at least one other word which could form a VMWE. If the candidate hasthe structure of a meaning-preserving variant, the following steps apply to its canonical form. This step is largely based on the annotators'linguistic knowledge and intuition after reading this guide.Step 2 - determine which components of the candidate (or of its canonical form) are lexicalized, that is, if they are omitted, the VMWE doesnot occur any more. Corpus and web searches may be required to conﬁrm intuitions about acceptable variants.Step 3 - depending on the syntactic structure of the candidate's canonical form, formally check if it is a VMWE using the generic andcategory-speciﬁc decision trees and tests below. Notice that your intuitions used in Step 1 to identify a given candidate are not suﬃcient toannotate it: you must conﬁrm them by applying the tests in the guidelines.Step 4 (experimental and optional) - if your language team chose to experimentally annotate the IAV category follow the dedicatedinherently adpositional verb (IAV) tests. These tests should always be applied once the 3 previous steps are complete, i.e. the IAV overlaysthe universal annotation.The decision tree below indicates the order in which tests should be applied in step 3. The decision trees are a useful summary to consult duringannotation, but contain very short descriptions of the tests. Each test is detailed and explained with examples in the following sections.Generic decision treeIf you are annotating Italian or Hindi, go to the Italian-speciﬁc decision tree or Hindi-speciﬁc decision tree. For all other languages follow the treebelow.↳Apply test S.1 - [1HEAD: Unique verb as functional syntactic head of the whole?]↳ NO ⇒Apply the VID-speciﬁc tests⇒VID tests positive?↳ YES ⇒Annotate as a VMWE of category VID↳ NO ⇒It is not a VMWE, exit↳ YES ⇒Apply test S.2 - [1DEP: Verb v has exactly one lexicalized dependent d?]↳ NO ⇒Apply the VID-speciﬁc tests⇒VID tests positive?↳ YES ⇒Annotate as a VMWE of category VID↳ NO ⇒It is not a VMWE, exit↳ YES ⇒Apply test S.3 - [LEX-SUBJ: Lexicalized subject?]↳ YES ⇒Apply the VID-speciﬁc tests⇒VID tests positive?↳ YES ⇒Annotate as a VMWE of category VID↳ NO ⇒It is not a VMWE, exit↳ NO ⇒Apply test S.4 - [CATEG: What is the morphosyntactic category of d?]↳Reﬂexive clitic⇒ Apply IRV-speciﬁc tests⇒IRV tests positive?↳ YES ⇒Annotate as a VMWE of category IRV↳ NO ⇒It is not a VMWE, exit↳Particle⇒ Apply VPC-speciﬁc tests⇒VPC tests positive?↳ YES ⇒Annotate as a VMWE of category VPC.full or VPC.semi↳ NO ⇒It is not a VMWE, exit↳Verb with no lexicalized dependent⇒ Apply MVC-speciﬁc tests⇒MVC tests positive?↳ YES ⇒Annotate as a VMWE of category MVC↳ NO ⇒Apply the VID-speciﬁc tests⇒VID tests positive?↳ YES ⇒Annotate as a VMWE of category VID↳ NO ⇒It is not a VMWE, exit↳Extended NP⇒ Apply LVC-speciﬁc decision tree⇒LVC tests positive?↳ YES ⇒Annotate as a VMWE of category LVC↳ NO ⇒Apply the VID-speciﬁc tests⇒VID tests positive?↳ YES ⇒Annotate as a VMWE of category VID↳ NO ⇒It is not a VMWE, exit↳Another category⇒ Apply the VID-speciﬁc tests⇒VID tests positive?↳ YES ⇒Annotate as a VMWE of category VID↳ NO ⇒It is not a VMWE, exitPARSEME Shared Task 1.1 - Annotation guidelineshttp://localhost/parseme-st-guidelines/1.1/index.p...1 of 27/1/18, 10:42 AM3.4 Consistency checks
+Due to manpower constraints, we could not perform double annotation followed by adjudication. For
+most languages, only small fractions of the corresponding corpus were double-annotated (Sec. 4.2).
+Therefore, in order to increase the consistency of the annotations, we applied the consistency checking
+tool developed for edition 1.0 (Savary et al., forthcoming, Sec. 5.4). The tool provides an “orthogonal”
+view of the corpus, where all annotations of the same VMWE are grouped and can be corrected interac-
+tively. Previous experience showed that the use of this tool greatly reduced noise and silence errors. This
+year, almost all language teams completed the consistency check phase (with the exception of Arabic).
+
+4 Corpora
+
+For edition 1.1, we prepared annotated corpora for 20 languages divided into four groups:
+
+• Germanic languages: German (DE), English (EN)
+• Romance languages: Spanish (ES), French (FR), Italian (IT), Portuguese (PT), Romanian (RO)
+• Balto-Slavic languages: Bulgarian (BG), Croatian (HR), Lithuanian (LT), Polish (PL), Slovene (SL)
+• Other languages: Arabic (AR), Greek (EL), Basque (EU), Farsi (FA), Hebrew (HE), Hindi (HI),
+
+Hungarian (HU), Turkish (TR)
+
+Arabic, Basque, Croatian, English and Hindi were additional languages, compared to the ﬁrst edition of
+the shared task. However, the Czech, Maltese and Swedish corpora were not updated and hence were
+not included in edition 1.1 of the shared task. The Basque corpus comprises texts from the whole UD
+corpus (Aranzabe et al., 2015) and part of the Elhuyar Web Corpora.13 The Bulgarian corpus comprises
+news articles from the Bulgarian National Corpus (Koeva et al., 2012). The Croatian corpus contains
+sentences from the Croatian version of the SETimes corpora: mostly running text but also selected frag-
+ments, such as introductory blurbs and image descriptions characteristic of newswire text. The English
+corpus consists of 7,437 sentences taken from three of the UD: the Gold Standard Universal Dependen-
+cies Corpus for English, the LinES parallel corpus and the Parallel Universal Dependencies treebank.
+The Farsi corpus is built on top of the MULTEXT-East corpora (QasemiZadeh and Rahimi, 2006) and
+VMWE annotations are added to a portion of Orwell’s 1984 novel. The French corpus contains the Se-
+quoia corpus (Candito and Seddah, 2012) converted to UD, the GDS French UD treebank, the French
+part of the Partut corpus, and part of the Parallel UD (PUD) corpus. The German corpus contains shufﬂed
+sentences crawled from online news, reviews and wikis, derived from the WMT16 shared task data (Bo-
+jar et al., 2016), and Universal Dependencies v2.0. The Greek corpus comprises Wikipedia articles and
+newswire texts from various on-line newspaper editions and news portals. The Hebrew corpus contains
+news and articles from Arutz 7 and HaAretz news websites, collected by the MILA Knowledge Center
+for Processing Hebrew. The Hindi corpus represents the news genre sentences selected from the test
+section of the Hindi Treebank (Bhat et al., 2015). The Hungarian corpus contains legal texts from the
+Szeged Treebank (Csendes et al., 2005). The Italian corpus is a selection of texts from the PAISÁ corpus
+of web texts (Lyding et al., 2014), including Wikibooks, Wikinews, Wikiversity, and blog services. The
+Lithuanian corpus contains articles from a Lithuanian news portal DELFI. The Polish corpus builds on
+top of the National Corpus of Polish (Przepiórkowski et al., 2011) and the Polish Coreference Corpus
+(Ogrodniczuk et al., 2015). These are balanced corpora, from which we selected mainly daily and peri-
+odical press extracts. The Portuguese corpus contains sentences from the informal Brazilian newspaper
+Diário Gaúcho and from the training set of the UD_Portuguese-GSD v2.1 treebank. The Romanian cor-
+pus is a collection of articles from the concatenated editions of the Agenda newspaper. The Slovenian
+corpus contains parts of the ssj500k 2.0 training corpus (Krek et al., 2017), which consists of sampled
+paragraphs from the Slovenian reference FidaPLUS corpus (Arhar Holdt et al., 2007), including literary
+novels, daily newspapers, web blogs and social media. The Spanish corpus consists of newspaper texts
+from the the Ancora corpus (Taulé et al., 2016), the UD version of Ancora, a corpus compiled by the
+IXA group in the University of the Basque country, and parts of the training set of the UD v2.0 treebank.
+The Turkish corpus consists of 18,611 sentences of newswire texts in several genres.
+
+13http://webcorpusak.elhuyar.eus/
+
+226As shown in Table 2, most languages provided corpora containing several thousand VMWEs, totalling
+79,326 VMWEs across all languages. The smallest corpus is in English, containing around 7,437 sen-
+tences and 832 VMWEs, and the largest one is in Hungarian, with 7,760 VMWEs. All corpora, except
+the Arabic one, are available under different ﬂavours of the Creative Common license.14
+
+4.1 Format
+Edition 1.1 of the shared task saw a major evolution of the data format, motivated by a quest for synergies
+between PARSEME (Savary et al., forthcoming) and Universal Dependencies (Nivre et al., 2016), two
+complementary multilingual initiatives aiming at uniﬁed terminologies and methodologies. The new
+format called cupt, combines in one ﬁle the conllu format15 and the parsemetsv format16, both
+used in the previous edition of this shared task.
+
+# global.columns = ID FORM LEMMA UPOS XPOS FEATS HEAD DEPREL DEPS MISC PARSEME:MWE
+# source_sent_id = . . corola-35693
+# text = Lidia se stingea pe picioare.
+Lidia NOUN Ncfsry
+1 Lidia
+sine
+2 se
+3 stingea
+stinge VERB Vmii3s
+4 pe
+pe
+5 picioare picior NOUN Ncfp-n
+6 .
+
+*
+3 nsubj
+_ _
+1:IRV;2:VID
+3 expl:pv _ _
+1;2
+0 root
+_ _
+Mood=Ind|Number=Sing|. . .
+_ _
+AdpType=Prep|Case=Acc
+2
+5 case
+_ SpaceAfter=No 2
+Deﬁnite=Ind|Gender=Fem|. . . 3 obl
+_
+_ _
+*
+
+PRON Px3–a——–w Case=Acc|Person=3|. . .
+
+Case=Acc|Deﬁnite=Def. . .
+
+PUNCT PERIOD
+
+3 punct
+
+ADP
+
+Spsa
+
+.
+
+Figure 2: First sentence of a corpus, with a nested VMWE, in the cupt format: RO Lidia se stingea pe
+picioare ‘Lidia Reﬂ.Cl.3.Sg.Acc. was_extinguishing on legs’⇒‘Lidia was going into decline’.
+
+As seen in Fig. 2, each token in a sentence is now represented by 11 columns: the 10 columns compati-
+ble with the conllu speciﬁcation (notably: rank, token, lemma, part-of-speech, morphological features,
+and syntactic dependencies), and the 11th column containing the VMWE annotations, according to the
+same conventions as parsemetsv but with the updated set of categories (cf. Sec. 3.2). Note the pres-
+ence of an IRV (tokens 2–3) embedded in a VID (tokens 2–5). The underscore ‘_’, when it occurs alone
+in a ﬁeld, is reserved for underspeciﬁed annotations. It can be used in incomplete annotations or in blind
+versions of the annotated ﬁles. The star ‘*’, when it occurs alone in a ﬁeld, is reserved for empty annota-
+tions, which are different from underspeciﬁed. This concerns sporadic annotations, typical for VMWEs
+(where not necessarily all words receive an annotation, as opposed to e.g. part-of-speech tags).
+
+Besides adding a new column to conllu, cupt also introduces additional conventions concerning
+comments (lines starting with ‘#’). The ﬁrst line of each ﬁle must indicate the ordered list of columns
+(with standardized names) that this ﬁle contains, i.e.
+the same format can be used for any subset of
+standard columns, in any order. Each sentence is then preceded by the identiﬁer of the source sentence
+(source_sent_id) which consists of three ﬁelds: (i) the persistent URI of the original corpus (e.g. of
+a UD treebank), (ii) the path of the source ﬁle in the original corpus, (iii) the sentence identiﬁer, unique
+within the whole corpus. Items (i) and (ii) contain ‘.’ if there is no external source corpus, as in the
+example of Figure 2. The following comment line contains the text of the current sentence. Validation
+scripts and converters were developed for cupt, and published before the shared task.
+
+Inter-Annotator Agreement
+
+4.2
+Contrary to standard practice in corpus annotation, most corpora were not double-annotated due to lack
+of human resources. Nonetheless, each language team has double-annotated a sample containing at least
+100 annotated VMWEs.17 The number of sentences (S), number of VMWEs annotated by the ﬁrst (A1)
+and by the second annotator (A2) are shown in Table 1. The last three columns report two measures
+to assess span agreement (tokens belonging to a VMWE) and one measure to assess the agreement on
+
+14At https://gitlab.com/parseme/sharedtask-data/tree/master/1.1.
+15http://universaldependencies.org/format.html
+16https://typo.uni-konstanz.de/parseme/index.php/2-general/184-parseme-shared-
+
+task-format-of-the-final-annotation
+
+17The Lithuanian team double-annotated a sample from the Lithuanian Treebank ALKSNIS.
+
+227S A1 A2
+
+Fspan
+
+κspan
+
+κcat
+
+S A1 A2 Fspan
+
+κspan
+
+κcat
+
+AR 200
+BG 1237
+DE 696
+EL 1617
+EN 804
+ES 1508
+EU 871
+FA 402
+FR 803
+HE 1800
+
+205
+472
+305
+428
+153
+197
+327
+416
+329
+290
+
+207
+459
+265
+462
+176
+103
+355
+336
+363
+291
+
+0.961
+0.917
+0.673
+0.694
+0.529
+0.253
+0.859
+0.606
+0.766
+0.806
+
+0.923
+0.899
+0.601
+0.665
+0.487
+0.227
+0.820
+0.470
+0.729
+0.794
+
+1.000 HI
+300
+0.957 HR 272
+0.604 HU 308
+IT 1000
+0.673
+0.625 LT 2343
+0.573 PL 2079
+0.859 PT 1000
+1.000 RO 2503
+SL 800
+0.960
+0.932 TR 187
+
+188
+270
+274
+341
+157
+759
+275
+529
+214
+154
+
+162
+204
+329
+379
+103
+707
+241
+556
+220
+150
+
+0.634
+0.515
+0.892
+0.586
+0.469
+0.619
+0.713
+0.533
+0.811
+0.987
+
+0.553
+0.359
+0.831
+0.550
+0.460
+0.568
+0.684
+0.491
+0.795
+0.984
+
+0.766
+0.792
+1.000
+0.882
+0.788
+0.882
+0.837
+0.823
+0.982
+0.955
+
+Table 1: Per-language inter-annotator agreement on a sample of S sentences, with A1 and A2 VMWEs
+annotated by each annotator. Fspan is the F-measure between annotators, κspan is the agreement on the
+annotation span and κcat is the agreement on the VMWE category. EL, EN and HI provided corpora
+annotated by more than 2 annotators. We report the highest scores among all possible annotator pairs.
+
+VMWE categories (Sec. 3.2). The Fspan score is the MWE-based F-measure when considering that one
+of the annotators tries to predict the other one’s annotations.18 This is identical to the F1-MWE score
+used to evaluate participating systems (Sec. 6). Fspan is an optimistic estimator which ignores chance
+agreement. On the other hand, κspan and κcat estimate to what extent the observed agreement PO exceeds
+the expected agreement PE, that is, κ = PO−PE
+1−PE
+
+Observed and expected agreement for κspan are based on the number of verbs V in the sample, as-
+suming that a simpliﬁcation of the task consists of deciding whether each verb belongs to a VMWE or
+not.19 If annotators perfectly agree on A1=2 annotated VMWEs, then we estimate that they agree on
+N = V − A1 − A2 + A1=2 verbs not belonging to a VMWE, so PO = A1=2+N
+V × A2
+V . As
+for κcat, we consider only the A1=2 VMWEs on which both annotators agree on the span, and calculate
+PO and PE based on the proportion of times both annotators agree on the VMWE’s category label.
+
+and PE = A1
+
+V
+
+.
+
+Inter-annotator agreement scores can give an idea of the quality of the guidelines and of the training
+procedures for annotators. We observe a high variability among languages, especially for determining
+the span of VMWEs, with κspan ranging from 0.227 for Spanish to 0.984 for Turkish. Macro-averaged
+κspan is 0.691, which is superior to the macro-averaged κunit reported in 2017, which was of 0.58 (Savary
+et al., 2017).20 Categorization agreement results are much more homogeneous, with a macro-average
+κcat of 0.836, which is also slightly higher than the one obtained in 2017, which was of 0.819.
+
+The variable agreement values observed could be explained by language and corpus characteristics
+(e.g. web texts are harder to annotate than newspapers). They could also be explained by the fact that the
+double-annotated samples are quite small. Finally, they could indicate that the guidelines are still vague
+and that annotators do not always receive appropriate training. In reality, probably a mixture of all these
+factors explains the low agreement observed for some languages. In short, Table 1 strongly suggests
+that there is still room for improvement in (a) guidelines, (b) annotator training, and (c) annotation team
+management, best practices, and methodology. It should also be noted that lower agreement values may
+correlate with the results obtained by participants: the lower the IAA for a given language (i.e. the more
+difﬁcult the task is for humans), the lower the results of automatic MWE identiﬁcation. Nevertheless,
+we believe that the systematic use of our in-house consistency checks tool helped homogenizing some
+of these annotation disagreements (Sec. 3.4).
+
+5 Shared Task Organization
+
+Each language in the shared task was handled by a team that was responsible for the choice of sub-
+corpora and for the annotation of VMWEs, in a similar setting as in the previous edition. For each
+
+18Every annotator annotated at least one VMWE, as attested by A1 and A2.
+19When no POS information was available (i.e. for AR), we approximated V as the number of sentences S, i.e. V ≈ S.
+20Notice that in 2017, the V ≈ S approximation was used for all languages, so both scores are not directly comparable.
+
+228language, we then split its corpus into training, test and development sets (train/test/dev), as follows:
+
+and the other 10% as a small training corpus.
+
+• If the corpus has less than 550 VMWEs: Take sentences containing 90% of the VMWEs as test,
+• If the corpus has between 550 and 1500 VMWEs: Take sentences containing 500 VMWEs as test,
+• If the corpus has between 1,500 and 5,000 VMWEs: Take sentences containing 500 VMWEs as
+• If the corpus has more than 5,000 VMWEs: Take sentences containing 10% of the VMWEs as test,
+
+test, take sentences containing 500 VMWEs as dev, and take the rest for training.
+
+and take the rest for training.
+
+take sentences containing 10% of the VMWEs as dev, and take the remaining 80% for training.
+
+As in edition 1.0, participants could submit their systems to two tracks: open and closed. Systems in
+
+the closed track were only allowed to train their models on the train and dev ﬁles provided.
+
+In this edition, we distinguished sentences based on their origin, so as to make sure that the fraction
+of each sub-corpus is the same in all splits for each language. For example, around 59% of all Basque
+sentences came from UD, while the other 41% came from the sub-corpus Elhuyar. We have made sure
+that similar percentages also applied to test/train/dev when taken in isolation. Due to this balancing act,
+for most languages, we could not keep the VMWEs in the same split as in edition 1.0.
+
+6 Evaluation Measures
+
+The goal of the evaluation measures is to represent the quality of system predictions when compared
+to the human-annotated gold standard for a given language. As in edition 1.0, we deﬁne two types of
+evaluation measures: a strict per-VMWE score (in which each VMWE in gold is either deemed predicted
+or not, in a binary fashion); and a fuzzy per-token score (which takes partial matches into account). For
+each of these two, we can calculate precision (P), recall (R) and F1-scores (F).
+
+Orthogonally to the type of measure, there is the choice of what subset of VMWEs to take into account
+from gold and system predictions. As in the previous edition, we calculate a general category-agnostic
+measure (both per-VMWE and per-token) based on the totality of VMWEs in both gold and system
+predictions — this measure only considers whether each VMWE has been properly predicted, regardless
+of category. We also calculate category-speciﬁc measures (both per-VMWE and per-token), where we
+consider only the subset of VMWEs associated with a given category.
+
+challenging phenomena speciﬁcally relevant to MWEs (Constant et al., 2017):
+
+	
+ 	C(;	( T ‘eye throw’⇒‘to look at’.
+
+We additionally consider the following phenomenon-speciﬁc measures, which focus on some of the
+• MWE continuity: We calculate per-VMWE scores for two different subsets: continuous e.g. TR is-
+tifa edecek ‘resignation will-do’⇒‘he/she will resign’, and discontinuous VMWEs e.g. SL imajo
+investicijske naˇcrte ‘they-have investment plans’⇒‘they have investment plans’.
+• MWE length: We calculate per-VMWE scores for two different subsets: single-token, e.g. DE an-
+fangen ‘at-catch’⇒‘begin’, ES abstenerse ‘abstain-REFL’⇒‘abstain’, and multi-token VMWEs
+e.g. FA
+• MWE novelty: We calculate per-VMWE scores for two subsets: seen and unseen VMWEs. We
+consider a VMWE in the (gold or prediction) test corpus as seen if a VMWE with the same multiset
+of lemmas is annotated at least once in the training corpus. Other VMWEs are deemed unseen.
+For instance, given the occurrence of EN has a new look in the training corpus, the occurrence of
+EN had a look of innocence and of EN having a look at this report in the test corpus would be
+considered seen and unseen, respectively.
+• MWE variability: We calculate per-VMWE scores for the subset of VMWEs that are variants of
+VMWEs from the training corpus. A VMWE is considered a variant if: (i) it is deemed as a seen
+VMWE, as deﬁned above, and (2) it is not identical to another VMWE, i.e. the training corpus does
+not contain the sequence of surface-form tokens as seen in this VMWE (including non-lexicalized
+components in between, in the case of discontinuous VMWEs). E.g., BG накриво ли беше
+стъпил is a variant of стъпя накриво ‘to step to the side’⇒‘to lose (one’s) footing’.
+
+Systems may predict VMWEs for all languages in the shared task, and the aforementioned measures
+are independently calculated for each language. Additionally, we calculate a macro-average score based
+
+229on all of the predictions. In this case, the precision P for a given measure (e.g. for continuous VMWEs)
+is the average of the precisions for all 19 languages. Arabic is not considered due to delays in the corpus
+release. Missing system predictions are assumed to have P = R = 0. The recall R is averaged in the same
+manner, and the average F score is calculated from these averaged P and R scores.
+
+7 System Results
+
+For the 2018 edition of the PARSEME Shared Task, 12 teams submitted 17 system results: 13 to the
+closed track and 4 to the open track. No team submitted system results for all 20 languages of the shared
+task, but 11 teams covered 19 languages (all except Arabic). Detailed result tables are reported on the
+shared task website.21 In the tables, systems are referred to by anonymous nicknames. System authors
+and their afﬁliations are available in the system description papers published in these proceeings.
+
+Most of the systems (Deep-BGT, GBD-NER-standard, GBD-NER-resplit, mumpitz, mumpitz-preinit,
+SHOMA, TRAPACC, TRAPACC-S and Veyn) exploited neural networks. Syntactic trees and parsing
+methods were employed in other systems (Milos, MWETreeC and TRAVERSAL) while CRF-DepTree-
+categ and CRF-Seq-noncateg are based on a tree-structured CRF. Polirem-basic and Polirem-rich use
+statistical methods and association measures whereas varIDE relies on a Naive Bayes classiﬁer.
+
+As for the best performing systems, TRAPACC and TRAVERSAL were ranked ﬁrst for 8 languages
+and 7 language, respectively. TRAVERSAL is more effective in Slavic and Romance languages, whereas
+TRAPACC works well for German and English. In the “Other” language group, GDB-NER achieved the
+best results for Farsi and Turkish, and CRF approaches proved to be the best for Hindi. The best results
+for Bulgarian were obtained by varIDE, based on a Naive Bayes classiﬁer.
+
+Results per language show that, Hungarian and Romanian were the “easiest” languages for the sys-
+tems, with best MWE-based F-scores of 90.31 and 85.28, respectively. Hebrew, English and Lithuanian
+show the lowest MWE-based F-scores, not exceeding 23.28, 32.88 and 32.17, respectively. This is likely
+due to the amount of annotated training data: Hungarian had the highest, whikle English and Lithuanian
+the lowest, number of VMWEs in the training data. A notable exception to this tendency is Hindi, where
+good results (an F-score of 72.98) could be achieved building on a small amount of training data. This is
+probably due to the high number of multi-verb constructions (MVCs) in Hindi, which are usually formed
+by a sequence of two verbs, hence relatively easily identiﬁed by relying on POS tags.
+
+Table 12 shows the effectiveness of MWE identiﬁcation with regard to MWE categories. The highest
+F-scores were achieved for IRVs (especially for Balto-Slavic languages). This might be due to the fact
+that the IRVs tend to be continuous and must contain a reﬂexive pronoun/clitic, therefore the presence
+of such a pronoun in the immediate neighborhood of a verb is a strong predictor for IRVs. The LVC.full
+category is present in all languages. Interestingly, they are most effectively identiﬁed in the “Other”
+language group. Idioms occur in the test corpora of almost all languages (except Farsi), and they can be
+identiﬁed to the greatest extent in Romance languages. VPCs seem to be the easiest to ﬁnd in Hungarian.
+In regards to phenomenon-speciﬁc macro-average results (Tables 4 to 11), let us have a closer look
+at the F1-MWE measure of the 11 systems which submitted results to all 19 languages, except MWE-
+TreeC (whose results are hard to interpret). The differences are: (i) from 13 to 28 points (17 points on
+average) for continuous vs. discontinuous VMWEs, (ii) from 14 to 43 points (27 points on average) for
+multitoken vs. single-token VMWEs, (iii) from 45 to 56 points (50 points on average) for seen-in-train
+vs. unseen-in-train VMWEs, and (iv) from 13 to 27 points (20 points on average) for identical-to-train
+vs. variant-of-train VMWEs. These results conﬁrm that the phenomena they focus on are major chal-
+lenges in the VMWE identiﬁcation task, and we suggest that the corresponding measures should be
+systematically used for future evaluation. The hardest challenge is the one of identifying unseen-in-train
+VMWEs. This result is not a suprise since MWE-hood is, by nature, a lexical phenomenon, that is, a
+particular idiomatic reading is available only in presence of a combination of particular lexical units.
+Replacing one of them by a semantically close lexeme usually leads to the loss of idiomatic reading,
+e.g. force one’s hand ‘compel someone to act against her will’ is an idiom, while force one’s arm can
+only be understood literally. Few other, non-lexical, hints are given to distinguish a particular VMWE
+
+21http://multiword.sourceforge.net/sharedtaskresults2018
+
+230occurrence from a literal expression, because a VMWE usually takes syntactically regular forms. Mor-
+phosyntactic idiosyncrasy (e.g. the fact that a given VMWE allows some and blocks some other regular
+syntactic transformations) is a property of types rather than tokens. We expect, therefore, satisfactory
+unseen-in-train VMWE identiﬁcation results mostly from systems using large-scale VMWE lexicons or
+semi/unsupervised methods and very large corpora.
+
+8 Conclusions and Future Work
+
+We reported on edition 1.1 of the PARSEME Shared Task aiming at identifying verbal MWEs in texts in
+20 languages. We described our corpus annotation methodology, the data provided to the participants, the
+shared task modalities and evaluation measures. The ofﬁcial results of the shared task were also presented
+and brieﬂy discussed. The outputs of individual systems22 should be compared more thoroughly in the
+future, so as to see how systems with different architectures cope with different phenomena. For instance,
+it would be interesting to check if, as expected, discontinuous VMWEs are handled better by parsing-
+based methods vs. sequential taggers, or by LSTMs vs. other neural network architectures.
+
+Compared to the ﬁrst edition in 2017, we attracted a larger number of participants (17 vs. 7), with
+11 of the submissions covering 19 languages. We expect that this growing interest in modeling and
+computational treatment of verbal MWEs will motivate teams working on corpus annotation, especially
+from new language families, to join the initiative. We expect to maintain and continuously increase the
+quality and the size of the existing annotated corpora. For instance, we have identiﬁed weaknesses in the
+guidelines for MVCs that will require enhancements. Furthermore, we need to collect feedback about
+the IAV experimental category, and decide whether we consolidate its annotation guidelines.
+
+Our ambitious goal for a future shared task is to extend annotation to other MWE categories, not only
+verbal ones. We are aware of corpora and guidelines for individual languages (e.g. English or French)
+and/or MWE categories (e.g. noun-noun compounds). However, a considerable effort will be required
+to design and apply universal annotation guidelines for the annotation of new MWE categories. We
+strongly believe that the large community and collective expertise gathered in the PARSEME initiative
+will allow us to take on this challenge. We deﬁnitely hope that this initiative will continue in the next
+years, yielding available multilingual annotated corpora that can foster MWE research in computational
+linguistics, as well as in linguistics and translation studies.
+
+Acknowledgments
+This work was supported by the IC1207 PARSEME COST action23, and national funded projects: LD-
+PARSEME24 (LD14117) in the Czech Republic, and PARSEME-FR25 (ANR-14-CERA-0001) in France.
+Carla Parra Escartín is funded by the European Union’s Horizon 2020 programme under the Marie
+Skłodowska-Curie grant agreement No 713567, and Science Foundation Ireland in the ADAPT Centre
+(Grant 13/RC/2106) at Dublin City University. Behrang QasemiZadeh and Timm Lichte are funded by
+the Deutsche Forschungsgemeinschaft (DFG) within the CRC 991 “The Structure of Representations in
+Language, Cognition, and Science”. Veronika Vincze was supported by the UNKP-17-4 New National
+Excellence Program of the Ministry of Human Capacities, Hungary. The Slovenian team was supported
+by the Slovenian Research Agency via New grammar of contemporary standard Slovene: sources and
+methods (J6-8256 project). Ashwini Vaidya was supported by the DST-CSRI (Dept of Science and
+Technology, Govt. of India, Cognitive Science Research Initiative) fellowship. The Turkish team was
+supported by Bo˘gaziçi University Research Fund Grant Number 14420. We are grateful to Maarten van
+Gompel for his help with adapting the FLAT annotation platform to our needs. Our thanks go also to all
+language leaders (LLs) and annotators, listed in Appendix A, for their their feedback on the annotation
+guidelines and preparing the annotated corpora.
+
+22Available at https://gitlab.com/parseme/sharedtask-data/tree/master/1.1/system-results.
+23http://www.parseme.eu
+24https://ufal.mff.cuni.cz/grants/ld-parseme
+25http://parsemefr.lif.univ-mrs.fr/
+
+231References
+Hazem Al Saied, Matthieu Constant, and Marie Candito. 2017. The ATILF-LLF system for Parseme shared
+task: a transition-based verbal multiword expression tagger. In Proceedings of the 13th Workshop on Multiword
+Expressions (MWE 2017), pages 127–132, Valencia, Spain, April. Association for Computational Linguistics.
+
+Maria Jesús Aranzabe, Aitziber Atutxa, Kepa Bengoetxea, Arantza Diaz de Ilarraza, Iakes Goenaga, Koldo Go-
+jenola, and Larraitz Uria. 2015. Automatic conversion of the Basque dependency treebank to Universal De-
+pendencies. In Markus Dickinsons, Erhard Hinrichs, Agnieszka Patejuk, and Adam Przepiórkowski, editors,
+Proceedings of the Fourteenth International Workshop on Treebanks an Linguistic Theories (TLT14), pages
+233–241. Warszawa, Poland. Institute of Computer Science of the Polish Academy of Sciences.
+
+Špela Arhar Holdt, Vojko Gorjanc, and Simon Krek. 2007. FidaPLUS corpus of Slovenian: the new generation
+of the Slovenian reference corpus: its design and tools. In Proceedings of the Corpus Linguistics Conference,
+CL2007, Birmingham.
+
+Timothy Baldwin and Su Nam Kim. 2010. Multiword expressions. In Nitin Indurkhya and Fred J. Damerau,
+editors, Handbook of Natural Language Processing, Second Edition, pages 267–292. CRC Press, Taylor and
+Francis Group, Boca Raton, FL. ISBN 978-1420085921.
+
+Riyaz Ahmad Bhat, Rajesh Bhatt, Annahita Farudi, Prescott Klassen, Bhuvana Narasimhan, Martha Palmer,
+Owen Rambow, Dipti Misra Sharma, Ashwini Vaidya, Sri Ramagurumurthy Vishnu, and Fei Xia, 2015. The
+Hindi/Urdu Treebank Project. Springer Press.
+
+Ondrej Bojar, Rajen Chatterjee, Christian Federmann, Yvette Graham, Barry Haddow, Matthias Huck, Antonio Ji-
+meno Yepes, Philipp Koehn, Varvara Logacheva, Christof Monz, Matteo Negri, Aurelie Neveol, Mariana Neves,
+Martin Popel, Matt Post, Raphael Rubino, Carolina Scarton, Lucia Specia, Marco Turchi, Karin Verspoor, and
+Marcos Zampieri. 2016. Findings of the 2016 Conference on Machine Translation (WMT16). In Proceedings
+of the First Conference on Machine Translation (WMT16), Volume 2: Shared Task Papers, pages 131–198.
+
+Tiberiu Boro¸s, Sonia Pipa, Verginica Barbu Mititelu, and Dan Tuﬁ¸s. 2017. A data-driven approach to verbal
+multiword expression detection. PARSEME Shared Task system description paper. In Proceedings of the 13th
+Workshop on Multiword Expressions (MWE 2017), pages 121–126, Valencia, Spain, April. Association for
+Computational Linguistics.
+
+Marie Candito and Matthieu Constant. 2014. Strategies for contiguous multiword expression analysis and depen-
+dency parsing. In Proceedings of the 52nd Annual Meeting of the Association for Computational Linguistics
+(Volume 1: Long Papers), pages 743–753, Baltimore, Maryland, June. Association for Computational Linguis-
+tics.
+
+Marie Candito and Djamé Seddah. 2012. Le corpus sequoia : annotation syntaxique et exploitation pour
+
+l’adaptation d’analyseur par pont lexical. In Proceedings of TALN 2012 (in French), Grenoble, France, June.
+
+Matthieu Constant and Joakim Nivre. 2016. A transition-based system for joint lexical and syntactic analysis.
+In Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long
+Papers), pages 161–171, Berlin, Germany, August. Association for Computational Linguistics.
+
+Mathieu Constant, Gül¸sen Eryi˘git, Johanna Monti, Lonneke van der Plas, Carlos Ramisch, Michael Rosner, and
+Amalia Todirascu. 2017. Multiword expression processing: A survey. Computational Linguistics, 43(4):837–
+892.
+
+Dóra Csendes, János Csirik, Tibor Gyimóthy, and András Kocsor. 2005. The Szeged TreeBank.
+
+In Václav
+Matousek, Pavel Mautner, and Tomás Pavelka, editors, Proceedings of the 8th International Conference on
+Text, Speech and Dialogue, TSD 2005, Lecture Notes in Computer Science, pages 123–132, Berlin / Heidelberg,
+September. Springer.
+
+Jenny Rose Finkel and Christopher D. Manning. 2009. Joint parsing and named entity recognition.
+
+NAACL, pages 326–334. The Association for Computational Linguistics.
+
+In HLT-
+
+Spence Green, Marie-Catherine de Marneffe, John Bauer, and Christopher D. Manning. 2011. Multiword expres-
+sion identiﬁcation with tree substitution grammars: A parsing tour de force with French. In Proceedings of the
+2011 Conference on Empirical Methods in Natural Language Processing, pages 725–735, Edinburgh, Scotland,
+UK., July. Association for Computational Linguistics.
+
+Spence Green, Marie-Catherine de Marneffe, and Christopher D. Manning. 2013. Parsing models for identifying
+
+multiword expressions. Computational Linguistics, 39(1):195–227.
+
+232Natalia Klyueva, Antoine Doucet, and Milan Straka. 2017. Neural networks for multi-word expression detection.
+In Proceedings of the 13th Workshop on Multiword Expressions (MWE 2017), pages 60–65, Valencia, Spain,
+April. Association for Computational Linguistics.
+
+Svetla Koeva, Ivelina Stoyanova, Svetlozara Leseva, Rositsa Dekova, Tsvetana Dimitrova, and Ekaterina Tarpo-
+manova. 2012. The Bulgarian National Corpus: Theory and practice in corpus design. Journal of Language
+Modelling, 0(1):65–110.
+
+Simon Krek, Kaja Dobrovoljc, Tomaž Erjavec, Sara Može, Nina Ledinek, Nanika Holz, Katja Zupan, Polona Gan-
+tar, and Taja Kuzman. 2017. Training corpus ssj500k 2.0. Slovenian language resource repository CLARIN.SI,
+http://hdl.handle.net/11356/1165.
+
+Joseph Le Roux, Antoine Rozenknop, and Matthieu Constant. 2014. Syntactic parsing and compound recognition
+via dual decomposition: Application to French. In Proceedings of COLING 2014, the 25th International Con-
+ference on Computational Linguistics: Technical Papers, pages 1875–1885, Dublin, Ireland, August. Dublin
+City University and Association for Computational Linguistics.
+
+Verena Lyding, Egon Stemle, Claudia Borghetti, Marco Brunello, Sara Castagnoli, Felice Dell’Orletta, Henrik
+Dittmann, Alessandro Lenci, and Vito Pirrelli. 2014. The PAISÀ Corpus of Italian Web Texts. In Proceed-
+ings of the 9th Web as Corpus Workshop (WaC-9), pages 36–43, Gothenburg, Sweden, April. Association for
+Computational Linguistics.
+
+Alfredo Maldonado, Lifeng Han, Erwan Moreau, Ashjan Alsulaimani, Koel Dutta Chowdhury, Carl Vogel, and
+Qun Liu. 2017. Detection of verbal multi-word expressions via conditional random ﬁelds with syntactic depen-
+dency features and semantic re-ranking. In Proceedings of the 13th Workshop on Multiword Expressions (MWE
+2017), pages 114–120, Valencia, Spain, April. Association for Computational Linguistics.
+
+Ryan McDonald, Joakim Nivre, Yvonne Quirmbach-Brundage, Yoav Goldberg, Dipanjan Das, Kuzman Ganchev,
+Keith Hall, Slav Petrov, Hao Zhang, Oscar Täckström, Claudia Bedini, Núria Bertomeu Castelló, and Jungmee
+Lee. 2013. Universal dependency annotation for multilingual parsing. In Proceedings of the 51st Annual Meet-
+ing of the Association for Computational Linguistics (Volume 2: Short Papers), pages 92–97, Soﬁa, Bulgaria,
+August. Association for Computational Linguistics.
+
+Alexis Nasr, Carlos Ramisch, José Deulofeu, and André Valli. 2015. Joint dependency parsing and multiword
+expression tokenization. In Proceedings of the 53rd Annual Meeting of the Association for Computational Lin-
+guistics and the 7th International Joint Conference on Natural Language Processing (Volume 1: Long Papers),
+pages 1116–1126, Beijing, China, July. Association for Computational Linguistics.
+
+Luka Nerima, Vasiliki Fouﬁ, and Eric Wehrli. 2017. Parsing and MWE detection: Fips at the PARSEME shared
+task. In Proceedings of the 13th Workshop on Multiword Expressions (MWE 2017), pages 54–59, Valencia,
+Spain, April. Association for Computational Linguistics.
+
+Joakim Nivre, Marie-Catherine de Marneffe, Filip Ginter, Yoav Goldberg, Jan Hajiˇc, Christopher D. Manning,
+Ryan McDonald, Slav Petrov, Sampo Pyysalo, Natalia Silveira, Reut Tsarfaty, and Daniel Zeman. 2016. Uni-
+versal Dependencies v1: a multilingual treebank collection. In Nicoletta Calzolari, Khalid Choukri, Thierry De-
+clerck, Marko Grobelnik, Bente Maegaard, Joseph Mariani, Asuncion Moreno, Jan Odijk, and Stelios Piperidis,
+editors, Proceedings of the Tenth International Conference on Language Resources and Evaluation, pages
+1659–1666, Portorož, Slovenia, May.
+
+Maciej Ogrodniczuk, Katarzyna Głowi´nska, Mateusz Kope´c, Agata Savary, and Magdalena Zawisławska. 2015.
+
+Coreference in Polish: Annotation, Resolution and Evaluation. Walter De Gruyter.
+
+Adam Przepiórkowski, Mirosław Ba´nko, Rafał L. Górski, Barbara Lewandowska-Tomaszczyk, Marek Łazi´nski,
+and Piotr P˛ezik. 2011. National Corpus of Polish. In Zygmunt Vetulani, editor, Proceedings of the 5th Lan-
+guage & Technology Conference: Human Language Technologies as a Challenge for Computer Science and
+Linguistics, pages 259–263, Pozna´n, Poland.
+
+Behrang QasemiZadeh and Saeed Rahimi. 2006. Persian in MULTEXT-East framework.
+
+In Tapio Salakoski,
+Filip Ginter, Sampo Pyysalo, and Tapio Pahikkala, editors, Advances in Natural Language Processing, pages
+541–551, Berlin, Heidelberg. Springer Berlin Heidelberg.
+
+Victoria Rosén, Gyri Smørdal Losnegaard, Koenraad De Smedt, Eduard Bejˇcek, Agata Savary, Adam
+Przepiórkowski, Petya Osenova, and Verginica Barbu Mitetelu. 2015. A survey of multiword expressions in
+treebanks. In Proceedings of the 14th International Workshop on Treebanks & Linguistic Theories conference,
+Warsaw, Poland, December.
+
+233Ivan A. Sag, Timothy Baldwin, Francis Bond, Ann Copestake, and Dan Flickinger. 2002. Multiword Expressions:
+A Pain in the Neck for NLP. In Proceedings of the 3rd International Conference on Intelligent Text Processing
+and Computational Linguistics (CICLing-2002), pages 1–15, Mexico City, Mexico.
+
+Agata Savary, Manfred Sailer, Yannick Parmentier, Michael Rosner, Victoria Rosén, Adam Przepiórkowski,
+Cvetana Krstev, Veronika Vincze, Beata Wójtowicz, Gyri Smørdal Losnegaard, Carla Parra Escartín, Jakub
+Waszczuk, Matthieu Constant, Petya Osenova, and Federico Sangati. 2015. PARSEME – PARSing and Multi-
+word Expressions within a European multilingual network. In 7th Language & Technology Conference: Human
+Language Technologies as a Challenge for Computer Science and Linguistics (LTC 2015), Pozna´n, Poland,
+November.
+
+Agata Savary, Carlos Ramisch, Silvio Cordeiro, Federico Sangati, Veronika Vincze, Behrang QasemiZadeh, Marie
+Candito, Fabienne Cap, Voula Giouli, Ivelina Stoyanova, and Antoine Doucet. 2017. The PARSEME shared
+In Proceedings of the 13th Workshop on
+task on automatic identiﬁcation of verbal multiword expressions.
+Multiword Expressions (MWE 2017), pages 31–47, Valencia, Spain, April. Association for Computational Lin-
+guistics.
+
+Agata Savary, Marie Candito, Verginica Barbu Mititelu, Eduard Bejˇcek, Fabienne Cap, Slavomír ˇCéplö, Sil-
+vio Ricardo Cordeiro, Gül¸sen Eryi˘git, Voula Giouli, Maarten van Gompel, Yaakov HaCohen-Kerner, Jolanta
+Kovalevskait˙e, Simon Krek, Chaya Liebes kind, Johanna Monti, Carla Parra Escartín, Lonneke van der Plas,
+Behrang QasemiZadeh, Carlos Ramisch, Federico Sangati, Ivelina Stoyanova, and Veronika Vincze.
+forth-
+coming. PARSEME multilingual corpus of verbal multiword expressions.
+In Stella Markantonatou, Carlos
+Ramisch, Agata Savary, and Veronika Vincze, editors, Multiword expressions at length and in depth. Extended
+papers from the MWE 2017 workshop. Language Science Press, Berlin, Germany.
+
+Nathan Schneider, Dirk Hovy, Anders Johannsen, and Marine Carpuat. 2016. SemEval-2016 Task 10: Detecting
+Minimal Semantic Units and their Meanings (DiMSUM). In Proceedings of the 10th International Workshop
+on Semantic Evaluation (SemEval-2016), pages 546–559, San Diego, California, June. Association for Compu-
+tational Linguistics.
+
+Katalin Ilona Simkó, Viktória Kovács, and Veronika Vincze. 2017. USzeged: Identifying verbal multiword
+In Proceedings of the 13th Workshop on Multiword
+
+expressions with POS tagging and parsing techniques.
+Expressions (MWE 2017), pages 48–53, Valencia, Spain, April. Association for Computational Linguistics.
+
+Mariona Taulé, Aina Peris, and Horacio Rodríguez. 2016. Iarg-AnCora: Spanish corpus annotated with implicit
+
+arguments. Language Resources and Evaluation, 50(3):549–584, Sep.
+
+Veronika Vincze, János Zsibrita, and István Nagy T. 2013. Dependency parsing for identifying Hungarian light
+verb constructions. In Proceedings of the Sixth International Joint Conference on Natural Language Processing,
+pages 207–215, Nagoya, Japan, October. Asian Federation of Natural Language Processing.
+
+Jakub Waszczuk, Agata Savary, and Yannick Parmentier. 2016. Promoting multiword expressions in A* TAG
+parsing. In Nicoletta Calzolari, Yuji Matsumoto, and Rashmi Prasad, editors, COLING 2016, 26th International
+Conference on Computational Linguistics, Proceedings of the Conference: Technical Papers, December 11-16,
+2016, Osaka, Japan, pages 429–439. ACL.
+
+Eric Wehrli, Violeta Seretan, and Luka Nerima. 2010. Sentence analysis and collocation identiﬁcation. In Pro-
+ceedings of the Workshop on Multiword Expressions: from Theory to Applications (MWE 2010), pages 27–35,
+Beijing, China, August. Association for Computational Linguistics.
+
+Eric Wehrli. 2014. The relevance of collocations for parsing. In Proceedings of the 10th Workshop on Multiword
+
+Expressions (MWE), pages 26–32, Gothenburg, Sweden, April. Association for Computational Linguistics.
+
+234Appendix A: Composition of the corpus anotation teams
+Balto-Slavic languages:
+(BG) Ivelina Stoyanova (LL), Tsvetana Dimitrova, Svetlozara Leseva,
+Valentina Stefanova, Maria Todorova; (HR) Maja Buljan (LL), Goranka Blagus, Ivo-Pavao Jazbec,
+Kristina Kocijan, Nikola Ljubeši´c, Ivana Matas, Jan Šnajder; (LT) Jolanta Kovalevskait˙e (LL), Agn˙e
+Bielinskien˙e, Loic Boizou; (PL) Agata Savary (LL), Emilia Palka-Binkiewicz; (SL): Polona Gantar (LL),
+Simon Krek (LL), Špela Arhar Holdt, Jaka ˇCibej, Teja Kavˇciˇc, Taja Kuzman.
+Germanic languages: (DE) Timm Lichte (LL), Rafael Ehren; (EN) Abigail Walsh (LL), Claire Bonial,
+Paul Cook, Kristina Geeraert, John McCrae, Nathan Schneider, Clarissa Somers.
+Romance languages: (ES) Carla Parra Escartín (LL), Cristina Aceta, Héctor Martínez Alonso; (FR)
+Marie Candito (LL), Matthieu Constant, Carlos Ramisch, Caroline Pasquer, Yannick Parmentier, Jean-
+Yves Antoine, Agata Savary; (IT) Johanna Monti (LL), Valeria Caruso, Maria Pia di Buono, Antonio
+Pascucci, Annalisa Raffone, Anna Riccio; (RO) Verginica Barbu Mititelu (LL), Mihaela Onofrei, Mi-
+haela Ionescu; (PT) Renata Ramisch (LL), Aline Villavicencio, Carlos Ramisch, Helena de Medeiros
+Caseli, Leonardo Zilio, Silvio Ricardo Cordeiro.
+Other languages: (AR) Abdelati Hawwari (LL), Mona Diab, Mohamed Elbadrashiny, Rehab Ibrahim;
+(EU) Uxoa Inurrieta (LL), Itziar Aduriz, Ainara Estarrona, Itziar Gonzalez, Antton Gurrutxaga, Ruben
+Urizar; (EL) Voula Giouli (LL), Vassiliki Fouﬁ, Aggeliki Fotopoulou, Stella Markantonatou, Stella Pa-
+padelli; (FA) Behrang QasemiZadeh (LL), Shiva Taslimipoor; (HE) Chaya Liebeskind (LL), Yaakov
+Ha-Cohen Kerner (LL), Hevi Elyovich, Ruth Malka; (HI) Archna Bhatia (LL), Ashwini Vaidya (LL),
+Kanishka Jain, Vandana Puri, Shraddha Ratori, Vishakha Shukla, Shubham Srivastava; (HU) Veronika
+Vincze (LL), Katalin Simkó, Viktória Kovács; (TR) Tunga Güngör (LL), Gözde Berk, Berna Erden.
+
+Appendix B: Shared task results
+
+Lang-split Sent.
+
+Tok. Sent. VMWE VID IRV LVC LVC VPC VPC IAV MVC LS
+
+AR-train
+AR-dev
+AR-test
+AR-Total
+BG-train
+BG-dev
+BG-test
+BG-Total
+DE-train
+DE-dev
+DE-test
+DE-Total
+EL-train
+EL-dev
+EL-test
+EL-Total
+EN-train
+EN-test
+EN-Total
+ES-train
+ES-dev
+ES-test
+ES-Total
+EU-train
+EU-dev
+EU-test
+EU-Total
+FA-train
+FA-dev
+FA-test
+FA-Total
+
+2370 231030
+387
+16252
+380
+17962
+3137 265244
+17813 399173
+1954 42020
+1832 39220
+21599 480413
+6734 130588
+1184 22146
+1078 20559
+8996 173293
+4427 122458
+2562 66431
+1261 35873
+8250 224762
+3471 53201
+3965 71002
+7436 124203
+2771 96521
+698 26220
+2046
+59623
+5515 182364
+8254 117165
+1500 21604
+1404 19038
+11158 157807
+45153
+2784
+8923
+474
+359
+7492
+3617 61568
+
+length
+97.4
+41.9
+47.2
+84.5
+22.4
+21.5
+21.4
+22.2
+19.3
+18.7
+19
+19.2
+27.6
+25.9
+28.4
+27.2
+15.3
+17.9
+16.7
+34.8
+37.5
+29.1
+33
+14.1
+14.4
+13.5
+14.1
+16.2
+18.8
+20.8
+17
+
+240
+254
+
+full cause
+940
+17
+3219 1272
+0
+419
+500
+17
+0
+410
+500
+31
+4219 1320
+17 1769
+5364 1005 2729 1421
+214
+670 173
+670
+82
+274
+6704 1260 3240 1909
+220
+218
+2820 977
+34
+48
+503 181
+42
+500 183
+40
+3823 1341 3548
+294
+938
+0
+1404 395
+376
+0
+500
+81
+501 169
+0
+308
+2405 645 3548 1622
+0
+331
+78
+166
+501
+0
+244
+832 139 3548
+223
+479
+1739 167
+84
+500
+65
+114
+500
+95 121
+85
+392
+2739 327 4262
+0 2074
+2823 597
+382
+0
+500 104
+500
+73
+0
+410
+3823 774 4262 2866
+1 2433
+2451
+17
+501
+0
+501
+0
+0
+501
+0
+501
+3453
+17 4263 3435
+Continued on next page.
+
+60
+79
+
+full semi
+0
+957
+0
+64
+0
+59
+0 1080
+0
+135
+0
+35
+0
+52
+222
+0
+28 1264
+221
+2
+2
+210
+32 1695
+19
+44
+8
+34
+11
+11
+38
+89
+7
+151
+146
+36
+297
+43
+0
+36
+0
+17
+28
+1
+1
+81
+0
+152
+0
+14
+17
+0
+0
+183
+0
+0
+0
+0
+0
+0
+0
+0
+
+0
+0
+0
+0
+0
+0
+0
+0
+74
+0
+8
+0
+8
+0
+90
+0
+0
+113
+0
+17
+0
+23
+0
+153
+0
+0
+0
+0
+0
+0
+0
+0
+16
+19
+44
+26
+45
+60
+0 360
+0
+87
+0
+64
+0 511
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+ICV
+33
+0
+0
+33
+0
+0
+0
+0
+0
+0
+0
+0
+8
+1
+2
+11
+0
+4
+4
+474
+133
+106
+713
+0
+0
+0
+0
+0
+0
+0
+0
+
+0
+0
+0
+
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+235Lang-split
+
+Sent.
+
+Tok. Sent. VMWE VID IRV LVC LVC VPC VPC IAV MVC LS
+
+Continued from previous page.
+
+FR-train
+FR-dev
+FR-test
+FR-Total
+HE-train
+HE-dev
+HE-test
+HE-Total
+HI-train
+HI-test
+HI-Total
+HR-train
+HR-dev
+HR-test
+HR-Total
+HU-train
+HU-dev
+HU-test
+HU-Total
+IT-train
+IT-dev
+IT-test
+IT-Total
+LT-train
+LT-test
+LT-Total
+PL-train
+PL-dev
+PL-test
+PL-Total
+PT-train
+PT-dev
+PT-test
+PT-Total
+RO-train
+RO-dev
+RO-test
+RO-Total
+SL-train
+SL-dev
+SL-test
+SL-Total
+TR-train
+TR-dev
+TR-test
+TR-Total
+Total
+
+17225 432389
+56254
+2236
+39489
+1606
+21067
+528132
+237472
+12106
+65843
+3385
+3209
+65698
+18700 369013
+17850
+856
+17580
+828
+35430
+1684
+53486
+2295
+19621
+834
+16429
+708
+3837
+89536
+4803 120013
+15564
+601
+755
+20759
+156336
+6159
+360883
+13555
+32613
+917
+37293
+1256
+15728
+430789
+4895
+90110
+6209 118402
+208512
+11104
+13058
+220465
+26030
+1763
+27823
+1300
+274318
+16121
+506773
+22017
+3117
+68581
+2770
+62648
+27904 638002
+42704 781968
+7065 118658
+6934 114997
+56703 1015623
+201853
+9567
+38146
+1950
+40523
+1994
+13511
+280522
+334880
+16715
+27196
+1320
+14388
+577
+18612
+376464
+280838 6072331
+
+length
+25.1
+25.1
+24.5
+25
+19.6
+19.4
+20.4
+19.7
+20.8
+21.2
+21
+23.3
+23.5
+23.2
+23.3
+24.9
+25.8
+27.4
+25.3
+26.6
+35.5
+29.6
+27.3
+18.4
+19
+18.7
+16.8
+14.7
+21.4
+17
+23
+22
+22.6
+22.8
+18.3
+16.7
+16.5
+17.9
+21
+19.5
+20.3
+20.7
+20
+20.6
+24.9
+20.2
+21.6
+
+154
+108
+
+ICV
+full cause
+0
+19
+1746 1247 1470
+4550
+0
+1
+252
+207
+629
+0
+4
+212
+160
+498
+0
+24
+2165 5772 1882
+5677
+0
+0
+0
+545
+519
+1236
+0
+0
+148
+0
+258
+501
+0
+0
+211
+182
+0
+502
+0
+0
+959 5772
+904
+2239
+0
+176
+321
+0
+23
+534
+0
+130
+320
+38
+0
+500
+0
+306
+641
+61 5772
+1034
+0
+0
+303
+468
+113
+1450
+0
+0
+34
+139
+143
+500
+0
+0
+131
+33
+118
+501
+0
+0
+577
+180 6497
+2451
+0
+0
+892
+0
+84
+6205
+0
+0
+85
+10
+0
+779
+0
+0
+10
+0
+166
+776
+0
+0
+1143
+104 6497
+7760
+23 20
+544
+942
+3254 1098
+9
+6
+100
+106
+197
+500
+5
+8
+104
+503
+96
+201
+34 37
+4257 1496 7641
+748
+0
+0
+195
+0
+312
+106
+0
+0
+284
+0
+500
+202
+0
+0
+479
+308
+812
+7641
+0
+0
+4122
+373 1785
+1531
+0
+0
+153
+245
+57
+515
+0
+0
+73
+515
+249
+149
+0
+0
+503 9920 1833
+5152
+0
+0
+689 2775
+882
+4430
+0
+0
+553
+130
+83
+337
+0
+0
+118
+553
+337
+91
+0
+0
+1130 10783 3449
+5536
+0
+0
+250
+1269 3048
+4713
+0
+0
+29
+169
+589
+373
+0
+0
+589
+173
+363
+34
+0
+0
+313
+5891 1611 14567
+0
+0
+176
+500 1162
+2378
+0
+0
+30
+224
+121
+500
+0
+0
+35
+106
+500
+245
+0
+0
+3378
+727 16198
+241
+0
+1
+2952
+0
+3172
+6125
+0
+0
+225
+0
+285
+510
+0
+1
+506
+233
+0
+272
+2
+0
+7141 3690 16198 3449
+79326 18757 16198 28190 2285 8527 1156 3049 1127 37
+
+full semi
+0
+68
+0
+15
+0
+14
+97
+0
+59
+113
+34
+61
+60
+49
+223
+153
+0
+14
+0
+12
+0
+26
+0
+45
+26
+1
+0
+31
+102
+1
+363 4131
+10
+539
+28
+486
+401 5156
+66
+147
+17
+19
+23
+25
+191
+106
+0
+11
+0
+14
+0
+25
+180
+0
+0
+33
+0
+15
+0
+228
+0
+84
+3
+0
+0
+7
+0
+94
+0
+146
+0
+18
+19
+0
+0
+183
+0
+40
+0
+12
+0
+13
+65
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+521
+157
+188
+866
+0
+0
+0
+0
+414
+44
+41
+499
+0
+0
+0
+253
+27
+29
+309
+0
+0
+0
+0
+0
+0
+0
+0
+500
+113
+101
+714
+0
+0
+0
+0
+
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+735
+135
+86
+956
+0
+2
+0
+2
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+
+Table 2: Statistics on the training (train), development (dev), and test corpora. Number of sentences
+(Sent.), number of tokens (Tok.), average sentence length in number of tokens (Sent.
+length), total
+number of annotated VMWEs (VMWE), and number of annotated VMWEs broken down by category
+(VID, IRV, . . . )
+
+236System
+
+Track
+
+#Langs
+
+TRAVERSAL
+TRAPACC_S
+TRAPACC
+CRF-Seq-nocategs
+varIDE
+CRF-DepTree-categs
+GBD-NER-standard
+GBD-NER-resplit
+Veyn
+mumpitz
+Polirem-rich
+Polirem-basic
+MWETreeC
+SHOMA
+Deep-BGT
+Milos
+mumpitz-preinit
+
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+open
+open
+open
+open
+
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+7/19
+3/19
+3/19
+19/19
+19/19
+10/19
+4/19
+1/19
+
+P
+
+R
+
+54
+
+F1
+
+Rank
+MWE MWE MWE MWE
+67.58
+62.28
+55.68
+56.13
+61.49
+52.33
+36.56
+30.26
+42.76
+17.14
+10.9
+10.78
+0.21
+66.08
+33.41
+9.17
+2.28
+
+44.97
+41.4
+44.67
+39.12
+36.71
+37.83
+48.3
+52.95
+32.51
+13.03
+2.87
+0.65
+3.72
+51.82
+25.29
+7.87
+1.9
+
+49.74
+49.57
+46.11
+45.97
+43.91
+41.62
+38.51
+36.94
+14.81
+4.54
+1.23
+0.4
+58.09
+28.79
+8.47
+2.07
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+1
+2
+3
+4
+
+P
+Tok
+77.41
+68.54
+62.1
+73.44
+64.13
+64.65
+41.11
+33.83
+58.13
+24.95
+13.07
+11.33
+23.5
+76.22
+39.77
+11.5
+3.71
+
+R
+Tok
+48.55
+42.06
+46.37
+43.49
+37.63
+41.56
+52.21
+58.03
+36.57
+15.5
+3.89
+0.68
+24.78
+54.27
+26.47
+8.25
+2.35
+
+F1
+Tok
+59.67
+52.13
+53.09
+54.63
+47.43
+50.6
+46
+
+42.74
+44.9
+19.12
+
+6
+
+1.28
+24.12
+63.4
+31.78
+9.61
+2.88
+
+Rank
+Tok
+1
+4
+3
+2
+6
+5
+7
+9
+8
+11
+12
+13
+10
+1
+2
+3
+4
+
+Table 3: General results.
+
+System
+TRAVERSAL
+TRAPACC_S
+TRAPACC
+CRF-Seq-nocategs
+varIDE
+CRF-DepTree-categs
+GBD-NER-standard
+GBD-NER-resplit
+Veyn
+mumpitz
+Polirem-rich
+Polirem-basic
+MWETreeC
+SHOMA
+Deep-BGT
+Milos
+mumpitz-preinit
+
+Track
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+open
+open
+open
+open
+
+#Langs
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+7/19
+3/19
+3/19
+19/19
+19/19
+10/19
+4/19
+1/19
+
+P-MWE R-MWE
+68.19
+49.78
+48.18
+65.12
+51.99
+59.09
+49.84
+54.99
+37.98
+78.03
+52.8
+42.44
+55.2
+38.76
+57.92
+33.5
+37.76
+41.76
+15.32
+16.83
+10.9
+4.78
+1.09
+10.78
+4.21
+0.21
+59.73
+66.07
+27.54
+36.05
+9.42
+9.49
+2.31
+1.97
+
+F1-MWE
+
+Rank-MWE
+
+57.55
+55.38
+55.31
+52.29
+51.09
+47.06
+45.54
+42.45
+39.66
+16.04
+6.65
+1.98
+0.4
+62.74
+31.23
+9.45
+2.13
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+1
+2
+3
+4
+
+Table 4: Results for continuous MWEs.
+
+System
+TRAVERSAL
+varIDE
+CRF-DepTree-categs
+TRAPACC_S
+TRAPACC
+GBD-NER-standard
+GBD-NER-resplit
+Veyn
+CRF-Seq-nocategs
+mumpitz
+Polirem-rich
+Polirem-basic
+MWETreeC
+SHOMA
+Deep-BGT
+Milos
+mumpitz-preinit
+
+Track
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+open
+open
+open
+open
+
+#Langs
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+7/19
+3/19
+3/19
+19/19
+19/19
+10/19
+4/19
+1/19
+
+P-MWE R-MWE
+34.81
+61.14
+32.24
+44.53
+48.8
+26.4
+24.88
+53.23
+27.3
+43.29
+33.69
+29.32
+41.41
+23.22
+40.53
+19.07
+15.48
+54.2
+8.71
+18.34
+3.51
+0.06
+
+0
+0
+
+62.95
+28.83
+9.37
+3.25
+
+0
+0
+
+32.87
+19.4
+5.79
+1.44
+
+F1-MWE
+
+Rank-MWE
+
+44.36
+37.4
+34.26
+33.91
+33.48
+31.35
+29.76
+25.94
+24.08
+11.81
+0.12
+
+0
+0
+
+2
+
+43.19
+23.19
+7.16
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+n/a
+n/a
+1
+2
+3
+4
+
+Table 5: Results for discontinuous MWEs.
+
+237System
+TRAVERSAL
+TRAPACC
+TRAPACC_S
+CRF-Seq-nocategs
+CRF-DepTree-categs
+varIDE
+GBD-NER-standard
+GBD-NER-resplit
+Veyn
+mumpitz
+Polirem-rich
+Polirem-basic
+MWETreeC
+SHOMA
+Deep-BGT
+Milos
+mumpitz-preinit
+
+Track
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+open
+open
+open
+open
+
+#Langs
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+7/19
+3/19
+3/19
+19/19
+19/19
+10/19
+4/19
+1/19
+
+P-MWE R-MWE
+44.59
+74.66
+43.42
+57.23
+39.97
+63.6
+38.23
+66.16
+60.52
+37.21
+36.18
+61.49
+51.05
+36.56
+55.86
+30.26
+30.33
+52.16
+22.23
+12.47
+2.87
+10.9
+10.78
+0.65
+
+73.37
+35.04
+10.37
+
+0
+
+3
+
+0
+
+50.65
+25.09
+6.89
+1.61
+
+F1-MWE
+
+Rank-MWE
+
+55.83
+49.38
+49.09
+48.46
+46.09
+45.56
+42.61
+39.26
+38.36
+15.98
+4.54
+1.23
+
+0
+
+59.93
+29.24
+8.28
+2.1
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+n/a
+1
+2
+3
+4
+
+Table 6: Results for multi-token MWEs.
+
+System
+TRAPACC
+TRAPACC_S
+TRAVERSAL
+CRF-DepTree-categs
+Veyn
+CRF-Seq-nocategs
+varIDE
+mumpitz
+MWETreeC
+Polirem-rich
+Polirem-basic
+GBD-NER-standard
+GBD-NER-resplit
+SHOMA
+Deep-BGT
+Milos
+mumpitz-preinit
+
+Track
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+open
+open
+open
+open
+
+#Langs
+5/5
+5/5
+5/5
+5/5
+5/5
+5/5
+5/5
+1/5
+5/5
+0/5
+0/5
+5/5
+5/5
+5/5
+3/5
+2/5
+1/5
+
+P-MWE R-MWE
+35.13
+34.64
+30.7
+28.49
+22.91
+24.95
+36.47
+4.87
+0.79
+
+30.8
+30.49
+22.49
+21.81
+25.76
+22.69
+6.43
+12.62
+61.8
+
+0
+0
+0
+0
+
+27.77
+27.61
+12.23
+6.43
+
+0
+0
+0
+0
+
+28.9
+24.33
+15.84
+9.8
+
+F1-MWE
+
+Rank-MWE
+
+32.82
+32.43
+25.96
+24.71
+24.25
+23.77
+10.93
+7.03
+1.56
+
+0
+0
+0
+0
+
+28.32
+25.87
+13.8
+7.77
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+n/a
+n/a
+n/a
+n/a
+1
+2
+3
+4
+
+Table 7: Results for single-token MWEs.
+
+System
+TRAVERSAL
+GBD-NER-resplit
+TRAPACC
+GBD-NER-standard
+TRAPACC_S
+CRF-Seq-nocategs
+CRF-DepTree-categs
+varIDE
+Veyn
+mumpitz
+Polirem-rich
+MWETreeC
+Polirem-basic
+SHOMA
+Deep-BGT
+Milos
+mumpitz-preinit
+
+Track
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+open
+open
+open
+open
+
+#Langs
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+7/19
+3/19
+19/19
+3/19
+19/19
+10/19
+4/19
+1/19
+
+63
+
+P-MWE R-MWE
+86.54
+82.76
+82.72
+82.92
+82.04
+78.27
+83.23
+62.8
+76.6
+30.69
+14.98
+13.16
+15.79
+
+63.82
+61.41
+60.74
+57.06
+52.71
+50.03
+56.2
+43.7
+17.81
+4.44
+3.99
+1.16
+66.78
+30.36
+10.4
+3.07
+
+46.25
+16.46
+4.34
+
+89
+
+F1-MWE
+
+Rank-MWE
+
+72.92
+72.07
+70.49
+70.12
+67.31
+
+63
+
+62.49
+59.32
+55.65
+22.54
+6.85
+6.12
+2.16
+76.31
+36.66
+12.75
+3.6
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+1
+2
+3
+4
+
+Table 8: Results for seen-in-train MWEs.
+
+238System
+GBD-NER-standard
+GBD-NER-resplit
+TRAVERSAL
+CRF-DepTree-categs
+TRAPACC
+TRAPACC_S
+CRF-Seq-nocategs
+Veyn
+mumpitz
+varIDE
+Polirem-rich
+MWETreeC
+Polirem-basic
+SHOMA
+Deep-BGT
+Milos
+mumpitz-preinit
+
+Track
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+open
+open
+open
+open
+
+#Langs
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+7/19
+19/19
+3/19
+19/19
+3/19
+19/19
+10/19
+4/19
+1/19
+
+P-MWE R-MWE
+31.54
+14.33
+37.66
+12.74
+13.61
+23.94
+15.58
+18.71
+19.19
+14.52
+12.47
+24.07
+13.63
+20.49
+10.58
+11.57
+5.92
+5.5
+14.61
+3.31
+0.36
+1.76
+0.02
+1.99
+
+0
+
+31.73
+12.99
+5.56
+0.75
+
+0
+
+25.8
+13
+5.89
+0.72
+
+F1-MWE
+
+Rank-MWE
+
+19.71
+19.04
+17.35
+
+17
+
+16.53
+16.43
+16.37
+11.05
+5.7
+5.4
+0.6
+0.04
+
+0
+
+28.46
+12.99
+5.72
+0.73
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+n/a
+1
+2
+3
+4
+
+Table 9: Results for unseen-in-train MWEs.
+
+System
+TRAPACC
+TRAVERSAL
+TRAPACC_S
+GBD-NER-resplit
+GBD-NER-standard
+CRF-Seq-nocategs
+CRF-DepTree-categs
+varIDE
+Veyn
+mumpitz
+Polirem-rich
+MWETreeC
+Polirem-basic
+SHOMA
+Deep-BGT
+Milos
+mumpitz-preinit
+
+Track
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+open
+open
+open
+open
+
+#Langs
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+7/19
+3/19
+19/19
+3/19
+19/19
+10/19
+4/19
+1/19
+
+P-MWE R-MWE
+90.44
+77.94
+75.71
+89.15
+73.04
+85.56
+71.18
+87.27
+69.44
+87.39
+80.32
+70.54
+60.25
+85.85
+57.52
+82.23
+53.37
+81.15
+22.25
+31.57
+15.31
+5.99
+4.69
+13.16
+2.03
+15.79
+85.15
+90.26
+46.45
+36.71
+17.2
+4.25
+
+11
+3.66
+
+F1-MWE
+
+Rank-MWE
+
+83.73
+81.88
+78.81
+78.41
+77.39
+75.11
+70.81
+67.69
+64.39
+26.1
+8.61
+6.92
+3.6
+87.63
+41.01
+13.42
+3.93
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+1
+2
+3
+4
+
+Table 10: Results for identical-to-train MWEs.
+
+System
+GBD-NER-resplit
+TRAVERSAL
+GBD-NER-standard
+TRAPACC
+TRAPACC_S
+varIDE
+CRF-DepTree-categs
+CRF-Seq-nocategs
+Veyn
+mumpitz
+Polirem-rich
+MWETreeC
+Polirem-basic
+SHOMA
+Deep-BGT
+Milos
+mumpitz-preinit
+
+Track
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+closed
+open
+open
+open
+open
+
+#Langs
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+19/19
+7/19
+3/19
+19/19
+3/19
+19/19
+10/19
+4/19
+1/19
+
+P-MWE R-MWE
+56.48
+50.82
+52.16
+47.22
+43.11
+53.97
+39.01
+35.48
+34.62
+13.77
+3.21
+2.16
+0.48
+50.03
+22.42
+9.97
+2.67
+
+76.6
+83.22
+76.63
+74.73
+76.22
+52.7
+78.29
+73.17
+70.65
+29.96
+14.51
+7.89
+10.53
+85.95
+45.04
+15.96
+4.44
+
+F1-MWE
+
+Rank-MWE
+
+65.02
+63.1
+62.07
+57.87
+55.07
+53.33
+52.07
+47.79
+46.47
+18.87
+5.26
+3.39
+0.92
+63.25
+29.94
+12.27
+3.33
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+1
+2
+3
+4
+
+Table 11: Results for variant-of-train MWEs.
+
+239F
+T
+
+C
+V
+
+I
+.
+S
+L
+
+F
+M
+
+F
+T
+
+i
+
+m
+e
+s
+.
+C
+P
+V
+
+F
+M
+
+F
+T
+
+l
+l
+u
+f
+.
+
+C
+P
+V
+
+F
+M
+
+F
+T
+
+D
+V
+
+I
+
+F
+M
+
+F
+T
+
+C
+V
+M
+
+F
+M
+
+F
+T
+
+l
+l
+u
+f
+.
+
+C
+V
+L
+
+F
+M
+
+F
+T
+
+e
+s
+u
+a
+c
+.
+C
+V
+L
+
+F
+M
+
+1
+3
+7
+
+.
+
+3
+9
+4
+
+.
+
+1
+3
+7
+
+.
+
+3
+9
+4
+
+.
+
+0
+0
+
+.
+
+0
+
+0
+0
+0
+
+.
+
+2
+0
+1
+2
+
+.
+
+3
+9
+
+.
+
+9
+1
+
+1
+5
+0
+1
+
+.
+
+7
+9
+9
+
+.
+
+3
+5
+
+.
+
+3
+1
+
+8
+8
+2
+4
+
+.
+
+6
+6
+
+.
+
+0
+2
+
+4
+6
+5
+3
+
+.
+
+4
+2
+8
+6
+
+.
+
+9
+1
+
+.
+
+6
+3
+
+6
+1
+
+.
+
+0
+1
+
+.
+
+1
+3
+4
+3
+
+8
+5
+
+.
+
+6
+1
+
+.
+
+3
+7
+1
+3
+
+.
+
+6
+9
+2
+6
+
+5
+1
+
+.
+
+1
+3
+
+0
+7
+
+.
+
+5
+2
+
+0
+4
+
+.
+
+6
+
+7
+7
+5
+
+.
+
+4
+6
+
+0
+1
+
+2
+7
+
+.
+
+.
+
+.
+
+9
+1
+
+6
+1
+
+4
+1
+
+8
+6
+
+.
+
+2
+2
+
+3
+8
+4
+
+.
+
+0
+2
+
+.
+
+5
+
+4
+3
+
+3
+0
+
+1
+6
+
+.
+
+.
+
+.
+
+3
+1
+
+2
+1
+
+1
+1
+
+1
+3
+7
+
+.
+
+3
+9
+4
+
+.
+
+4
+5
+8
+5
+
+.
+
+4
+5
+8
+5
+
+.
+
+3
+4
+8
+2
+
+.
+
+4
+7
+8
+5
+
+.
+
+4
+7
+8
+5
+
+.
+
+7
+5
+7
+2
+
+.
+
+6
+6
+2
+1
+
+.
+
+8
+6
+
+.
+
+7
+
+0
+0
+0
+
+.
+
+4
+0
+4
+6
+
+.
+
+2
+0
+
+.
+
+2
+3
+
+2
+9
+5
+2
+
+.
+
+0
+0
+0
+
+.
+
+7
+4
+1
+6
+
+.
+
+3
+7
+0
+3
+
+.
+
+2
+0
+
+.
+
+4
+2
+
+4
+6
+1
+1
+
+.
+
+6
+0
+5
+
+.
+
+5
+3
+8
+
+.
+
+7
+7
+0
+1
+
+.
+
+9
+7
+2
+
+.
+
+8
+7
+6
+
+.
+
+1
+1
+
+2
+2
+
+6
+6
+
+.
+
+.
+
+.
+
+9
+4
+
+0
+3
+
+9
+3
+
+7
+4
+
+.
+
+5
+4
+
+6
+1
+8
+2
+
+.
+
+2
+8
+6
+3
+
+.
+
+5
+1
+
+.
+
+5
+2
+
+0
+7
+
+.
+
+3
+
+3
+4
+4
+1
+
+.
+
+9
+9
+
+.
+
+8
+1
+
+8
+6
+3
+
+.
+
+.
+
+3
+3
+1
+1
+
+8
+8
+7
+2
+
+.
+
+3
+0
+
+.
+
+0
+3
+
+.
+
+6
+3
+1
+2
+
+7
+3
+
+.
+
+8
+2
+
+0
+4
+
+.
+
+8
+1
+
+0
+3
+
+.
+
+6
+
+9
+0
+6
+5
+
+.
+
+1
+2
+2
+2
+
+.
+
+1
+6
+6
+2
+
+.
+
+4
+5
+
+.
+
+3
+1
+
+1
+2
+7
+
+.
+
+.
+
+6
+3
+7
+4
+
+.
+
+3
+3
+9
+1
+
+.
+
+6
+1
+3
+2
+
+9
+2
+
+.
+
+6
+2
+
+8
+2
+
+.
+
+7
+
+6
+6
+9
+
+.
+
+2
+7
+9
+1
+
+.
+
+8
+2
+7
+
+.
+
+2
+5
+
+.
+
+9
+
+1
+4
+
+.
+
+4
+1
+
+7
+1
+2
+1
+
+.
+
+0
+0
+0
+
+.
+
+0
+0
+
+.
+
+0
+
+0
+0
+
+.
+
+0
+
+0
+0
+0
+
+.
+
+.
+
+4
+1
+4
+1
+
+2
+1
+
+.
+
+2
+1
+
+8
+6
+
+.
+
+3
+7
+
+5
+9
+8
+6
+
+.
+
+0
+0
+
+.
+
+0
+
+.
+
+4
+8
+6
+3
+
+0
+0
+0
+
+.
+
+8
+4
+
+.
+
+4
+3
+
+7
+5
+
+1
+1
+
+.
+
+.
+
+7
+3
+
+1
+2
+
+.
+
+1
+6
+1
+2
+
+2
+1
+
+8
+3
+
+6
+1
+
+.
+
+.
+
+.
+
+8
+3
+
+7
+1
+
+7
+2
+
+4
+5
+
+.
+
+6
+1
+
+.
+
+0
+5
+5
+3
+
+5
+0
+
+.
+
+6
+2
+
+.
+
+5
+5
+6
+4
+
+.
+
+8
+8
+5
+5
+
+0
+1
+
+.
+
+6
+3
+
+7
+6
+
+6
+1
+
+.
+
+.
+
+6
+3
+
+9
+1
+
+5
+0
+7
+1
+
+.
+
+1
+0
+
+9
+0
+
+0
+4
+
+.
+
+.
+
+.
+
+4
+3
+
+5
+1
+
+4
+2
+
+9
+8
+
+.
+
+2
+1
+
+5
+5
+0
+3
+
+.
+
+6
+1
+
+.
+
+4
+2
+
+0
+8
+3
+4
+
+.
+
+6
+2
+2
+5
+
+.
+
+3
+7
+
+.
+
+2
+3
+
+4
+9
+7
+
+.
+
+5
+2
+
+.
+
+1
+1
+
+0
+6
+
+.
+
+9
+
+9
+6
+5
+
+.
+
+5
+1
+
+.
+
+0
+1
+
+2
+9
+
+.
+
+7
+
+.
+
+7
+3
+6
+4
+
+2
+8
+
+.
+
+9
+5
+
+.
+
+0
+1
+0
+7
+
+9
+2
+
+2
+0
+
+.
+
+.
+
+3
+2
+
+3
+6
+
+.
+
+5
+7
+0
+5
+
+.
+
+3
+8
+7
+2
+
+.
+
+3
+1
+9
+4
+
+6
+3
+8
+3
+
+.
+
+4
+2
+
+.
+
+7
+5
+
+.
+
+7
+0
+2
+6
+
+3
+1
+
+1
+0
+
+.
+
+.
+
+9
+1
+
+7
+5
+
+8
+6
+5
+4
+
+.
+
+3
+1
+
+.
+
+5
+2
+
+8
+3
+4
+4
+
+.
+
+7
+3
+
+.
+
+4
+2
+
+0
+5
+
+.
+
+0
+2
+
+3
+2
+
+.
+
+8
+1
+
+2
+4
+6
+1
+
+.
+
+2
+7
+
+.
+
+4
+3
+
+1
+1
+
+.
+
+1
+3
+
+.
+
+7
+2
+5
+2
+
+9
+2
+
+.
+
+7
+1
+
+1
+1
+
+.
+
+3
+2
+
+6
+0
+
+.
+
+5
+1
+
+9
+1
+
+2
+3
+
+.
+
+.
+
+4
+1
+
+0
+1
+
+.
+
+4
+7
+9
+1
+
+0
+8
+
+2
+4
+
+9
+6
+
+.
+
+.
+
+.
+
+0
+1
+
+3
+1
+
+3
+1
+
+4
+2
+
+7
+3
+
+.
+
+.
+
+4
+
+3
+
+1
+2
+
+.
+
+0
+2
+
+.
+
+2
+8
+4
+1
+
+.
+
+4
+7
+7
+7
+
+8
+0
+
+.
+
+4
+2
+
+6
+7
+
+0
+0
+
+8
+3
+
+.
+
+.
+
+.
+
+4
+
+0
+
+2
+
+5
+0
+
+3
+0
+
+.
+
+.
+
+3
+
+0
+2
+
+3
+0
+
+.
+
+0
+2
+
+9
+6
+
+.
+
+8
+
+.
+
+3
+3
+2
+5
+
+2
+8
+
+.
+
+3
+1
+
+7
+1
+
+.
+
+9
+
+1
+3
+
+.
+
+8
+1
+
+3
+1
+
+8
+7
+
+.
+
+.
+
+9
+
+7
+
+4
+6
+
+.
+
+1
+1
+
+9
+2
+
+.
+
+3
+
+1
+9
+2
+
+.
+
+8
+5
+
+9
+0
+
+6
+5
+
+9
+0
+
+.
+
+.
+
+.
+
+.
+
+7
+1
+
+1
+1
+
+5
+6
+
+0
+2
+
+3
+0
+2
+
+.
+
+9
+1
+
+.
+
+9
+1
+
+7
+7
+
+.
+
+5
+1
+
+7
+5
+
+.
+
+7
+
+1
+9
+
+.
+
+9
+4
+
+F
+T
+
+0
+2
+
+0
+0
+
+.
+
+.
+
+6
+6
+
+8
+4
+
+6
+1
+
+7
+9
+
+3
+3
+
+.
+
+.
+
+.
+
+4
+6
+
+0
+5
+
+7
+5
+
+V
+R
+
+I
+
+F
+M
+
+6
+5
+5
+6
+
+.
+
+4
+3
+2
+4
+
+.
+
+6
+3
+8
+5
+
+.
+
+5
+9
+8
+4
+
+.
+
+0
+8
+3
+5
+
+.
+
+5
+3
+
+.
+
+0
+3
+
+7
+2
+0
+5
+
+.
+
+0
+3
+
+.
+
+3
+3
+
+5
+4
+0
+5
+
+.
+
+6
+4
+4
+7
+
+.
+
+6
+7
+
+.
+
+7
+4
+
+2
+6
+7
+2
+
+.
+
+3
+7
+
+.
+
+6
+4
+
+8
+0
+1
+3
+
+.
+
+0
+7
+
+4
+3
+
+.
+
+.
+
+9
+4
+
+9
+6
+
+9
+8
+4
+4
+
+.
+
+F
+T
+
+2
+9
+
+3
+0
+
+.
+
+.
+
+0
+
+5
+4
+
+V
+A
+
+I
+
+F
+M
+
+0
+0
+0
+
+.
+
+1
+6
+1
+3
+
+.
+
+7
+1
+
+0
+6
+
+3
+9
+
+.
+
+.
+
+.
+
+4
+4
+
+7
+3
+
+1
+3
+
+9
+8
+
+8
+3
+
+7
+9
+
+.
+
+.
+
+.
+
+4
+3
+
+3
+3
+
+4
+2
+
+4
+2
+
+.
+
+3
+2
+
+3
+2
+
+.
+
+7
+1
+
+1
+4
+
+.
+
+6
+2
+
+9
+6
+0
+2
+
+.
+
+3
+8
+
+.
+
+4
+2
+
+6
+9
+
+.
+
+8
+1
+
+G
+B
+
+R
+H
+
+T
+L
+
+L
+P
+
+L
+S
+
+V
+A
+
+S
+E
+
+R
+F
+
+T
+I
+
+T
+P
+
+O
+R
+
+V
+A
+
+6
+5
+
+0
+0
+
+.
+
+.
+
+5
+
+0
+
+8
+7
+2
+
+.
+
+5
+0
+
+.
+
+2
+3
+
+5
+7
+0
+2
+
+.
+
+5
+0
+2
+3
+
+.
+
+5
+7
+
+.
+
+0
+2
+
+5
+7
+
+.
+
+8
+
+5
+7
+8
+
+.
+
+2
+9
+7
+
+.
+
+2
+9
+7
+
+.
+
+E
+D
+
+N
+E
+
+V
+A
+
+3
+0
+
+.
+
+9
+4
+
+1
+6
+4
+4
+
+.
+
+6
+1
+
+.
+
+5
+2
+
+6
+7
+
+.
+
+9
+1
+
+A
+M
+
+L
+E
+
+U
+E
+
+A
+F
+
+E
+H
+
+I
+
+H
+
+U
+H
+
+R
+T
+
+V
+A
+
+:
+
+A
+M
+
+,
+e
+g
+a
+r
+e
+v
+a
+
+:
+
+V
+A
+
+,
+e
+r
+o
+c
+s
+-
+1
+F
+
+d
+e
+s
+a
+b
+-
+n
+e
+k
+o
+t
+
+:
+
+F
+T
+
+,
+e
+r
+o
+c
+s
+-
+1
+F
+
+d
+e
+s
+a
+b
+-
+E
+W
+M
+
+:
+F
+M
+
+.
+p
+u
+o
+r
+g
+
+e
+g
+a
+u
+g
+n
+a
+l
+
+d
+n
+a
+
+e
+g
+a
+u
+g
+n
+a
+l
+
+h
+c
+a
+e
+
+r
+o
+f
+
+y
+r
+o
+g
+e
+t
+a
+c
+
+r
+e
+p
+
+s
+e
+r
+o
+c
+s
+-
+1
+F
+
+e
+g
+a
+r
+e
+v
+A
+
+:
+2
+1
+
+e
+l
+b
+a
+T
+
+.
+e
+g
+a
+r
+e
+v
+a
+-
+o
+r
+c
+a
+m
+
+240

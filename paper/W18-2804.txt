@@ -1,0 +1,1151 @@
+Multi-glance Reading Model for Text Understanding
+
+Pengcheng Zhu1,2, Yujiu Yang1, Wenqiang Gao1, and Yi Liu2
+
+Graduate School at Shenzhen, Tsinghua University1
+
+Peking University Shenzhen Institute2
+
+zhupc15@mails.tsinghua.edu.cn, yang.yujiu@sz.tsinghua.edu.cn,
+
+gwq16@mails.tsinghua.edu.cn, eeyliu@gmail.com
+
+Abstract
+
+In recent years, a variety of recurrent neu-
+ral networks have been proposed, e.g LST-
+M, however, existing models only read the
+text once, it cannot describe the situation
+of repeated reading in reading comprehen-
+sion. In fact, when reading or analyzing
+a text, we may read the text several times
+rather than once if we couldn’t well under-
+stand it. So, how to model this kind of the
+reading behavior? To address the issue, we
+propose a multi-glance mechanism (MG-
+M) for modeling the habit of reading be-
+havior. In the proposed framework, the ac-
+tual reading process can be fully simulat-
+ed, and then the obtained information can
+be consistent with the task. Based on the
+multi-glance mechanism, we design two
+types of recurrent neural network models
+for repeated reading: Glance Cell Model
+(GCM) and Glance Gate Model (GGM).
+Visualization analysis of the GCM and
+the GGM demonstrates the effectiveness
+of multi-glance mechanisms. Experiments
+results on the large-scale datasets show
+that the proposed methods can achieve bet-
+ter performance.
+
+Introduction
+
+1
+Text understanding is one of the fundamental tasks
+in Natural Language Processing areas. These
+years we have seen signiﬁcant progress in apply-
+ing neural networks to text analysis applications.
+Recurrent neural network is widely used because
+of its effective capability of capturing the sequen-
+tial information. Long short-term memory (LST-
+M) (Hochreiter and Schmidhuber, 1997) and gated
+recurrent neural network (Chung et al., 2014) have
+achieved state-of-the-art performance in many ar-
+
+eas, such as sentiment analysis (Tang et al., 2014;
+Chen et al., 2016), document classiﬁcation (Yang
+et al., 2016) and neural machine translation (Bah-
+danau et al., 2014). Besides the success achieved
+by these basic recurrent neural models, there are
+also a lot of interesting research works conducted
+in text analysis (Kim, 2014; Zhang et al., 2015).
+Depending on the parsing tree structures, tree-
+LSTM (Tai et al., 2015) and recursive neural net-
+work(Socher et al., 2013) are proposed. Bidi-
+rectional recurrent neural networks (Schuster and
+Paliwal, 1997) can get the backward features. In
+order to align the hidden states, attention mecha-
+nism is widely used in language processing (Bah-
+danau et al., 2014; Vaswani et al., 2017).
+
+One of the common characteristics of these ex-
+isting models is to model only single reading pro-
+cessing and generate a sequence of hidden states
+ht, as a function of the previous hidden states
+ht−1 and the current input (Sutskever et al., 2014;
+Karpathy et al., 2015). However, the fact is that
+when we read a text only once, we may merely
+know the general idea of it, especially when the
+text is long and obscure. More often than not, we
+know that fast repeated reading is more effective
+than slow careful reading, so, for the obscure tex-
+t, our primary school teacher always teaches us to
+read several times to get the theme of the text. In
+addition, this kind of rereading can help us ﬁnd
+some of the details that are ignored when we ﬁrst
+glance.
+
+In this paper, we propose a novel multi-glance
+mechanism to model our reading habit: when
+reading a text, ﬁrst we will glance through it to
+get the general meaning and then based on the in-
+formation we obtained, we will read the text again
+in order to ﬁnd some important contents. Based on
+the multi-glance mechanism we proposed (Fig.1),
+we design different models for processing the
+obtained information by the last glance, that it,
+
+ProceedingsoftheEighthWorkshoponCognitiveAspectsofComputationalLanguageLearningandProcessing,pages27–35Melbourne,Australia,July19,2018.c(cid:13)2018AssociationforComputationalLinguistics27Figure 1: The architecture of Multi-glance Mechanism (MGM) model
+
+Glance Cell Model (GCM) and Glance Gate Mod-
+el (GGM). GCM has a special cell to memorize
+the ﬁrst impression information obtained after ﬁn-
+ishing the ﬁrst reading. GGM has a special gate to
+control current input and output in order to ﬁlter
+words that are not important. The main contribu-
+tions of this work are summarized as follows:
+
+• We propose a novel multi-glance mechanis-
+m which models the habit of reading. Com-
+paring to traditional sequential models, our
+proposed models can better simulate peo-
+ple’s reading process and better understand
+the content.
+
+• Based on multi-glance mechanism, we pro-
+pose GCM which can takes the ﬁrst impres-
+sion information into consideration. Glance
+cell model has a special cell to memorize the
+global impression information we obtain and
+add it into the current calculation.
+
+• Based on multi-glance mechanism, we pro-
+pose GGM which adopts a extra gate to ig-
+nore the less important words and focus on
+details in the contents.
+
+2 Related Work
+Recurrent neural network has achieved great suc-
+cess because of its effective capability to capture
+the sequential information. The RNN handles
+the variable-length sequence by having a recurren-
+t hidden state whose activation at each time step
+is dependent on that of the previous time. To re-
+duce the negative impact of gradient vanishing,
+a long short-term memory unit (Hochreiter and
+Schmidhuber, 1997), which has a more sophis-
+ticated activation function, was proposed. Bidi-
+
+rectional recurrent neural networks (Schuster and
+Paliwal, 1997), e.g bidirectional LSTM network-
+s (Augenstein et al., 2016), combine forward fea-
+tures as well as reverse features of the text. Bidi-
+rectional networks, which get the forward features
+and the reverse features separately, are differen-
+t from our multi-glance mechanism. A Gated Re-
+current Unit (GRU) (Cho et al., 2014) is a good ex-
+tension of a LSTM unit, because GRU maintains
+the performance and makes the structure to be sim-
+pler. Comparing to a LSTM unit, a GRU has only
+two gates, an update gate and a reset gate, so it will
+be faster to train a GRU than a LSTM unit. Atten-
+tion mechanism (Bahdanau et al., 2014) is used to
+learn weights for every input, so it can reduce the
+impact of information redundancy. Now, attention
+mechanism is commonly used in various models.
+
+3 Methods
+
+In this section, we will introduce the proposed
+multi-glance mechanism models in detail. We
+ﬁrst describe the basic framework of multi-glance
+mechanism. Afterwards, based on multi-glance
+mechanism, we describe two glance models,
+glance cell model and glance gate model.
+
+3.1 Multi-glance Mechanism Model
+When reading or analyzing a text, we may read
+it several times rather than once if we couldn’t
+fully understand its meaning. To model our read-
+ing habit, we propose the multi-glance mechanis-
+m. The core architecture of the proposed model is
+shown in Fig.1.
+
+In the following paper, we will describe how
+the models work when processing a text. Given
+a training text T , in order to better analyze it, we
+
+28Sentenceg2h1g2h2g2hmw1w2wmg1h1g1h2g1hmMulti-glance Mechanismα1α2αmInputLayerGlanceLayerOutputLayergnh1gnh2gnhm . . . . . .     will read T many times. As shown in Fig. 1, n is
+the times we will read the text.
+
+For the sake of convenience, we give an exam-
+
+ple of the 2-glance process here.
+
+First, we glance through the text to capture a
+general meaning. We use the recurrent network
+to read the embedding of each word and calculate
+the hidden states {g1h1, g1h2,··· , g1hm}, where
+m is the length of the text T . After ﬁnishing read-
+ing it, we have an impression on the text T . Next,
+with the guidance of the impression, we give these
+hidden states weight parameters and feed them in-
+to the glance model to continue to read the text for
+the second time. As we can see, if we read the
+text only once and don’t adopt multi-glance mech-
+anism, this model can be simpliﬁed as traditional
+attention based recurrent model.
+
+At the second time of reading, in view of the
+general idea of the content we have got, we may
+ignore the less interesting words and focus on
+some details in the text. So we utilize a novel
+glance recurrent model to read embedding T =
+{w1, w2,··· , wm} again and calculate the output
+state {g2h1, g2h2,··· , g2hm}. Based on multi-
+glance mechanism, we propose two glance recur-
+that is, Glance Cell Model(GCM)
+rent models:
+and Glance Gate Model(GGM).
+
+Comparing to basic recurrent model, glance cell
+model has a special cell to memorize the general
+meaning calculated after ﬁnishing the ﬁrst time of
+reading. Besides, glance gate model has a bina-
+ry gate to ﬁlter the less important words. We de-
+scribe how two glance recurrent models operate in
+section 3.2 and section 3.3. Fig.1 gives the main
+process of the multi-glance mechanism.
+
+3.2 Glance Cell Model
+
+Based on multi-glance mechanism, we propose
+the glance cell model (GCM). After we ﬁnish
+reading the text T for the ﬁrst time, we know any
+of the general meaning of it. This means we have
+some ﬁrst impression information about the tex-
+t. As shown in Fig.2, comparing to the traditional
+recurrent network, the GCM has a special cell to
+keep the ﬁrst impression information. LSTM has
+been widely adopted for text processing, so we use
+LSTM to calculate the hidden states g1hi.
+
+Thus the glance cell state gcc
+
+t can be calcu-
+lated from the weighted sum of hidden states
+
+Figure 2: The block of GCM, where ˜T stands for
+tanh() and ˜S stands for sigmoid().
+{g1h1, g1h2,··· , g1hm}:
+
+gcc
+
+t =
+
+αi · g1hi
+
+(1)
+
+m(cid:88)
+
+i=1
+
+where αi measures the impression of ith word for
+t. Because GCM is
+the current glance cell state gcc
+a recurrent network as well, the current glance cell
+t is also inﬂuenced by the previous state
+state gcc
+t−1 and the current input wt. Thus the impres-
+g2hc
+sion αi can be deﬁned as:
+
+(cid:80)m
+
+αi =
+
+exp(f (g2hc
+i=1 exp(f (g2hc
+
+t−1, wt, g1hlstm
+
+))
+t−1, wt, g1hlstm
+
+i
+
+i
+
+(2)
+
+))
+
+where f is the impression function and it can be
+deﬁned as:
+
+f (g2hc
+gwT
+
+t−1, wt, g1hlstm
+) =
+c · tanh(W c
+g · [g2hc
+t−1, wt, g1hlstm
+
+i
+
+i
+
+] + bc) (3)
+
+where W c
+weight vector.
+
+g is the weight matrices and gwT
+
+c is the
+
+Besides, glance cell is used to memorize the pri-
+or knowledge, we also have a cell, at the second
+time reading in multi-glance mechanism, to read
+the text. We use three gates to update and output
+the cells states, and they can be deﬁned as:
+
+i · [g2hc
+f · [g2hc
+o · [g2hc
+
+ic
+t = σ(W c
+t = σ(W c
+f c
+t = σ(W c
+oc
+t = tanh(W c
+˜cc
+
+c · [g2hc
+
+t−1, wt] + bc
+i )
+t−1, wt] + bc
+f )
+t−1, wt] + bc
+o)
+
+t−1, wt] + bc
+c)
+
+(4)
+(5)
+(6)
+(7)
+
+29CellGlance Cell～s～s～s～T～T～sOutput Gate Forget Gate Input Gate ～TGlance out Gate ～sGlance Gate 十t, f c
+
+t and oc
+
+where ic
+sigmoid function and ˜cc
+
+t are the gates states, σ() is the
+t stands for the input state.
+In GCM, in order to adopt the ﬁrst impression
+knowledge in the current cell state calculation and
+output the glance cell state, we use glance input
+gate and output gate to connect the glance cell and
+the cell state. The two gates can be deﬁned as:
+
+gic
+goc
+
+t = σ(W c
+t = σ(W c
+
+t−1, wt, gcc
+t−1, wt, gcc
+
+gi · [g2hc
+gi) (8)
+go · [g2hc
+go) (9)
+t are the gate states.Thus the cell
+
+t ] + bc
+t ] + bc
+
+where gic
+state can be calculated as:
+
+t and goc
+
+t (cid:12) cc
+
+t (cid:12) ˜cc
+
+t (cid:12) gcc
+
+t + gic
+
+t−1 + ic
+
+cc
+t = f c
+
+t (10)
+where (cid:12) stands for element-wise multiplication.
+According to the function, when we read the
+text at the second time, the current cell state cc
+t
+t−1, current input
+contains the previous cell state cc
+state ˜cc
+t, which
+is different from the existing recurrent models.
+
+t and the current glance cell state gcc
+
+In view of two cells in GCM, the ﬁnal output of
+
+a single block can be calculated as:
+
+t (cid:12) tanh(cc
+
+t (cid:12) tanh(gcc
+t )
+
+t = oc
+
+1, g2hc
+
+t ) + goc
+
+2,··· , g2hc
+
+g2hc
+(11)
+We feed the text T = {w1, w2,··· , wm}
+embedding into the glance cell model and
+then obtain the output hidden states g2hc =
+m}.
+{g2hc
+3.3 Glance Gate Model
+Based on multi-glance mechanism, we also pro-
+pose the Glance Gate Model (GGM). The main
+block of GGM is shown in Fig.3. When we read
+the text at the second time, in view of the ﬁrst
+impression information we obtained, our habit is
+to ignore the less interesting words directly rather
+than still reading them again. However, existing
+RNN models, e.g. LSTM model, have an input
+gate to control the current input, it still can’t set
+less interesting or important information to zero.
+In GGM, we use a binary glance gate to control
+
+t , wt, g2hg
+
+the input, and it is deﬁned as:
+g · [ggg
+gatet = sof tmax(W g
+where W g
+g is the projection matrix, and softmax
+only output two states {0, 1} . In glance gate mod-
+el (GGM), ggg
+t still models the impression of the
+text, and calculated by the weighted sum of hidden
+states {g1h1, g1h2,··· , g1hm}:
+βi · hi
+
+m(cid:88)
+
+(13)
+
+ggg
+
+t =
+
+i=1
+
+t−1] + bg) (12)
+
+Figure 3: The block of GGM, where ˜T stands for
+tanh() and ˜S stands for sigmoid().
+
+Where βi measures the impression of ith word for
+the current glance gate cell state ggg
+t . For brevi-
+ty, we will not repeat the function of impression
+weight βi and impression function f here.
+
+As shown in the Fig.4, here we give an example
+of the GGM to process a sentence. Comparing to
+the LSTM model’s input gate, the glance gate only
+has two states {0, 1}. When we care about the cur-
+rent word wi, we input the word wi into the GGM
+and update the hidden state. If the current word
+is meaningless, the GGM will directly discard the
+input word and keep the previous state without up-
+dating the hidden state. Thus the gates, cells states
+and output hidden states are deﬁned as follows:
+
+t−1,wt]+bg
+
+t−1, wt] + bg
+
+t−1, wt] + bg
+
+o) (cid:12) gatet
+
+i ) (cid:12) gatet
+
+i · [g2hg
+f ·[g2hg
+o · [g2hg
+
+(14)
+f )(cid:12)gatet⊕(1−gatet)(15)
+(16)
+(17)
+(18)
+t−1(cid:12)(1−gatet)(19)
+
+ig
+t = σ(W g
+f g
+t =σ(W g
+og
+t = σ(W g
+c · [g2ht−1, wt] + bg
+˜cg
+t = tanh(W g
+c )
+t (cid:12) cg
+cg
+t = f g
+t−1 + ig
+t (cid:12)tanh(cg
+g2hg
+t =og
+where ⊕ stands for the element-wise addition.
+Note that when the GGM close the glance gate,
+gate={0}, the formulations above can be trans-
+formed as:
+
+t (cid:12) ˜cg
+t)(cid:12)gatet+g2hg
+
+t
+
+f g
+t = 1
+t (cid:12) cg
+t−1 + ig
+t (cid:12)tanh(cg
+
+og
+t = 0
+t (cid:12) ˜cg
+t = cg
+t−1
+t )(cid:12)gatet+g2hg
+
+ig
+t = 0
+cg
+t = f g
+t = og
+g2hg
+= g2hg
+
+t−1
+
+t−1(cid:12)(1−gatet)
+
+30CellGlance Gate～ｓ～ｓ～ｓ～T～TOutput Gate Forget Gate Input Gate Figure 4: An example of the proposed GGM to process a sentence. In this example, when the glance
+gate open, the current word will input into the GGM, then output the hidden state. When the glance gate
+close, the model will ignore the current inputted word and keep the previous hidden state.
+
+so when the glance gate close, the GGM will keep
+the previous state unchanged. Besides, when the
+GGM open the glance gate, namely gate={1}, the
+formulations above can be transformed as:
+
+ig
+t = σ(W g
+f g
+t = σ(W g
+og
+t = σ(W g
+t (cid:12) cg
+cg
+t = f g
+g2hg
+
+t = og
+
+t−1, wt] + bg
+i )
+t−1, wt] + bg
+f )
+t−1, wt] + bg
+o)
+
+i · [g2hg
+f · [g2hg
+o · [g2hg
+t−1 + it (cid:12) ˜cg
+
+t
+
+t (cid:12) tanh(cg
+t )
+
+m}.
+
+1, g2hg
+
+2,··· , g2hg
+
+So the model can obtain the current input state ˜cg
+t
+and update the cell state cg
+t . We feed the text T
+into the GGM and obtain the output hidden states
+g2hg = {g2hg
+3.4 Model Training
+To train our multi-glance mechanism models, we
+adopt softmax layer to project the text representa-
+tion into the target space of C classes:
+y = sof tmax(tanh(Ws · [ ˆg2h, ˆg1h] + bs)) (20)
+where ˆg2h is the attention weighted sum of the
+glance hidden states {g2h1, g2h2,··· , g2hm}, ˆg1h
+is the attention weighted sum of the hidden states
+{g1h1, g1h2,··· , g1hm}.
+
+We use the cross-entropy as training loss:
+
+ˆyi · log(yi) + α|θ|2
+
+(21)
+
+i
+
+where ˆyi is the gold distribution for text i, θ repre-
+sents all the parameters in the model.
+
+4 Experiment
+In this section, we conduct experiments on differ-
+ent datasets to evaluate the performance of multi-
+glance mechanism. We also visualize the glance
+layers in both glance models.
+
+L = −(cid:88)
+
+4.1 Datasets and Experimental Setting
+We evaluate the effectiveness of our glance mod-
+els on four different datasets . Yelp 2013 and
+Yelp2014 are obtained from the Yelp Dataset
+Challenge. IMDB dataset was built by Tang et al.
+(2015). Amazon reviews are obtained from A-
+mazon Fine Food reviews. The statistics of the
+datasets are summarized in Table 1.
+
+datasets
+
+rank
+
+docs
+
+IMDB
+Amazon
+Yelp2013
+Yelp2014
+
+1-10
+1-5
+1-5
+1-5
+
+84,919
+556,770
+78,966
+231,163
+
+sens
+docs
+
+16.08
+5.67
+10.89
+11.41
+
+vocs
+
+105373
+119870
+48957
+93197
+
+Table 1: Statistical information of IMDB, Ama-
+zon, Yelp 2013, Yelp 2014 datasets
+
+The datasets are split into training, validation
+and test sets with the proportion of 8:1:1. We use
+the Stanford CoreNLP for tokenization and sen-
+tence splitting. For training, we pre-train the word
+vector and set the dimension to be 200 with Skip-
+Gram (Mikolov et al., 2013). In our glance model-
+s, the dimensions of hidden states and cells states
+are set to 200 and the hidden states and cells states
+initialized randomly. We adopt AdaDelta (Zeiler,
+2012) to train our models , select the best conﬁgu-
+ration based on the validation set, and evaluate the
+performance on the test set.
+
+4.2 Baselines
+We compare our glance models with the following
+baseline methods.
+
+Trigram adopts unigrams, bigrams and trigrams
+
+as text features and trains a SVM classiﬁer.
+
+TextFeature adopts more abundant features in-
+cluding n-grams, lexicon features, etc, and
+
+31g2h1hadgate11g2h1agate20g2h3happygate31g2h3hourgate40g2h3theregate50g2hm-1greatgatem-11HiddenstateGlancegateWordEmbeddingOutputg2hm-1.gatem0...Glance Gate ModelDatasets
+
+Models
+
+IMDB
+
+Yelp2014
+
+Yelp2013
+
+Amazon
+
+Trigram
+
+TextFeature
+
+PVDM
+
+RNTN+RNN
+
+NSC
+
+RNN+ATT
+
+GGM
+GCM
+
+39.9
+40.2
+34.1
+40.0
+42.7
+43.1
+43.7
+44.2
+
+57.7
+57.2
+56.4
+58.2
+62.7
+63.2
+63.4
+64.2
+
+56.9
+55.6
+55.4
+57.4
+62.2
+62.7
+63.0
+63.6
+
+54.3
+
+-
+-
+-
+
+75.1
+75.4
+75.2
+76.7
+
+Table 2: Text analysis results on IMDB, Yelp2014, yelp2013 and Amazon datasets. Evaluation metrics
+is Accuracy in percentage (higher the better). The best performance in each group is in bold.
+
+Figure 5: Visualization of the weights when we read the text twice with glance cell model (whiter color
+means higher weight).
+
+trains a SVM classiﬁer. (Kiritchenko et al.,
+2014)
+
+RNTN+RNN uses Recursive Neural Neural Ten-
+sor Network to represent the sentences and
+Recurrent Neural Network to document anal-
+ysis. (Socher et al., 2013)
+
+PVDM leverages Paragraph Vector Distributed
+Memory (PVDM) algorithm for documen-
+t classiﬁcation.(Le and Mikolov, 2014)
+
+NSC regards the text as a sequence and uses max
+or average pooling of the hidden states as fea-
+tures for classiﬁcation.(Chen et al., 2016)
+
+RNN+ATT adopts attention mechanism to select
+the important hidden states and represents the
+text as a weight sum of hidden states.
+
+4.3 Model Comparisons
+The experimental results are shown in Table 2.
+We can see that multi-glance mechanism based
+models, glance gate model (GGM) and glance cell
+model (GCM), achieve a better accuracy than tra-
+ditional recurrent models, because of the guidance
+of the overview meaning we obtain at the ﬁrst time
+of reading. With that guidance, we will get a better
+understanding of the text. While comparing to our
+glance models, existing RNN models read the text
+
+only once so they cannot have the general meaning
+to help them understand the text.
+
+Comparing to attention-based recurrent model-
+s, the proposed glance cell model still has a bet-
+ter performance. The main reason for this is that
+when we read the text with the multi-glance mech-
+anism, the glance hidden states have a better un-
+derstanding of the text, so when we calculate the
+attention weight on each hidden states, the ﬁnal
+output will also be better to represent the text.
+
+When comparing the models we proposed,
+glance cell model gives a better performance than
+glance gate model. This is because we use multi-
+glance mechanism to ﬁlter words in glance gate
+model while we use multi-glance mechanism to
+add general information in glance cell model.
+Even though we only ignore the less importan-
+t words in glance gate model when the gate is
+closed, some information is still lost comparing to
+glance cell model.
+
+4.4 Model Analysis for Glance Cell Model
+To establish the effectiveness of GCM, we choose
+some reviews in Amazon dataset and visualize
+them in the Fig.5. In each sub-ﬁgure, the ﬁrst line
+
+32...I'mgivingthisXlearproductonly2stars        because                although              itself           has          worked          greatfor...first     time    second  time     ...twoboxesofbarsireceived    weresostabletheywere   inediblethebar...first      time    second  time     (a)
+
+Figure 6: Visualization of the hidden states calculated by simple RNN model {g1h1, g1h2,··· , g1ht}
+(the purple spots), Glance Cell Model {g2hc
+t} (the blue spots) and the ﬁnal text repre-
+sentation (the red spots).
+
+2,··· , g2hc
+
+1, g2hc
+
+(b)
+
+Figure 7: Visualization of the gate state in Glance Gate Model. The words in color (blue and red) are
+input into the GGM, that meas the gate state is open. The words in gray are ignored by the GGM.
+
+is the visualization of the weights when we read
+the text at the ﬁrst time, the second line is the vi-
+sualization that we read at the second time. Note
+that, whiter color means higher weight.
+
+As shown in Fig.5, the ﬁrst review has wrote
+the ranking stars in the text, which is a determin-
+ing factor in product reviews, but we ignore them
+when we read at the ﬁrst time. Well, with the guid-
+ance of multi-glance mechanism, when we read
+them again, we can not only ﬁnd the ranking stars,
+but also give them high weights.
+
+In the second review, comparing the results we
+read at the ﬁrst time and the second time, though
+we may focus on some of the same words, e.g.
+inedible, we will give them different weights. We
+can observe that when reading at the second time,
+we give word ‘inedible’ a higher weight and word
+‘the’ a lower the weight. The glance cell model
+can increase the weights of important words, so
+we can focus on more useful words when using
+multi-glance mechanism and glance cell model.
+
+Next, we also choose two reviews in the dataset
+and visualize the hidden states which calculated by
+the glance cell model and a traditional recurren-
+
+t model. As aforementioned in this paper, when
+using multi-glance mechanism, we will get the lo-
+cal information comparing to simple RNN model-
+s. As shown in Fig.6, the purple spots and the blue
+spots are the visualizations of the hidden states,
+and the purple spots belong to the simple RNN
+model while the blue spots belong to the glance
+cell model. The spot in red is the visualization of
+the ﬁnal text representation. Note that, we use P-
+CA to reduce the dimensions of the hidden states
+here. We can see that the blue spots are much more
+closer to the red spots than the purple spots, which
+mean the glance cell hidden states are more clos-
+er to the ﬁnal text representations. It is the local
+information that makes the difference. So we can
+obtain a more general idea when using the glance
+cell model we proposed.
+
+4.5 Model Analysis for Glance Gate Model
+
+To demonstrate the effectiveness of the glance gate
+model, we choose a review in IMDB dataset and
+visualize the values of gates. As mentioned in this
+paper, the gates only have two states, closed and
+open. As shown in Fig. 7, the words in gray mean
+
+33−1.5−1.0−0.50.00.51.01.52.0−1.5−1.0−0.50.00.51.01.5outputGCM hidden statessimple hidden states−1.5−1.0−0.50.00.51.01.52.0−1.5−1.0−0.50.00.51.01.5outputGCM hidden statessimple hidden states        actually i'm not sure which film was better meet the parents or meet the fockers. both films were equally enjoyable. this movie is really funny.  maybe it's because of a cast but everything works in this film. it's probably one of the best comedies made in this decade. Dustin Hoffman and Barbra Streisand both did great as Gaylord's parents. every character of this movie had it's own opinion and that was well portrayed in their dialogs. not like the original, this part is more making fun of Robert de Nero's character than of Ben Stiller 's character. i noticed that this film has many similarities with it's prequel but that's ok because it still was very funny.(a) Model with Multi-glance Mechanism
+
+(b) Simple RNN with Attention Mechanism
+
+Figure 9: Visualization of the multi-glance mechanism weights and the simple RNN attention mechanism
+weights.
+
+words. We can observe that multi-glance mecha-
+nism can ﬁnd the more useful words, e.g. loved,
+excellent. What’s more, multi-glance mechansim
+also can give these important words higher weight-
+s comparing to simple attention based RNN mod-
+els which only read the review once.
+
+5 Conclusion and Future work
+In this paper, we propose a multi-glance mecha-
+nism in order to model the habit of reading. When
+we read a text, we may read it several times rather
+than once in order to gain a better understanding.
+Usually, we ﬁrst read the text quickly and get a
+general idea. Under the guidance of this ﬁrst im-
+pression, we will read many times until we get e-
+nough information we need. What’s more, based
+on the multi-glance mechanism, we also propose
+two glance models, glance cell model and glance
+gate model. The glance cell model has a special
+cell to memorize the ﬁrst impression information
+we obtain and add it into the current calculation.
+The glance gate model adopts a special gate to ig-
+nore the less important words when we read the
+text at the second time with multi-glance mecha-
+nism. The experimental results show that when we
+use the multi-glance mechanism to read the tex-
+t, we are able to get a better understanding of the
+text. Besides, the glance cell model can memo-
+rise the ﬁrst impression information and the glance
+gate model is able to ﬁlter the less important word-
+s, e.g. the, of. We will continue our work as fol-
+lows:
+
+• How to construct the ﬁrst impression infor-
+mation more effectively? As proposed in this
+paper, some of the words in the text are re-
+dundant for us to understand text. So, we will
+sample some words of the text when reading
+it at the ﬁrst time.
+
+• The next step will be taken in the direction of
+algorithm acceleration and model lightweight
+design.
+
+Figure 8: The statistics of the Top-ignored words
+in 1000 IMDB reviews.
+
+when we read these words, the gates in GGM are
+closed. So these words are unable to pass through
+the gate. These words in color (blue and red) mean
+that the gates are open when we read these words.
+We can observe that when we read the text again,
+the glance gate model can ignore the less impor-
+tant words and focus on the more useful words.
+Surprisingly, the most important words are found,
+e.g. enjoyable, best comedies and funny (the red
+words in Fig.7). The model is able to ﬁnd the ad-
+jectives, verbs and some nouns, which is more use-
+ful in the text understanding.
+
+Besides, we also count the top-ignored words in
+1000 IMDB reviews, and the results are shown in
+the Fig.8. We can see that most of the prepositions
+and adverds are ignored. Thus glance gate model
+can ﬁlter the less important words and concentrate
+on the more informative words.
+
+4.6 Comparing to RNN with Attention
+
+Mechanism
+
+To demonstrate the effectiveness of the multi-
+glance mechanism, we choose a review in Amazon
+dataset and visualize the parameters of weights
+in multi-glance model and attention based RNN
+model. As shown in Fig.9, the words in color (red
+and blue) are the top 10 important words in the re-
+view the word in red color are the top 5 important
+
+34i tried this tea in seattle two years ago and just loved it.  it was unavailable at my local health food store , but i found it on amazon .  their price and service are excellent .  i would definitely recommend this tea !i tried this tea in seattle two years ago and just loved it .  it was unavailable at my local health food store , but i found it on amazon .  their price and service are excellent .  i would definitely recommend this tea !the,.andaoftoisinitthatthisasi05000100001500020000ignore wordsAcknowledgments
+This work was
+Research Fund for
+trategic
+city
+No.JCYJ20170412170118573).
+
+supported in part by the
+s-
+by ShenZhen
+and
+
+the development of
+industries
+
+emerging
+(No.JCYJ20160331104524983
+
+References
+Isabelle Augenstein, Tim Rockt?schel, Andreas Vla-
+chos, and Kalina Bontcheva. 2016. Stance detection
+with bidirectional conditional encoding. pages 876–
+885.
+
+Tomas Mikolov, Kai Chen, Greg Corrado, and Jef-
+frey Dean. 2013. Efﬁcient estimation of word rep-
+resentations in vector space. arXiv preprint arX-
+iv:1301.3781.
+
+Mike Schuster and Kuldip K Paliwal. 1997. Bidirec-
+tional recurrent neural networks. IEEE Transactions
+on Signal Processing, 45(11):2673–2681.
+
+Richard Socher, Alex Perelygin, Jean Wu, Jason
+Chuang, Christopher D Manning, Andrew Ng, and
+Christopher Potts. 2013. Recursive deep models
+for semantic compositionality over a sentiment tree-
+In Proceedings of the 2013 conference on
+bank.
+empirical methods in natural language processing,
+pages 1631–1642.
+
+Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Ben-
+gio. 2014. Neural machine translation by jointly
+learning to align and translate. arXiv preprint arX-
+iv:1409.0473.
+
+Ilya Sutskever, Oriol Vinyals, and Quoc V Le. 2014.
+Sequence to sequence learning with neural network-
+s. In Advances in neural information processing sys-
+tems, pages 3104–3112.
+
+Huimin Chen, Maosong Sun, Cunchao Tu, Yankai Lin,
+and Zhiyuan Liu. 2016. Neural sentiment classiﬁ-
+cation with user and product attention. In Proceed-
+ings of the 2016 Conference on Empirical Methods
+in Natural Language Processing, pages 1650–1659.
+
+Kyunghyun Cho, Bart Van Merri¨enboer, Caglar Gul-
+cehre, Dzmitry Bahdanau, Fethi Bougares, Holger
+Schwenk, and Yoshua Bengio. 2014.
+Learning
+phrase representations using rnn encoder-decoder
+for statistical machine translation. arXiv preprint
+arXiv:1406.1078.
+
+Junyoung Chung, Caglar Gulcehre, KyungHyun Cho,
+and Yoshua Bengio. 2014. Empirical evaluation of
+gated recurrent neural networks on sequence model-
+ing. arXiv preprint arXiv:1412.3555.
+
+Bhuwan Dhingra, Hanxiao Liu, Zhilin Yang,
+William W Cohen, and Ruslan Salakhutdinov.
+2016. Gated-attention readers for text comprehen-
+sion. arXiv preprint arXiv:1606.01549.
+
+Sepp Hochreiter and J¨urgen Schmidhuber. 1997.
+Long short-term memory. Neural Computation,
+9(8):1735–1780.
+
+Andrej Karpathy, Justin Johnson, and Li Fei-Fei. 2015.
+Visualizing and understanding recurrent networks.
+arXiv preprint arXiv:1506.02078.
+
+Yoon Kim. 2014.
+
+Convolutional neural network-
+s for sentence classiﬁcation. arXiv preprint arX-
+iv:1408.5882.
+
+Svetlana Kiritchenko, Xiaodan Zhu, and Saif M Mo-
+hammad. 2014.
+Sentiment analysis of short in-
+formal texts. Journal of Artiﬁcial Intelligence Re-
+search, 50:723–762.
+
+Quoc Le and Tomas Mikolov. 2014. Distributed rep-
+resentations of sentences and documents. In Inter-
+national Conference on Machine Learning, pages
+1188–1196.
+
+Kai Sheng Tai, Richard Socher, and Christopher D.
+Manning. 2015. Improved semantic representation-
+s from tree-structured long short-term memory net-
+In Proceedings of the 53rd Annual Meet-
+works.
+ing of the Association for Computational Linguis-
+tics, pages 1556–1566.
+
+Duyu Tang, Bing Qin, and Ting Liu. 2015. Docu-
+ment modeling with gated recurrent neural network
+In Proceedings of the
+for sentiment classiﬁcation.
+2015 conference on empirical methods in natural
+language processing, pages 1422–1432.
+
+Duyu Tang, Furu Wei, Nan Yang, Ming Zhou, Ting Li-
+u, and Bing Qin. 2014. Learning sentiment-speciﬁc
+word embedding for twitter sentiment classiﬁcation.
+In Proceedings of the 52nd Annual Meeting of the
+Association for Computational Linguistics (Volume
+1: Long Papers), volume 1, pages 1555–1565.
+
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob
+Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz
+Kaiser, and Illia Polosukhin. 2017. Attention is all
+you need. In Advances in Neural Information Pro-
+cessing Systems, pages 6000–6010.
+
+Zichao Yang, Diyi Yang, Chris Dyer, Xiaodong He,
+Alex Smola, and Eduard Hovy. 2016. Hierarchi-
+cal attention networks for document classiﬁcation.
+In Proceedings of the 2016 Conference of the North
+American Chapter of the Association for Computa-
+tional Linguistics: Human Language Technologies,
+pages 1480–1489.
+
+Matthew D Zeiler. 2012. Adadelta: an adaptive learn-
+
+ing rate method. arXiv preprint arXiv:1212.5701.
+
+Xiang Zhang, Junbo Zhao, and Yann LeCun. 2015.
+Character-level convolutional networks for text clas-
+In Advances in neural information pro-
+siﬁcation.
+cessing systems, pages 649–657.
+
+35

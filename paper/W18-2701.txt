@@ -1,0 +1,1283 @@
+Findings of the Second Workshop on
+
+Neural Machine Translation and Generation
+
+Alexandra Birch♠, Andrew Finch♥, Minh-Thang Luong♣, Graham Neubig♦, Yusuke Oda◦
+♠University of Edinburgh, ♥Apple, ♣Google Brain, ♦Carnegie Mellon University ◦Google Translate
+
+Abstract
+
+This document describes the ﬁndings of
+the Second Workshop on Neural Machine
+Translation and Generation, held in con-
+cert with the annual conference of the
+Association for Computational Linguistics
+(ACL 2018). First, we summarize the re-
+search trends of papers presented in the
+proceedings, and note that there is par-
+ticular interest in linguistic structure, do-
+main adaptation, data augmentation, han-
+dling inadequate resources, and analysis
+of models. Second, we describe the re-
+sults of the workshop’s shared task on ef-
+ﬁcient neural machine translation (NMT),
+where participants were tasked with cre-
+ating NMT systems that are both accurate
+and efﬁcient.
+
+Introduction
+
+1
+Neural sequence to sequence models (Kalchbren-
+ner and Blunsom, 2013; Sutskever et al., 2014;
+Bahdanau et al., 2015) are now a workhorse be-
+hind a wide variety of different natural language
+processing tasks such as machine translation, gen-
+eration, summarization and simpliﬁcation. The
+2nd Workshop on Neural Machine Translation
+and Generation (WNMT 2018) provided a forum
+for research in applications of neural models to
+machine translation and other language genera-
+tion tasks (including summarization (Rush et al.,
+2015), NLG from structured data (Wen et al.,
+2015), dialog response generation (Vinyals and
+Le, 2015), among others). Overall, the workshop
+was held with two goals:
+
+First, it aimed to synthesize the current state
+of knowledge in neural machine translation and
+generation: This year we will continue to encour-
+age submissions that not only advance the state of
+
+the art through algorithmic advances, but also an-
+alyze and understand the current state of the art,
+pointing to future research directions. Towards
+this goal, we received a number of high-quality
+research contributions on the topics of linguis-
+tic structure, domain adaptation, data augmenta-
+tion, handling inadequate resources, and analysis
+of models, which are summarized in Section 2.
+
+Second, it aimed to expand the research hori-
+zons in NMT: Based on panel discussions from
+the ﬁrst workshop, we organized a shared task.
+Speciﬁcally,
+the shared task was on “Efﬁcient
+NMT”. The aim of this task was to focus on not
+only accuracy, but also memory and computa-
+tional efﬁciency, which are paramount concerns in
+practical deployment settings. The workshop pro-
+vided a set of baselines for the task, and elicited
+contributions to help push forward the Pareto fron-
+tier of both efﬁciency and accuracy. The results of
+the shared task are summarized in Section 3
+
+2 Summary of Research Contributions
+
+for
+
+long papers,
+
+We published a call
+ex-
+tended abstracts for preliminary work, and cross-
+submissions of papers submitted to other venues.
+The goal was to encourage discussion and interac-
+tion with researchers from related areas. We re-
+ceived a total of 25 submissions, out of which 16
+submissions were accepted. The acceptance rate
+was 64%. Three extended abstracts, two cross-
+submissions and eleven long papers were accepted
+after a process of double blind reviewing.
+
+Most of the papers looked at the application
+of machine translation, but there is one paper on
+abstractive summarization (Fan et al., 2018) and
+one paper on automatic post-editing of transla-
+tions (Unanue et al., 2018).
+
+The workshop proceedings cover a wide range
+of phenomena relevant to sequence to sequence
+
+Proceedingsofthe2ndWorkshoponNeuralMachineTranslationandGeneration,pages1–10Melbourne,Australia,July20,2018.c(cid:13)2018AssociationforComputationalLinguistics1model research, with the contributions being con-
+centrated on the following topics:
+
+Linguistic structure: How can we incorporate
+linguistic structure in neural MT or gener-
+ation models? Contributions examined the
+effect of considering semantic role struc-
+ture (Marcheggiani et al., 2018), latent struc-
+ture (Bastings et al., 2018), and structured
+self-attention (Bisk and Tran, 2018).
+
+Domain adaptation: Some contributions exam-
+for adapta-
+ined regularization methods
+tion (Khayrallah et al., 2018) and “extreme
+adaptation” to individual speakers (Michel
+and Neubig, 2018)
+
+Data augmentation: A number of
+
+training.
+
+the con-
+tributed papers examined ways to augment
+data for more efﬁcient
+These
+include methods for considering multiple
+back translations (Imamura et al., 2018),
+iterative back translation (Hoang et al.,
+2018b),
+train-
+ing (Niu et al., 2018), and document level
+adaptation (Kothur et al., 2018)
+
+bidirectional multilingual
+
+Inadequate resources: Several contributions in-
+volved settings in which resources were in-
+sufﬁcient, such as investigating the impact of
+noise (Khayrallah and Koehn, 2018), miss-
+ing data in multi-source settings (Nishimura
+et al., 2018) and one-shot learning (Pham
+et al., 2018).
+
+Model analysis: There were also many methods
+that analyzed modeling and design decisions,
+including investigations of individual neuron
+contributions (Bau et al., 2018), parameter
+sharing (Jean et al., 2018), controlling output
+characteristics (Fan et al., 2018), and shared
+attention (Unanue et al., 2018)
+
+3 Shared Task
+
+Many shared tasks, such as the ones run by the
+Conference on Machine Translation (Bojar et al.,
+2017), aim to improve the state of the art for
+MT with respect to accuracy: ﬁnding the most
+accurate MT system regardless of computational
+cost. However, in production settings, the efﬁ-
+ciency of the implementation is also extremely im-
+portant. The shared task for WNMT (inspired by
+the “small NMT” task at the Workshop on Asian
+
+Translation (Nakazawa et al., 2017)) was focused
+on creating systems for NMT that are not only ac-
+curate, but also efﬁcient. Efﬁciency can include a
+number of concepts, including memory efﬁciency
+and computational efﬁciency. This task concerns
+itself with both, and we cover the detail of the eval-
+uation below.
+
+3.1 Evaluation Measures
+The ﬁrst step to the evaluation was deciding what
+we want to measure. In the case of the shared task,
+we used metrics to measure several different as-
+pects connected to how good the system is. These
+were measured for systems that were run on CPU,
+and also systems that were run on GPU.
+
+Accuracy Measures: As a measure of translation
+accuracy, we used BLEU (Papineni et al.,
+2002) and NIST (Doddington, 2002) scores.
+
+Computational Efﬁciency Measures: We mea-
+sured the amount of time it takes to translate
+the entirety of the test set on CPU or GPU.
+Time for loading models was measured by
+having the model translate an empty ﬁle, then
+subtracting this from the total time to trans-
+late the test set ﬁle.
+
+Memory Efﬁciency Measures: We measured:
+(1) the size on disk of the model, (2) the
+number of parameters in the model, and (3)
+the peak consumption of the host memory
+and GPU memory.
+
+These metrics were measured by having par-
+ticipants submit a container for the virtualization
+environment Docker1, then measuring from out-
+side the container the usage of computation time
+and memory. All evaluations were performed on
+dedicated instances on Amazon Web Services2,
+speciﬁcally of type m5.large for CPU evalu-
+ation, and p3.2xlarge (with a NVIDIA Tesla
+V100 GPU).
+
+3.2 Data
+The data used was from the WMT 2014 English-
+German task (Bojar et al., 2014), using the pre-
+processed corpus provided by the Stanford NLP
+Group3. Use of other data was prohibited.
+
+1https://www.docker.com/
+2https://aws.amazon.com/
+3https://nlp.stanford.edu/projects/
+
+nmt/
+
+2(a) CPU Time vs. Accuracy
+
+(b) GPU Time vs. Accuracy
+
+(c) CPU Memory vs. Accuracy
+
+(d) GPU Memory vs. Accuracy
+
+Figure 1: Time and memory vs. accuracy measured by BLEU, calculated on both CPU and GPU
+
+3.3 Baseline Systems
+Two baseline systems were prepared:
+
+Echo: Just send the input back to the output.
+
+Base: A baseline system using attentional LSTM-
+based encoder-decoders with attention (Bah-
+danau et al., 2015).
+
+3.4 Submitted Systems
+Four teams, Team Amun, Team Marian, Team
+OpenNMT, and Team NICT submitted to the
+shared task, and we will summarize each below.
+Before stepping in to the details of each system,
+we ﬁrst note general trends that all or many sys-
+tems attempted. The ﬁrst general trend was a
+fast C++ decoder, with Teams Amun, Marian, and
+NICT using the Amun or Marian decoders in-
+cluded in the Marian toolkit,4 and team OpenNMT
+
+using the C++-decoder decoder for OpenNMT.5.
+The second trend was the use of data augmenta-
+tion techniques allowing the systems to train on
+data other than the true references. Teams Amun,
+Marian, and OpenNMT all performed model dis-
+tillation (Kim and Rush, 2016), where a larger
+teacher model is used to train a smaller student
+model, while team NICT used back translation,
+training the model on sampled translations from
+the target to the source (Imamura et al., 2018).
+Finally, a common optimization was the use of
+lower-precision arithmetic, where Teams Amun,
+Marian, and OpenNMT all used some variety of
+16/8-bit or integer calculation, along with the cor-
+responding optimized CPU or GPU operations.
+These three improvements seem to be best prac-
+tices for efﬁcient NMT implementation.
+
+4https://marian-nmt.github.io
+
+5http://opennmt.net
+
+3102103Time (s, log scale)18202224262830BLEU (%)Marian-Trans-Base-AANMarian-Trans-BigMarian-Trans-Big-int8Marian-Trans-Small-AANOpenNMT-SmallOpenNMT-TinyBaseline100101Time (s, log scale)18202224262830BLEU (%)Amun-FastGRUAmun-MLSTMMarian-TinyRNNMarian-Trans-Base-AANMarian-Trans-BigMarian-Trans-Small-AANNICTBaseline25050075010001250150017502000Memory (MB)18202224262830BLEU (%)Marian-Trans-Base-AANMarian-Trans-BigMarian-Trans-Big-int8Marian-Trans-Small-AANOpenNMT-SmallOpenNMT-TinyBaseline2×1033×1034×1036×103Memory (MB)18202224262830BLEU (%)Amun-FastGRUAmun-MLSTMMarian-TinyRNNMarian-Trans-Base-AANMarian-Trans-BigMarian-Trans-Small-AANNICTBaseline3.4.1 Team Amun
+Team Amun’s contribution (Hoang et al., 2018a)
+was based on the “Amun” decoder and consisted
+of a number of optimizations to improve transla-
+tion speed on GPU. The ﬁrst major unique con-
+tribution was a strategy of batching together com-
+putations from multiple hypotheses within beam
+search to exploit parallelism of hardware. An-
+other contribution was a methodology to create
+a fused GPU kernel for the softmax calculation,
+that calculates all of the operations within the
+softmax (e.g. max, exponentiation, and sum) in
+a single kernel.
+In the end they submitted two
+systems, Amun-FastGRU and Amun-MLSTM,
+which use GRU (Cho et al., 2014) and multiplica-
+tive LSTM (Krause et al., 2016) units respectively.
+
+3.4.2 Team Marian
+Team Marian’s system (Junczys-Dowmunt et al.,
+2018) used the Marian C++ decoder, and con-
+centrated on new optimizations for the CPU.
+The team distilled a large self-attentional model
+into two types of “student” models: a smaller
+self-attentional model using average attention
+networks (Zhang et al., 2018), a new higher-
+speed version of the original Transformer model
+(Vaswani et al., 2017), and a standard RNN-based
+decoder. They also introduced an auto-tuning
+approach that chooses which of multiple matrix
+multiplication implementations is most efﬁcient
+in the current context, then uses this implementa-
+tion going forward. This resulted in the Marian-
+TinyRNN system using an RNN-based model,
+and the Marian-Trans-Small-AAN, Marian-
+Trans-Base-AAN, Marian-Trans-Big, Marian-
+Trans-Big-int8 systems, which use different vari-
+eties and sizes of self-attentional models.
+
+3.4.3 Team OpenNMT
+Team OpenNMT (Senellart et al., 2018) built a
+system based on the OpenNMT toolkit. The
+model was based on a large self-attentional teacher
+model distilled into a smaller, fast RNN-based
+model. The system also used a version of vo-
+cabulary selection (Shi and Knight, 2017), and a
+method to increase the size of the encoder but
+decrease the size of the decoder to improve the
+efﬁciency of beam search. They submitted two
+systems, OpenNMT-Small and OpenNMT-Tiny,
+which were two variously-sized implementations
+of this model.
+
+3.4.4 Team NICT
+Team NICT’s contribution (Imamura and Sumita,
+2018) to the shared task was centered around us-
+ing self-training as a way to improve NMT accu-
+racy without changing the architecture. Speciﬁ-
+cally, they used a method of randomly sampling
+pseudo-source sentences from a back-translation
+model (Imamura et al., 2018) and used this to aug-
+ment the data set to increase coverage. They tested
+two basic architectures for the actual translation
+model, a recurrent neural network-based model
+trained using OpenNMT, and a self-attentional
+model trained using Marian, ﬁnally submitting the
+self-attentional model using Marian as their sole
+contribution to the shared task NICT.
+
+3.5 Shared Task Results
+A brief summary of the results of the shared task
+(for newstest2015) can be found in Figure 1, while
+full results tables for all of the systems can be
+found in Appendix A. From this ﬁgure we can
+glean a number of observations.
+
+First, encouragingly all the submitted systems
+handily beat the baseline system in speed and ac-
+curacy.
+
+Secondly, observing the speed/accuracy curves,
+we can see that Team Marian’s submissions tended
+to carve out the Pareto frontier, indicating that the
+large number of optimizations that went into creat-
+ing the system paid off in aggregate. Interestingly,
+on GPU, RNN-based systems carved out the faster
+but less accurate part of the Pareto curve, while on
+CPU self-attentional models were largely found to
+be more effective. None of the submissions con-
+sisted of a Transformer-style model so small that
+it under-performed the RNN models, but a fur-
+ther examination of where the curves cross (if they
+do) would be an interesting examination for future
+shared tasks.
+
+Next, considering memory usage, we can see
+again that the submissions from the Marian team
+tend to be the most efﬁcient. One exception is the
+extremely small memory system OpenNMT-Tiny,
+which achieves signiﬁcantly lower translation ac-
+curacies, but ﬁts in a mere 220MB of memory on
+the CPU.
+
+In this ﬁrst iteration of the task, we attempted
+to establish best practices and strong baselines
+upon which to build efﬁcient test-time methods
+for NMT. One characteristic of the ﬁrst iteration
+of the task was that the basic model architectures
+
+4used relatively standard, with the valuable contri-
+butions lying in solid engineering work and best
+practices in neural network optimization such as
+low-precision calculation and model distillation.
+With these contributions, we now believe we have
+very strong baselines upon which future iterations
+of the task can build, examining novel architec-
+tures or methods for further optimizing the train-
+ing speed. We also will examine other considera-
+tions, such as efﬁcient adaptation to new training
+data, or latency from receiving a sentence to trans-
+lating it.
+
+4 Conclusion
+
+This paper summarized the results of the Sec-
+ond Workshop on Neural Machine Translation and
+Generation, where we saw a number of research
+advances, particularly in the area of efﬁciency in
+neural MT through submissions to the shared task.
+The workshop series will continue next year, and
+continue to push forward the state of the art on
+these topics for faster, more accurate, more ﬂex-
+ible, and more widely applicable neural MT and
+generation systems.
+
+Acknowledgments
+
+We would like to warmly thank Amazon for its
+support of the shared task, both through its dona-
+tion of computation time, and through its provi-
+sion of a baseline system for participants to build
+upon. We also thank Google and Apple for their
+monetary support of the workshop.
+
+References
+Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Ben-
+gio. 2015. Neural machine translation by jointly
+learning to align and translate. In Proc. ICLR.
+
+Joost Bastings, Wilker Aziz, Ivan Titov, and Khalil
+Simaan. 2018. Modeling latent sentence structure
+in neural machine translation. In Proc. WNMT.
+
+D. Anthony Bau, Yonatan Belinkov, Hassan Sajjad,
+Nadir Durrani, Fahim Dalvi, and James Glass. 2018.
+On individual neurons in neural machine translation.
+In Proc. WNMT.
+
+Yonatan Bisk and Ke Tran. 2018. Inducing grammars
+In Proc.
+
+with and for neural machine translation.
+WNMT.
+
+Logacheva, et al. 2017. Findings of the 2017 con-
+In Proc.
+ference on machine translation (wmt17).
+WMT, pages 169–214.
+
+Ondrej Bojar et al. 2014. Findings of the 2014 work-
+In Proc.
+
+shop on statistical machine translation.
+WMT, pages 12–58.
+
+Kyunghyun Cho, Bart van Merrienboer, Caglar Gul-
+cehre, Dzmitry Bahdanau, Fethi Bougares, Holger
+Schwenk, and Yoshua Bengio. 2014.
+Learning
+phrase representations using RNN encoder–decoder
+for statistical machine translation. In Proc. EMNLP,
+pages 1724–1734.
+
+George Doddington. 2002.
+
+Automatic evaluation
+of machine translation quality using n-gram co-
+occurrence statistics. In Proc. HLT, pages 138–145.
+
+Angela Fan, David Grangier, and Michael Auli. 2018.
+In Proc.
+
+Controllable abstractive summarization.
+WNMT.
+
+Hieu Hoang, Tomasz Dwojak, Rihards Krislauks,
+Daniel Torregrosa, and Kenneth Heaﬁeld. 2018a.
+Fast neural machine translation implementation. In
+Proc. WNMT.
+
+Vu Cong Duy Hoang, Philipp Koehn, Gholamreza
+Haffari, and Trevor Cohn. 2018b.
+Iterative back-
+translation for neural machine translation. In Proc.
+WNMT.
+
+Kenji Imamura, Atsushi Fujita, and Eiichiro Sumita.
+2018. Enhancement of encoder and attention using
+target monolingual corpora in neural machine trans-
+lation. In Proc. WNMT.
+
+Kenji Imamura and Eiichiro Sumita. 2018. Nict self-
+training approach to neural machine translation at
+nmt-2018. In Proc. WNMT.
+
+S`ebastien Jean, Stanislas Lauly, and Kyunghyun Cho.
+2018. Parameter sharing strategies in neural ma-
+chine translation. In Proc. WNMT.
+
+Marcin Junczys-Dowmunt, Kenneth Heaﬁeld, Hieu
+Hoang, Roman Grundkiewicz, and Anthony Aue.
+2018. Marian: Cost-effective high-quality neural
+machine translation in c++. In Proc. WNMT.
+
+Nal Kalchbrenner and Phil Blunsom. 2013. Recurrent
+In Proc. EMNLP,
+
+continuous translation models.
+pages 1700–1709.
+
+Huda Khayrallah and Philipp Koehn. 2018. On the
+impact of various types of noise on neural machine
+translation. In Proc. WNMT.
+
+Huda Khayrallah, Brian Thompson, Kevin Duh, and
+Philipp Koehn. 2018. Regularized training objective
+for continued training for domain adaption in neural
+machine translation. In Proc. WNMT.
+
+Ondˇrej Bojar, Rajen Chatterjee, Christian Federmann,
+Yvette Graham, Barry Haddow, Shujian Huang,
+Matthias Huck, Philipp Koehn, Qun Liu, Varvara
+
+Yoon Kim and Alexander M. Rush. 2016. Sequence-
+In Proc. EMNLP,
+
+level knowledge distillation.
+pages 1317–1327.
+
+5Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob
+Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz
+Kaiser, and Illia Polosukhin. 2017. Attention is all
+you need. In Proc. NIPS.
+
+Oriol Vinyals and Quoc Le. 2015. A neural conversa-
+
+tional model. arXiv preprint arXiv:1506.05869.
+
+Tsung-Hsien Wen, Milica Gasic, Nikola Mrkˇsi´c, Pei-
+Hao Su, David Vandyke, and Steve Young. 2015.
+Semantically conditioned lstm-based natural lan-
+guage generation for spoken dialogue systems.
+In
+Proc. EMNLP, pages 1711–1721.
+
+Biao Zhang, Deyi Xiong, and Jinsong Su. 2018. Accel-
+erating neural transformer via an average attention
+network. In Proc. ACL.
+
+A Full Shared Task Results
+For completeness, in this section we add tables of
+the full shared task results. These include the full
+size of the image ﬁle for the translation system
+(Table 1), the comparison between compute time
+and evaluation scores on CPU (Table 2) and GPU
+(Table 3), and the comparison between memory
+and evaluation scores on CPU (Table 4) and GPU
+(Table 5).
+
+Sachith Sri Ram Kothur, Rebecca Knowles, and
+Philipp Koehn. 2018. Document-level adaptation
+for neural machine translation. In Proc. WNMT.
+
+Ben Krause, Liang Lu, Iain Murray, and Steve Renals.
+2016. Multiplicative lstm for sequence modelling.
+arXiv preprint arXiv:1609.07959.
+
+Diego Marcheggiani, Joost Bastings, and Ivan Titov.
+2018. Exploiting semantics in neural machine trans-
+lation with graph convolutional networks. In Proc.
+WNMT.
+
+Paul Michel and Graham Neubig. 2018. Extreme adap-
+tation for personalized neural machine translation.
+In Proc. WNMT.
+
+Toshiaki Nakazawa, Shohei Higashiyama, Chenchen
+Ding, Hideya Mino, Isao Goto, Hideto Kazawa,
+Yusuke Oda, Graham Neubig, and Sadao Kurohashi.
+2017. Overview of the 4th workshop on asian trans-
+lation. In Proc. WAT, pages 1–54, Taipei, Taiwan.
+Asian Federation of Natural Language Processing.
+
+Yuta Nishimura, Katsuhito Sudoh, Graham Neubig,
+and Satoshi Nakamura. 2018. Multi-source neu-
+ral machine translation with missing data. In Proc.
+WNMT.
+
+Xing Niu, Michael Denkowski, and Marine Carpuat.
+2018. Bi-directional neural machine translation
+with synthetic parallel data. In Proc. WNMT.
+
+Kishore Papineni, Salim Roukos, Todd Ward, and Wei-
+Jing Zhu. 2002. BLEU: a method for automatic
+In Proc. ACL,
+evaluation of machine translation.
+pages 311–318.
+
+Ngoc-Quan Pham, Jan Niehues, and Alexander Waibel.
+Towards one-shot learning for rare-word
+
+2018.
+translation with external experts. In Proc. WNMT.
+
+Alexander M. Rush, Sumit Chopra, and Jason Weston.
+2015. A neural attention model for abstractive sen-
+tence summarization. In Proc. EMNLP, pages 379–
+389.
+
+Jean Senellart, Dakun Zhang, Bo Wang, Guillaume
+Klein, Jean-Pierre Ramatchandirin, Josep Crego,
+and Alexander Rush. 2018. OpenNMT system de-
+scription for WNMT 2018: 800 words/sec on a
+single-core CPU. In Proc. WNMT.
+
+Xing Shi and Kevin Knight. 2017. Speeding up neural
+machine translation decoding by shrinking run-time
+vocabulary. In Proc. ACL, pages 574–579.
+
+Ilya Sutskever, Oriol Vinyals, and Quoc VV Le. 2014.
+Sequence to sequence learning with neural net-
+works. In Proc. NIPS, pages 3104–3112.
+
+Inigo Jauregi Unanue, Ehsan Zare Borzeshi, and Mas-
+simo Piccardi. 2018. A shared attention mechanism
+for interpretation of neural automatic post-editing
+systems. In Proc. WNMT.
+
+6Table 1: Image ﬁle sizes of submitted systems.
+
+Team
+edin-amun
+
+Marian
+
+System
+fastgru
+mlstm.1280
+cpu-transformer-base-aan
+cpu-transformer-big
+cpu-transformer-big-int8
+cpu-transformer-small-aan
+gpu-amun-tinyrnn
+gpu-transformer-base-aan
+gpu-transformer-big
+gpu-transformer-small-aan
+marian-st
+
+NICT
+OpenNMT cpu1
+cpu2
+echo
+nmt-1cpu
+nmt-1gpu
+
+Organizer
+
+Size [MiB]
+4823.43
+5220.72
+493.20
+1085.93
+1085.92
+367.92
+399.08
+686.59
+1279.32
+564.32
+2987.57
+339.02
+203.89
+110.42
+1668.25
+3729.40
+
+Table 2: Time consumption and MT evaluation metrics (CPU systems).
+
+Dataset
+
+Empty
+
+Team
+
+Marian
+
+System
+
+cpu-transformer-base-aan
+cpu-transformer-big
+cpu-transformer-big-int8
+cpu-transformer-small-aan
+
+newstest2014 Marian
+
+Organizer
+
+OpenNMT cpu1
+cpu2
+echo
+nmt-1cpu
+cpu-transformer-base-aan
+cpu-transformer-big
+cpu-transformer-big-int8
+cpu-transformer-small-aan
+
+newstest2015 Marian
+
+Organizer
+
+OpenNMT cpu1
+cpu2
+echo
+nmt-1cpu
+cpu-transformer-base-aan
+cpu-transformer-big
+cpu-transformer-big-int8
+cpu-transformer-small-aan
+
+OpenNMT cpu1
+cpu2
+echo
+nmt-1cpu
+
+Organizer
+
+Time Consumption [s]
+CPU
+6.48
+7.01
+7.31
+6.32
+0.64
+0.56
+0.05
+1.50
+281.72
+1539.34
+1173.32
+100.36
+471.41
+77.41
+0.05
+4436.08
+223.86
+1189.04
+907.95
+80.21
+368.93
+59.02
+0.05
+3401.99
+
+Real
+6.55
+9.02
+7.51
+6.33
+0.65
+0.56
+0.06
+1.50
+281.80
+1541.00
+1173.41
+100.42
+471.43
+77.42
+0.06
+4436.27
+223.96
+1190.97
+908.43
+80.25
+368.95
+59.02
+0.06
+3402.14
+
+Diff
+—
+—
+—
+—
+—
+—
+—
+—
+275.25
+1531.98
+1165.90
+94.08
+470.78
+76.86
+0.00
+4434.77
+217.41
+1181.95
+900.92
+73.92
+368.30
+58.46
+0.00
+3400.64
+
+BLEU % NIST
+
+—
+—
+—
+—
+—
+—
+—
+—
+27.44
+28.12
+27.50
+25.99
+25.77
+23.11
+2.79
+16.79
+29.59
+30.56
+30.15
+28.61
+28.60
+25.75
+3.24
+18.66
+
+—
+—
+—
+—
+—
+—
+—
+—
+7.362
+7.436
+7.355
+7.169
+7.140
+6.760
+1.479
+5.545
+7.452
+7.577
+7.514
+7.312
+7.346
+6.947
+1.599
+5.758
+
+7Dataset
+
+Empty
+
+newstest2014
+
+newstest2015
+
+Table 3: Time consumption and MT evaluation metrics (GPU systems).
+
+Team
+
+System
+
+edin-amun
+
+Marian
+
+NICT
+Organizer
+edin-amun
+
+Marian
+
+NICT
+Organizer
+edin-amun
+
+Marian
+
+NICT
+Organizer
+
+fastgru
+mlstm.1280
+gpu-amun-tinyrnn
+gpu-transformer-base-aan
+gpu-transformer-big
+gpu-transformer-small-aan
+marian-st
+nmt-1gpu
+fastgru
+mlstm.1280
+gpu-amun-tinyrnn
+gpu-transformer-base-aan
+gpu-transformer-big
+gpu-transformer-small-aan
+marian-st
+nmt-1gpu
+fastgru
+mlstm.1280
+gpu-amun-tinyrnn
+gpu-transformer-base-aan
+gpu-transformer-big
+gpu-transformer-small-aan
+marian-st
+nmt-1gpu
+
+Time Consumption [s]
+Diff
+CPU
+4.18
+—
+—
+4.44
+—
+4.27
+—
+5.62
+6.00
+—
+—
+5.48
+—
+5.78
+3.73
+—
+1.50
+5.68
+4.20
+8.64
+1.63
+5.90
+14.58
+8.95
+30.74
+36.74
+6.97
+12.46
+76.30
+82.07
+51.24
+47.50
+1.23
+5.41
+3.71
+8.15
+1.35
+5.62
+12.67
+7.04
+24.84
+30.81
+5.56
+11.04
+72.84
+67.06
+36.21
+39.95
+
+Real
+4.24
+4.50
+4.33
+5.68
+6.05
+5.54
+5.84
+3.80
+5.74
+8.70
+5.96
+14.64
+36.80
+12.52
+82.14
+82.14
+5.47
+8.22
+5.68
+12.73
+30.90
+11.10
+72.90
+40.01
+
+BLEU % NIST
+
+—
+—
+—
+—
+—
+—
+—
+—
+17.74
+23.85
+24.06
+27.80
+28.34
+26.34
+27.59
+16.79
+19.26
+26.51
+26.86
+30.10
+30.87
+28.87
+30.19
+18.66
+
+—
+—
+—
+—
+—
+—
+—
+—
+5.783
+6.833
+6.879
+7.415
+7.486
+7.219
+7.375
+5.545
+5.905
+7.015
+7.065
+7.526
+7.630
+7.379
+7.541
+5.758
+
+8Table 4: Peak memory consumption (CPU systems).
+
+Memory [MiB]
+
+Host GPU
+
+Dataset
+
+Empty
+
+Team
+
+Marian
+
+System
+
+cpu-transformer-base-aan
+cpu-transformer-big
+cpu-transformer-big-int8
+cpu-transformer-small-aan
+
+newstest2014 Marian
+
+Organizer
+
+OpenNMT cpu1
+cpu2
+echo
+nmt-1cpu
+cpu-transformer-base-aan
+cpu-transformer-big
+cpu-transformer-big-int8
+cpu-transformer-small-aan
+
+newstest2015 Marian
+
+Organizer
+
+OpenNMT cpu1
+cpu2
+echo
+nmt-1cpu
+cpu-transformer-base-aan
+cpu-transformer-big
+cpu-transformer-big-int8
+cpu-transformer-small-aan
+
+OpenNMT cpu1
+cpu2
+echo
+nmt-1cpu
+
+Organizer
+
+531.39
+1768.56
+1193.13
+367.22
+403.86
+194.61
+1.15
+1699.71
+761.07
+1681.81
+2084.66
+476.21
+458.08
+219.79
+1.20
+1770.69
+749.29
+1712.08
+2086.02
+461.27
+455.21
+217.64
+1.11
+1771.35
+
+Both
+— 531.39
+— 1768.56
+— 1193.13
+— 367.22
+— 403.86
+— 194.61
+—
+1.15
+— 1699.71
+— 531.39
+— 1768.56
+— 1193.13
+— 367.22
+— 403.86
+— 194.61
+—
+1.15
+— 1699.71
+— 531.39
+— 1768.56
+— 1193.13
+— 367.22
+— 403.86
+— 194.61
+—
+1.15
+— 1699.71
+
+9Dataset
+
+Empty
+
+newstest2014
+
+newstest2015
+
+Table 5: Peak memory consumption (GPU systems).
+
+Team
+
+System
+
+edin-amun
+
+Marian
+
+NICT
+Organizer
+edin-amun
+
+Marian
+
+NICT
+Organizer
+edin-amun
+
+Marian
+
+NICT
+Organizer
+
+fastgru
+mlstm.1280
+gpu-amun-tinyrnn
+gpu-transformer-base-aan
+gpu-transformer-big
+gpu-transformer-small-aan
+marian-st
+nmt-1gpu
+fastgru
+mlstm.1280
+gpu-amun-tinyrnn
+gpu-transformer-base-aan
+gpu-transformer-big
+gpu-transformer-small-aan
+marian-st
+nmt-1gpu
+fastgru
+mlstm.1280
+gpu-amun-tinyrnn
+gpu-transformer-base-aan
+gpu-transformer-big
+gpu-transformer-small-aan
+marian-st
+nmt-1gpu
+
+Memory [MiB]
+
+Host GPU
+668
+540
+522
+484
+484
+484
+484
+640
+1232
+5144
+1526
+1350
+2070
+1228
+1780
+2178
+1680
+6090
+1982
+1350
+2198
+1228
+1778
+2178
+
+442.55
+664.88
+346.80
+487.18
+1085.29
+366.26
+510.43
+378.81
+456.29
+686.29
+346.93
+492.91
+1081.69
+366.55
+922.53
+377.18
+473.72
+684.84
+350.19
+489.62
+1082.52
+372.56
+929.70
+383.02
+
+Both
+1110.55
+1204.88
+868.80
+971.18
+1569.29
+850.26
+994.43
+1018.81
+1688.29
+5830.29
+1872.93
+1842.91
+3151.69
+1594.55
+2702.53
+2555.18
+2153.72
+6774.84
+2332.19
+1839.62
+3280.52
+1600.56
+2707.70
+2561.02
+
+10

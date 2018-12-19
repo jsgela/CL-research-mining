@@ -1,0 +1,221 @@
+EMNLP2018Proceedingsofthe2018EMNLPWorkshopSMM4H:3rdSocialMediaMiningforHealthApplicationsWorkshop&SharedTaskOctober31,2018Brussels,Belgiumii
+
+c(cid:13)2018TheAssociationforComputationalLinguisticsOrdercopiesofthisandotherACLproceedingsfrom:AssociationforComputationalLinguistics(ACL)209N.EighthStreetStroudsburg,PA18360USATel:+1-570-476-8006Fax:+1-570-476-0860acl@aclweb.orgISBN978-1-948087-77-3iii
+
+PrefaceWelcometothe3rdSocialMediaMiningforHealthApplicationsWorkshopandSharedTask-SMM4H.Thetotalnumberofusersofsocialmediacontinuestogrowworldwide,resultinginthegenerationofvastamountsofdata.Withnearlyhalfofadultsworldwideandtwo-thirdsofallAmericanadultsusingsocialnetworking,thelatestPewResearchReportestimatesthat26%ofthetotalusershavediscussedhealthinformationand,ofthose,42%haveevendiscussedcurrentmedicalconditions.AdvancesinautomatedNLPandmachinelearningpresentthepossibilityofutilizingthismassivedatasourceforbiomedicalandpublichealthapplications,ifresearchersaddressthemethodologicalchallengesuniquetothismedia.Foritsthirditeration,theSMM4HworkshoptakesplaceinBrussels,Belgium,onNovember1,2018,andisco-locatedwiththe2018ConferenceonEmpiricalMethodsinNaturalLanguageProcessing(EMNLP).FollowingonthesuccessofasessionandaccompanyingWorkshoponthetopicthatwashostedatthePaciﬁcSymposiuminBiocomputing(PSB)in2016andtheAMIAAnnualConferencein2017,thisworkshopaimstoprovideaforumfortheACLcommunitymemberstopresentanddiscussNLPadvancesspeciﬁctosocialmediauseintheparticularlychallengingareaofhealthapplications,withaspecialfocusgiventoautomaticmethodsforthecollection,extraction,representation,analysis,andvalidationofsocialmediadataforhealthinformatics.Asforthepreviousyears,theworkshopincludessharedtaskswithaparticularinterestonsocialmediaminingforpharmacovigilance.ThisthirdexecutionoftheSMM4Hsharedtaskscomprisesfoursubtasks.ThesesubtasksinvolveannotateduserpostsfromTwitter(tweets)andfocusonthe(i)automaticclassiﬁcationoftweetsmentioningadrugname,(ii)automaticclassiﬁcationoftweetscontainingreportsofﬁrst-personmedicationintake,(iii)automaticclassiﬁcationoftweetspresentingself-reportsofadversedrugreaction(ADR)detection,and(iv)automaticclassiﬁcationofvaccinebehaviormentionsintweets.Atotalof14teamsparticipatedand78systemrunsweresubmitted.Deeplearning-basedclassiﬁersweretheprimaryapproach,butfeature-basedclassiﬁersandafewensemblelearningsystemswerealsoused.Wereceivedveryhighqualitysubmissions,andpresent19aslongandshorttalksandposters.Theorganizingcommitteewouldliketothanktheprogramcommittee,consistingof13researchers,fortheirthoughtfulinputonthesubmissions,aswellastheorganizersofEMNLPfortheirsupportandmanagement.Finally,ahugethankstoallauthorswhosubmittedapaperfortheworkshoporparticipatedinthesharedtasks;thisworkshopwouldnothavebeenpossiblewithoutthemandtheirhardwork.Graciela,Davy,Abeed,Michaelv
+
+OrganizingCommittee:GracielaGonzalez-Hernandez,UniversityofPennsylvaniaDavyWeissenbacher,UniversityofPennsylvaniaAbeedSarker,UniversityofPennsylvaniaMichaelPaul,UniversityofColorado-BoulderKarenO’Connor,UniversityofPennsylvaniaProgramCommittee:PierreZweigenbaum,FrenchNationalCenterforScientiﬁcResearch(France)NigelCollier,UniversityofCambridge(UK)CecileParis,CommonwealthScientiﬁcandIndustrialResearchOrganisation(Australia)AzadehNikfarjam,NuanceCommunications(USA)MasoudRouhizadeh,JohnsHopkins(USA)AriZ.Klein,UniversityofPennsylvania(USA)AdditionalReviewers:TakeshiOnishi,ToyotaTechnologicalInstituteatChicago(USA)ArjunMagee,ArizonaStateUniversity(USA)HaitaoCai,UniversityofPennsylvania(USA)Table of Contents
+
+Football and Beer - a Social Media Analysis on Twitter in Context of the FIFA Football World Cup 2018
+Roland Roller, Philippe Thomas and Sven Schmeier . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+
+Stance-Taking in Topics Extracted from Vaccine-Related Tweets and Discussion Forum Posts
+
+Maria Skeppstedt, Manfred Stede and Andreas Kerren . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+
+Identifying Depression on Reddit: The Effect of Training Data
+
+Inna Pirina and Ça˘grı Çöltekin . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+
+Overview of the Third Social Media Mining for Health (SMM4H) Shared Tasks at EMNLP 2018
+
+Davy Weissenbacher, Abeed Sarker, Michael J. Paul and Graciela Gonzalez-Hernandez. . . . . . . .13
+
+Changes in Psycholinguistic Attributes of Social Media Users Before, During, and After Self-Reported
+Inﬂuenza Symptoms
+
+Lucie Flekova, Vasileios Lampos and Ingemar Cox . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+
+Thumbs Up and Down: Sentiment Analysis of Medical Online Forums
+
+Victoria Bobicev and Marina Sokolova. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .22
+
+Identiﬁcation of Emergency Blood Donation Request on Twitter
+
+Puneet Mathur, Meghna Ayyar, Sahil Chopra, Simra Shahid, Laiba Mehnaz and Rajiv Shah . . . . 27
+
+Dealing with Medication Non-Adherence Expressions in Twitter
+
+Takeshi Onishi, Davy Weissenbacher, Ari Klein, Karen O’Connor and Graciela Gonzalez-Hernandez
+
+32
+
+Detecting Tweets Mentioning Drug Name and Adverse Drug Reaction with Hierarchical Tweet Repre-
+sentation and Multi-Head Self-Attention
+
+Chuhan Wu, Fangzhao Wu, Junxin Liu, Sixing Wu, Yongfeng Huang and Xing Xie . . . . . . . . . . . 34
+
+Classiﬁcation of Medication-Related Tweets Using Stacked Bidirectional LSTMs with Context-Aware
+Attention
+
+Orest Xherija . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+
+Shot Or Not: Comparison of NLP Approaches for Vaccination Behaviour Detection
+
+Aditya Joshi, Xiang Dai, Sarvnaz Karimi, Ross Sparks, Cecile Paris and C Raina MacIntyre . . . 43
+
+Neural DrugNet
+
+Nishant Nikhil and Shivansh Mundra . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 48
+
+IRISA at SMM4H 2018: Neural Network and Bagging for Tweet Classiﬁcation
+
+Anne-Lyse Minard, Christian Raymond and Vincent Claveau . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 50
+
+Drug-Use Identiﬁcation from Tweets with Word and Character N-Grams
+
+Ça˘grı Çöltekin and Taraka Rama . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 52
+
+Automatic Identiﬁcation of Drugs and Adverse Drug Reaction Related Tweets
+
+Segun Taofeek Aroyehun and Alexander Gelbukh . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 54
+
+UZH@SMM4H: System Descriptions
+
+Tilia Ellendorff, Joseph Cornelius, Heath Gordon, Nicola Colic and Fabio Rinaldi . . . . . . . . . . . . . 56
+
+vii
+
+Deep Learning for Social Media Health Text Classiﬁcation
+
+Santosh Tokala, Vaibhav Gambhir and Animesh Mukherjee . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 61
+
+Using PPM for Health Related Text Detection
+
+Victoria Bobicev, Victoria Lazu and Daniela Istrati . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 65
+
+Leveraging Web Based Evidence Gathering for Drug Information Identiﬁcation from Tweets
+
+Rupsa Saha, Abir Naskar, Tirthankar Dasgupta and Lipika Dey . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 67
+
+CLaC at SMM4H Task 1, 2, and 4
+
+Parsa Bagherzadeh, Nadia Sheikh and Sabine Bergler . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 70
+
+viii
+
+Conference Program
+
+Wednesday, October 31, 2018
+
+9:00–9:10
+
+9:10–9:30
+
+9:30–9:50
+
+Introduction
+Graciela Gonzalez
+
+Football and Beer - a Social Media Analysis on Twitter in Context of the FIFA
+Football World Cup 2018
+Roland Roller, Philippe Thomas and Sven Schmeier
+
+Stance-Taking in Topics Extracted from Vaccine-Related Tweets and Discussion Fo-
+rum Posts
+Maria Skeppstedt, Manfred Stede and Andreas Kerren
+
+9:50–10:10
+
+Identifying Depression on Reddit: The Effect of Training Data
+Inna Pirina and Ça˘grı Çöltekin
+
+10:30–11:00 Tea Break and Poster Session
+
+11:00–11:20 Overview of the Third Social Media Mining for Health (SMM4H) Shared Tasks at
+
+EMNLP 2018
+Davy Weissenbacher, Abeed Sarker, Michael J. Paul and Graciela Gonzalez-
+Hernandez
+
+11:20–11:40 Changes in Psycholinguistic Attributes of Social Media Users Before, During, and
+
+After Self-Reported Inﬂuenza Symptoms
+Lucie Flekova, Vasileios Lampos and Ingemar Cox
+
+11:40–12:00
+
+Thumbs Up and Down: Sentiment Analysis of Medical Online Forums
+Victoria Bobicev and Marina Sokolova
+
+12:00–12:20
+
+Identiﬁcation of Emergency Blood Donation Request on Twitter
+Puneet Mathur, Meghna Ayyar, Sahil Chopra, Simra Shahid, Laiba Mehnaz and
+Rajiv Shah
+
+12:20–12:30 Dealing with Medication Non-Adherence Expressions in Twitter
+
+Takeshi Onishi, Davy Weissenbacher, Ari Klein, Karen O’Connor and Graciela
+Gonzalez-Hernandez
+
+12:30–14:00 Lunch
+
+14:00–14:20 Detecting Tweets Mentioning Drug Name and Adverse Drug Reaction with Hierar-
+
+chical Tweet Representation and Multi-Head Self-Attention
+Chuhan Wu, Fangzhao Wu, Junxin Liu, Sixing Wu, Yongfeng Huang and Xing Xie
+
+ix
+
+Wednesday, October 31, 2018 (continued)
+
+14:20–14:40 Classiﬁcation of Medication-Related Tweets Using Stacked Bidirectional LSTMs
+
+with Context-Aware Attention
+Orest Xherija
+
+14:40–15:00
+
+Shot Or Not: Comparison of NLP Approaches for Vaccination Behaviour Detection
+Aditya Joshi, Xiang Dai, Sarvnaz Karimi, Ross Sparks, Cecile Paris and C Raina
+MacIntyre
+
+15:00–15:10 Neural DrugNet
+
+Nishant Nikhil and Shivansh Mundra
+
+15:10–15:20
+
+IRISA at SMM4H 2018: Neural Network and Bagging for Tweet Classiﬁcation
+Anne-Lyse Minard, Christian Raymond and Vincent Claveau
+
+15:20–15:30 Drug-Use Identiﬁcation from Tweets with Word and Character N-Grams
+
+Ça˘grı Çöltekin and Taraka Rama
+
+15:30–16:00 Tea Break and Poster Session
+
+16:00–16:10
+
+Automatic Identiﬁcation of Drugs and Adverse Drug Reaction Related Tweets
+Segun Taofeek Aroyehun and Alexander Gelbukh
+
+16:10–16:20 UZH@SMM4H: System Descriptions
+
+Tilia Ellendorff, Joseph Cornelius, Heath Gordon, Nicola Colic and Fabio Rinaldi
+
+16:20–16:30 Deep Learning for Social Media Health Text Classiﬁcation
+Santosh Tokala, Vaibhav Gambhir and Animesh Mukherjee
+
+16:30–16:40 Using PPM for Health Related Text Detection
+
+Victoria Bobicev, Victoria Lazu and Daniela Istrati
+
+16:40–16:50
+
+Leveraging Web Based Evidence Gathering for Drug Information Identiﬁcation
+from Tweets
+Rupsa Saha, Abir Naskar, Tirthankar Dasgupta and Lipika Dey
+
+16:50–17:00 CLaC at SMM4H Task 1, 2, and 4
+
+Parsa Bagherzadeh, Nadia Sheikh and Sabine Bergler
+
+x
+
+Wednesday, October 31, 2018 (continued)
+
+xi
+
+

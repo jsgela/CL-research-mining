@@ -1,0 +1,1444 @@
+On the role of data representations in spoken language dependency
+
+Er ... well, it matters, right?
+
+parsing
+
+Kaja Dobrovoljc
+
+Joˇzef Stefan Institute
+Ljubljana, Slovenia
+
+Matej Martinc
+
+Joˇzef Stefan Institute
+Ljubljana, Slovenia
+
+kaja.dobrovoljc@ijs.si
+
+matej.martinc@ijs.si
+
+Abstract
+
+Despite the signiﬁcant improvement of data-
+driven dependency parsing systems in recent
+years, they still achieve a considerably lower
+performance in parsing spoken language data
+in comparison to written data. On the exam-
+ple of Spoken Slovenian Treebank, the ﬁrst
+spoken data treebank using the UD annota-
+tion scheme, we investigate which speech-
+speciﬁc phenomena undermine parsing perfor-
+mance, through a series of training data and
+treebank modiﬁcation experiments using two
+distinct state-of-the-art parsing systems. Our
+results show that utterance segmentation is the
+most prominent cause of low parsing perfor-
+mance, both in parsing raw and pre-segmented
+transcriptions.
+In addition to shorter utter-
+ances, both parsers perform better on nor-
+malized transcriptions including basic mark-
+ers of prosody and excluding disﬂuencies, dis-
+course markers and ﬁllers. On the other
+hand, the effects of written training data addi-
+tion and speech-speciﬁc dependency represen-
+tations largely depend on the parsing system
+selected.
+
+1
+
+Introduction
+
+However, in the recent CoNLL 2017 shared task
+on multilingual parsing from raw text to UD (Ze-
+man et al., 2017), the results achieved on the Spo-
+ken Slovenian Treebank (Dobrovoljc and Nivre,
+2016) - the only spoken treebank among the 81
+participating treebanks - were substantially lower
+than on other treebanks. This includes the writ-
+ten Slovenian treebank (Dobrovoljc et al., 2017),
+with a best labeled attachment score difference of
+more than 30 percentage points between the two
+treebanks by all of the 33 participating systems.
+
+Given this signiﬁcant gap in parsing perfor-
+mance between the two modalities, spoken and
+written language, this paper aims to investigate
+which speech-speciﬁc phenomena inﬂuence the
+poor parsing performance for speech, and to what
+extent. Speciﬁcally, we focus on questions re-
+lated to data representation in all aspects of the
+dependency parsing pipeline, by introducing dif-
+ferent types of modiﬁcations to spoken language
+transcripts and speech-speciﬁc dependency anno-
+tations, as well as to the type of data used for spo-
+ken language modelling.
+
+With an exponential growth of spoken language
+data available online on the one hand and the
+rapid development of systems and techniques for
+language understanding on the other, spoken lan-
+guage research is gaining increasing prominence.
+Many syntactically annotated spoken language
+corpora have been developed in the recent years to
+beneﬁt the data-driven parsing systems for speech
+(Hinrichs et al., 2000; van der Wouden et al.,
+2002; Lacheret et al., 2014; Nivre et al., 2006),
+including two spoken language treebanks adopt-
+ing the Universal Dependencies (UD) annotation
+scheme, aimed at cross-linguistically consistent
+dependency treebank annotation (Nivre, 2015).
+
+This paper is structured as follows. Section 2
+addresses the related research on spoken language
+parsing and Section 3 presents the structure and
+annotation of the Spoken Slovenian Treebank on
+which all the experiments were conducted. Sec-
+tion 4 presents the parsing systems used in the ex-
+periments (4.1) and the series of SST data modi-
+ﬁcations to narrow the performance gap between
+written and spoken treebanks for these systems,
+involving the training data (4.3.1), speech tran-
+scriptions (4.3.2) and UD dependency annotations
+(4.3.3). Results are presented in Section 5, while
+conclusions and some directions for further work
+are addressed in Section 6.
+
+ProceedingsoftheSecondWorkshoponUniversalDependencies(UDW2018),pages37–46Brussels,Belgium,November1,2018.c(cid:13)2018AssociationforComputationalLinguistics37discourse:ﬁller
+discourse
+
+advmod
+
+nummod
+
+parataxis
+obj
+
+aux
+
+expl
+
+advmod
+reparandum
+punct
+
+advcl
+
+advmod
+
+mark
+
+discourse:ﬁller
+obj
+
+det
+
+vidim ta komentar eem
+eee aha
+er yes more one thing this I-have (PRON) here r- [gap] remembered now when I-see this comment uhm
+
+tukaj s [gap]
+
+ena stvar
+
+spomnil
+
+zdajle
+
+sem
+
+ko
+
+se
+
+to
+
+ˇse
+
+(oh yes one more thing I just r- [gap] remembered this here now that I see this comment)
+
+Figure 1: An example utterance taken from the Spoken Slovenian Treebank.
+
+2 Related work
+
+In line with divergent approaches to syntactic an-
+notation of transcribed spoken data that either aim
+to capture the syntactic structure involving all ut-
+tered lexical phenomena in an utterance, or dis-
+card the (variously deﬁned) noisy speech-speciﬁc
+structural particularities on the other, research into
+parsing spoken language can broadly be catego-
+rized in two main groups. On the one side of the
+spectrum, we ﬁnd approaches that separate disﬂu-
+ences from parsing. Charniak and Johnson (2001)
+and Jørgensen (2007), for example, both report
+a signiﬁcant increase in parsing the Switchboard
+section of the Penn Discourse Treebank (Godfrey
+et al., 1992), if disﬂuencies are ﬁrst removed from
+the data. These two-pass pipeline approaches thus
+involve a separate task of automatic disﬂuency de-
+tection, one of the fundamental issues in automatic
+speech recognition (Liu et al., 2006; Lease et al.,
+2006).
+
+Recently, however, several parsing systems
+using non-monotonic transition-based algorithms
+have emerged that enable joint parsing and dis-
+ﬂuency detection (Honnibal et al., 2013; Honnibal
+and Johnson, 2015; Rasooli and Tetreault, 2013),
+showing that joint treatment of both problems can
+actually outperform state-of-the-art pipeline ap-
+proaches (Honnibal and Johnson, 2014). These
+ﬁndings open a promising line of future research
+for the development of speech-speciﬁc parsing
+systems (Yoshikawa et al., 2016), especially those
+that also incorporate acoustic information (Kahn
+et al., 2005; Tran et al., 2017).
+
+Nevertheless, apart from research on speech-
+speciﬁc parsing systems, very little research has
+been dedicated to other, data-related aspects of
+spoken language parsing. To our knowledge, with
+expection of Caines et al. (2017) and Nasr et al.
+(2014), who investigate the role of different types
+of training data used for parsing transcripts of
+
+speech, there have been no other systematic stud-
+ies on the role of spoken data representations, such
+as transcription or annotation conventions, in spo-
+ken language parsing.
+
+3 Spoken Slovenian Treebank
+
+The Spoken Slovenian Treebank (Dobrovoljc and
+Nivre, 2016), which was ﬁrst released as part of
+UD v1.3 (under the CC-BY-NC-SA 4.0 licence), is
+the ﬁrst syntactically annotated collection of spon-
+taneous speech in Slovenian. It is a sample of the
+Gos reference corpus of Spoken Slovenian (Zwit-
+ter Vitez et al., 2013), a collection of transcribed
+audio recordings of spontaneous speech in differ-
+ent everyday situations, in both public (TV and ra-
+dio shows, school lessons, academic lectures etc.)
+and private settings (work meetings, services, con-
+versations between friends and family etc.).
+
+The SST treebank currently amounts to 29,488
+tokens (3,188 utterances), which include both lex-
+ical tokens (words) and tokens signalling other
+types of verbal phenomena, such as ﬁlled pauses
+(ﬁllers) and unﬁnished words, as well as some ba-
+sic markers of prosody and extralinguistic speech
+events.
+tokeniza-
+tion and spelling principles described by Ver-
+donik et al. (2013) have also been inherited
+by SST. Among the two types of Gos tran-
+scriptions (pronunciation-based and normalized
+spelling, both in lowercase only), subsequent man-
+ual annotations in SST have been performed on
+top of normalized transcriptions.
+
+The original segmentation,
+
+For syntactic annotation of the transcripts, un-
+available in Gos, the SST treebank adopted the
+Universal Dependencies annotation scheme due to
+its high degree of interoperability across different
+grammatical frameworks, languages and modali-
+ties. In this original application of the UD scheme
+to spoken language transcripts, several modiﬁca-
+tions of the scheme were implemented to accom-
+
+38modate the syntactic particularities in speech, ei-
+ther by extending the scope of application of ex-
+isting universal labels (e.g. using punct for la-
+beling markers of prosody) or introducing new
+discourse:ﬁller
+speech-speciﬁc sub-labels (e.g.
+for annotation of hesitation sounds). In subsequent
+comparison of the SST treebank with the writ-
+ten SSJ Slovenian UD treebank (Dobrovoljc et al.,
+2017), Dobrovoljc and Nivre (2016) observed sev-
+eral syntactic differences between the two modal-
+ities, as also illustrated in Figure 1.
+
+4 Experiment setup
+4.1 Parsing systems and evaluation
+To enable system-independent generalizations,
+two parsing systems were selected, UDPipe
+1.2 (Straka and Strakov´a, 2017) and Stan-
+ford (Dozat et al., 2017), covering the two most
+common parsing approaches, transition-based and
+graph-based parsing (Aho and Ullman, 1972), re-
+spectively. UDPipe 1.2 is a trainable pipeline
+for sentence segmentation, tokenization, POS tag-
+ging, lemmatization and dependency parsing.
+It
+represents an improved version of the UDPipe 1.1
+(used as a baseline system in the CONLL-2017
+Shared Task (Zeman et al., 2017)) and ﬁnished as
+the 8th best system out of 33 systems participating
+in the task.
+
+A single-layer bidirectional GRU network to-
+gether with a case insensitive dictionary and a
+set of automatically generated sufﬁx rules are
+used for sentence segmentation and tokenization.
+The part of speech tagging module consists of a
+guesser, which generates several universal part of
+speech (XPOS), language-speciﬁc part of speech
+(UPOS), and morphological feature list (FEATS)
+tag triplets for each word according to its last four
+characters. These are given as an input to an av-
+eraged perceptron tagger (Straka et al., 2016) to
+perform the ﬁnal disambiguation on the generated
+tags. Transition-based dependency parser is based
+on a shallow neural network with one hidden layer
+and without any recurrent connections, making
+it one of the fastest parsers in the CONLL-2017
+Shared Task. We used the default parameter con-
+ﬁguration of ten training iterations and a hidden
+layer of size 200 for training all the models.
+
+is
+
+Stanford parser
+
+a neural graph-based
+parser (McDonald et al., 2005) capable of lever-
+aging word and character based information in
+order to produce part of speech tags and labeled
+
+dependency parses from segmented and tokenized
+sequences of words.
+Its architecture is based
+on a deep biafﬁne neural dependency parser
+presented by (Dozat and Manning, 2016), which
+uses a multilayer bidirectional LSTM network
+to produce vector representations for each word.
+These representations are used as an input to a
+stack of biafﬁne classiﬁers capable of producing
+the most probable UD tree for every sentence and
+the most probable part of speech tag for every
+word. The system was ranked ﬁrst according
+to all ﬁve relevant criteria in the CONLL-2017
+Shared Task. Same hyperparameter conﬁguration
+was used as reported in (Dozat et al., 2017) with
+every model trained for 30,000 training steps.
+For the parameters values that were not explicitly
+mentioned in (Dozat et al., 2017), default values
+were used.
+
+For both parsers, no additional ﬁne-tuning was
+performed for any speciﬁc data set, in order to
+minimize the inﬂuence of training procedure on
+the parser’s performance for different data pre-
+processing techniques, especially given that no de-
+velopment data has been released for the small
+SST treebank.
+
+For evaluation, we used the ofﬁcial CoNLL-
+ST-2017 evaluation script (Zeman et al., 2017) to
+calculate the standard labeled attachments score
+(LAS), i.e.
+the percentage of nodes with cor-
+rectly assigned reference to parent node, includ-
+ing the label (type) of relation. For baseline ex-
+periments involving parsing of raw transcriptions
+(see Section 4.2), for which the number of nodes
+in gold-standard annotation and in the system out-
+put might vary, the F1 LAS score, marking the
+harmonic mean of precision an recall LAS scores,
+was used instead.
+
+4.2 Baseline
+Prior to experiments involving different data mod-
+iﬁcations, both parsing systems were evaluated on
+the written SSJ and spoken SST Slovenian tree-
+banks, released as part of UD version 2.2 (Nivre
+et al., 2018).1 The evaluation was performed
+both for parsing raw text (i.e.
+automatic tok-
+enization, segmentation, morphological annota-
+tion and dependency tree generation) and parsing
+
+1Note that the SST released as part of UD v2.2 involves a
+different splitting of utterances into training and test tests as
+in UD v2.0, which should be taken into account when com-
+paring our results to the results reported in the CoNLL 2017
+Shared Task.
+
+39UDPipe
+
+Stanford
+
+Parsing raw text
+
+Sents UPOS UAS
+52.49
+20.35
+76.49
+79.90
+71.79
+76.42
+
+88.32
+94.59
+89.88
+
+LAS
+45.47
+76.32
+66.40
+
+Sents UPOS UAS
+60.35
+20.35
+76.49
+87.50
+82.60
+76.42
+
+93.21
+96.32
+94.61
+
+Dependency parsing only
+
+Sents UPOS UAS
+74.66
+90.16
+86.69
+
+100
+100
+100
+
+100
+100
+100
+
+LAS
+69.13
+88.41
+84.21
+
+Sents UPOS UAS
+77.58
+95.63
+91.93
+
+100
+100
+100
+
+100
+100
+100
+
+LAS
+54.00
+85.02
+78.60
+
+LAS
+72.52
+94.52
+89.60
+
+Treebank
+sst
+ssj
+ssj 20k
+
+Treebank
+sst
+ssj
+ssj 20k
+
+Table 1: UDPipe and Stanford sentence segmentation (Sents), part-of-speech tagging (UPOS), unlabelled (UAS)
+and labelled attachment (LAS) F1 scores on the spoken SST and written SSJ Slovenian UD treebanks for parsing
+raw text, and for parsing texts with gold-standard tokenization, segmentation and tagging information.
+
+gold-standard annotations (i.e. dependency pars-
+ing only). For Stanford parser, which only pro-
+duces tags and dependency labels, the UDPipe to-
+kenization and segmentation output was used as
+input.
+
+The results displayed in Table 1 (Parsing raw
+text) conﬁrm the difﬁculty of parsing spoken lan-
+guage transcriptions, given that both UDPipe and
+Stanford systems perform signiﬁcantly worse on
+the spoken SST treebank in comparison with the
+written SSJ treebank, with the difference in LAS
+F1 score amounting to 30.85 or 31.02 percent-
+age points, respectively. These numbers decrease
+if we neutralize the important difference in tree-
+bank sizes - with 140.670 training set tokens for
+the written SSJ and 29.488 tokens for the spoken
+SST - by training the written model on a compa-
+rable subset of SSJ training data (20.000 tokens),
+however, the difference between the two modali-
+ties remains evident.
+
+A subsequent comparison of results in depen-
+dency parsing only (Table 1, Dependency parsing
+only) reveals that a large share of parsing mistakes
+can be attributed to difﬁculties in lower-level pro-
+cessing, in particular utterance segmentation (with
+an F1 score of 20.35),2 as spoken language pars-
+ing performance increases to the (baseline) LAS
+score of 69.13 and 72.52 for the UDPipe and Stan-
+ford parser, respectively. Consequently, the actual
+difference between written and spoken language
+
+2Note that
+
+in general,
+
+the low segmentation score is not spe-
+to state-of-the-art parsing sys-
+ciﬁc to UDPipe, but
+tems
+the 33 systems com-
+peting in the CoNLL 2017 Shared Task managed to
+achieve a signiﬁcantly better
+in SST treebank
+segmentation:
+http://universaldependencies.
+org/conll17/results-sentences.html.
+
+as none of
+
+result
+
+parsing reduces to approximately 15-17 percent-
+age points, if based on the same amount of training
+data.
+
+In order to prevent the dependency parsing ex-
+periments in this paper being inﬂuenced by the
+performance of systems responsible for produc-
+ing other levels of linguistic annotation, the ex-
+periments set out in the continuation of this paper
+focus on evaluation of gold-standard dependency
+parsing only.
+
+4.3 Data modiﬁcations
+Given the observed difference in parsing spoken
+and written language for both parsing systems,
+several automated modiﬁcations of the data fea-
+tured in the parsing pipeline have been introduced,
+to investigate the inﬂuence of different factors on
+spoken language parsing performance.
+
+4.3.1 Modiﬁcations of training data type
+Although the relationship between written and
+spoken language has often been portrayed as a
+domain-speciﬁc dichotomy, both modalities form
+part of the same language continuum, encourag-
+ing further investigations of cross-modal model
+transfers.
+In the ﬁrst line of experiments, we
+thus conducted experiments on evaluation of spo-
+ken language parsing by training on spoken (sst)
+and written (ssj) data alone, as well as on the
+combination of both (sst+ssj). Given that the
+transcriptions in the SST treebank are written in
+lowercase only and do not include any written-
+like punctuation, two additional models excluding
+these features were generated for the written tree-
+bank (ssj lc and ssj no-punct) to neutral-
+ize the differences in writing system conventions
+
+40for both modalities.
+
+4.3.2 Modiﬁcations of speech transcription
+The second line of experiments investigates the
+role of spoken language transcription conventions
+for the most common speech-speciﬁc phenomena,
+by introducing various automatically converted
+versions of the SST treebank (both training and
+testing data).
+
+Spelling: For word form spelling, the origi-
+nal normalized spelling compliant with standard
+orthography was replaced by pronunciation-based
+spelling (sst pron-spell), reﬂecting the re-
+gional and colloquial pronunciation variation (e.g.
+the replacement of the standard pronominal word
+form jaz “I” by pronunciation-based word forms
+jz, jaz, jst, jez, jes, ja etc.).
+
+Segmentation: Inheriting the manual segmen-
+tation of the reference Gos corpus, sentences (ut-
+terances) in SST correspond to ”semantically, syn-
+tactically and acoustically delimited units” (Ver-
+donik et al., 2013). As such, the utterance segmen-
+tation heavily depends on subjective interpreta-
+tions of what is the basic functional unit in speech,
+in line with the multitude of existing segmentation
+approaches, based on syntax, semantics, prosody,
+or their various combinations (Degand and Simon,
+2009). To evaluate parsing performance for alter-
+native types of segmentation, based on a more ob-
+jective set of criteria, two additional SST segmen-
+tations were created. In the minimally segmented
+version of the SST treebank (sst min-segm),
+utterances involving two or more clauses joined by
+a parataxis relation (denoting a loose inter-clausal
+connections without explicit coordination, subor-
+dination, or argument relation) have been split into
+separate syntactic trees (clauses), as illustrated in
+the example below (Figure 2).
+
+parataxis
+
+jo
+
+glej
+look at-her still (PART) she-moans
+
+stoka
+
+kar
+
+ˇse
+
+(look at her she’s still moaning)
+
+Figure 2: Splitting utterances by parataxis.
+
+Vice versa, the maximally segmented SST ver-
+sion (sst max-segm) includes utterances corre-
+sponding to entire turns (i.e. units of speech by
+one speaker), in which neighbouring utterances by
+
+a speaker have been joined into a single syntactic
+tree via the parataxis relation.
+
+Disﬂuencies: Following the traditional ap-
+proaches to spoken language processing,
+the
+sst no-disfl SST treebank version marks the
+removal of disﬂuencies, namely ﬁlled pauses, such
+as eee, aaa, mmm (labeled as discourse:ﬁller),
+overridden disﬂuencies, such as repetitions, sub-
+stitutions or reformulations (labeled as reparan-
+dum), and [gap] markers, co-occurring with unﬁn-
+ished or incomprehensible speech fragments (Fig-
+ure 3).
+
+discourse:ﬁller
+
+reparandum
+punct
+
+mmm ne bom po [gap] prispeval podpisa
+hmmm not I-will sig- [gap]
+signature
+
+give
+
+(uhm I will not sig- [gap] give my signature)
+
+Figure 3: Removal of disﬂuencies.
+
+Similar to structurally ’redundant’ phenom-
+ena described above, the sst no-discourse
+version of the SST treebank excludes syntacti-
+cally peripheral speech-speciﬁc lexical phenom-
+ena, annotated as discourse, discourse:ﬁller or
+parataxis:discourse, such as interjections (aha
+“uh-huh”), response tokens (ja “yes”), expressions
+of politeness (adijo “bye”), as well as clausal and
+non-clausal discourse markers (no “well”, mislim
+“I think”).
+
+Prosody: Although the SST treebank lacks
+phonetic transcription, some basic prosodic infor-
+mation is provided through speciﬁc tokens denot-
+ing exclamation or interrogation intonation, silent
+pauses, non-turn taking speaker interruptions, vo-
+cal sounds (e.g.
+laughing, sighing, yawning)
+and non-vocal sounds (e.g.
+applauding, ring-
+ing).
+In contrast to the original SST treebank,
+in which these nodes were considered as regu-
+lar nodes of dependency trees (labeled as punct),
+prosodic markers have been excluded from the
+sst no-pros version of the treebank.
+4.3.3 Modiﬁcations of UD annotation
+Given that the SST treebank was the ﬁrst spo-
+ken treebank to be annotated using the UD an-
+notation scheme,
+the UD annotation principles
+for speech-speciﬁc phenomena set out in Dobro-
+voljc and Nivre (2016) have not yet been evaluated
+within a wider community. To propose potential
+
+41future improvements of the UD annotation guide-
+lines for spoken language phenomena, the third set
+of SST modiﬁcations involved alternations of se-
+lected speech-speciﬁc UD representations.
+
+Extensions: The SST treebank introduced ﬁve
+new subtypes of existing UD relations to an-
+notate ﬁlled pauses (discourse:ﬁller), clausal re-
+pairs (parataxis:restart), clausal discourse mark-
+ers (parataxis:discourse) and general extenders
+(conj:extend).
+In the sst no-extensions
+version of the treebank,
+these extensions have
+been replaced by their universal counterparts (i.e.
+discourse, parataxis and conj).
+
+Head attachment: For syntactic relations,
+such as discourse or punct, which are not di-
+rectly linked to the predicate-driven structure of
+the sentence,
+the choice of the head node to
+which they attach to is not necessarily a straight-
+forward task. The original SST treebank fol-
+lowed the general UD principle of attaching such
+nodes to the highest node preserving projectiv-
+ity, typically the head of the most relevant nearby
+clause or clause argument. To evaluate the im-
+pact of such high attachment principle on pars-
+ing performance, an alternative robust attachment
+has been implemented for two categories with
+the weakest semantic connection to the head,
+ﬁlled pauses (sst discourse:filler) and
+prosodic markers (sst punct), attaching these
+nodes to the nearest preceding node instead, re-
+gardless of its syntactic role, as illustrated in Fig-
+ure 4.
+
+punct
+
+mene je strah
+
+snema [all : laughter]
+is afraid because (PRON) it-tapes [all : laughter]
+
+ker
+
+se
+
+I
+
+(I am afraid because it’s being taped)
+
+punct
+
+mark
+
+cop
+
+reparandum
+
+discourse:ﬁller
+ti
+eee
+da
+that are these (F) er
+
+so
+
+te
+
+these (M) costs most
+
+stroˇski
+
+ˇcim manjˇsi
+low
+
+det
+
+nsubj
+
+reparandum
+
+(so that these costs are as low as possible)
+
+Figure 5: Change of head for reparandum.
+
+sentences
+
+annotation of
+replacing an aban-
+doned preceding clause, has been modiﬁed in
+sst parataxis:restart so as to span from
+the root node instead of the more or less randomly
+positioned head of the unﬁnished clause.
+
+Clausal discourse markers:
+
+In the original
+SST treebank, clausal discourse markers (e.g.
+ne vem “I don’t know”, (a) veˇs “you know”,
+glej “listen”) have been labeled as parataxis
+(speciﬁcally, the parataxis:discourse extension),
+in line with other types of sentential parenthet-
+icals. Given the distinct distributional charac-
+teristics of these expressions (limited list, high
+frequency) and similar syntactic behaviour to
+non-clausal discourse markers (no dependents,
+both peripheral and clause-medial positions), their
+label has been changed to discourse in the
+sst parataxis:discourse version of the
+treebank. For multi-word clausal markers, the
+ﬁxed label was also introduced to annotate the
+internal structure of this highly grammaticized
+clauses (Figure 6.
+
+parataxis:discourse
+
+kaj
+what you-will (PART)
+
+boˇs
+
+pa
+
+else
+
+drugega poˇcel
+do
+discourse ﬁxed
+
+veˇs
+a
+you know
+
+Figure 4: Change of head for prosody markers.
+
+(what else can you do you know)
+
+For the reparandum relation, which currently
+denotes a relation between the edited unit (the
+reparandum) and its repair, the opposite principle
+was implemented in sst reparandum, by at-
+taching the reparandum to the head of its repair,
+i.e. to the node it would attach to had it not been
+for the repair (Figure 5).
+
+Following a similar higher-attachment prin-
+relation, used for
+
+the parataxis:restart
+
+ciple,
+
+Figure 6: Change of annotation for clausal discourse
+markers.
+
+5 Results
+
+Table 2 gives LAS evaluation of both parsing sys-
+tems for each data modiﬁcation described in Sec-
+tion 4.3 above, including the baseline results for
+training and parsing on the original SST treebank
+
+42Model
+
+UDPipe Stanford
+
+Training data
+
+1
+2
+3
+4
+5
+
+6
+7
+8
+9
+10
+11
+
+12
+13
+14
+15
+16
+17
+
+18
+19
+
+sst (= baseline)
+ssj+sst
+ssj no-punct
+ssj
+ssj lc
+
+69.13
+68.53
+57.40
+55.76
+55.61
+
+Transcriptions
+
+sst min-segm
+sst no-disﬂ
+sst no-discourse
+sst no-pros
+sst pron-spell
+sst max-segm
+
+74.89
+71.47
+70.73
+68.70
+67.52
+63.93
+
+Annotations
+
+sst punct
+sst discourse:ﬁller
+sst parataxis:restart
+sst no-new-ext.
+sst reparandum
+sst parataxis:disc.
+
+71.32
+69.13
+68.53
+68.45
+68.41
+68.32
+
+Best combination
+
+sst 6-7-8-12
+sst 6-7-8-12-15
+
+79.58
+N/A
+
+72.52
+77.38
+62.57
+62.08
+61.99
+
+78.31
+74.77
+75.47
+71.78
+71.64
+68.13
+
+73.65
+72.85
+71.95
+73.05
+72.81
+72.35
+
+N/A
+87.35
+
+Table 2:
+LAS on the Spoken Slovenian Treebank
+(sst) for different types of training data, transcrip-
+tion and annotation modiﬁcations.
+Improvements of
+the baseline are marked in bold.
+
+(see Section 4.2).
+
+When evaluating the impact of different types
+of training data on the original SST parsing, both
+parsers give signiﬁcantly poorer results than the
+baseline sst model if trained on the written SSJ
+treebank alone (ssj), which clearly demonstrates
+the importance of (scarce) spoken language tree-
+banks for spoken language processing.
+In addi-
+tion, no signiﬁcant improvement is gained if the
+written data is modiﬁed so as to exclude punc-
+tuation (ssj no-punct) or perform lowercas-
+ing (ssj lc), which even worsens the results.
+Somewhat surprisingly, no deﬁnite conclusion
+can be drawn on the joint training model based
+on both spoken and written data (sst+ssj),
+as the parsers give signiﬁcantly different results:
+while Stanford parser substantially outperforms
+the baseline result when adding written data to
+the model (similar to the ﬁndings by Caines et al.
+(2017)), this addition has a negative affect on UD-
+Pipe. This could be explained by the fact that
+
+global, exhaustive, graph-based parsing systems
+are more capable of leveraging the richer con-
+textual information gained with a larger train set
+in comparison with local, greedy, transition-based
+systems (McDonald and Nivre, 2007).
+
+The results of the second set of experiments, in
+which LAS was evaluated for different types of
+spoken language transcriptions, conﬁrm that pars-
+ing performance varies with different approaches
+to transcribing speech-speciﬁc phenomena. As ex-
+pected, both systems achieve signiﬁcantly better
+results if parsing is performed on shorter utter-
+ances (sst min-segm). On the other hand, a
+similar LAS drop-off interval is identiﬁed for pars-
+ing full speaker turns (sst max-segm). These
+results conﬁrm the initial observations in Section
+4.2 that speech segmentation is the key bottle-
+neck in the spoken language dependency parsing
+pipeline. Nevertheless, it is encouraging to ob-
+serve that even the absence of any internal seg-
+mentation of (easily identiﬁable) speaker turns re-
+turns moderate parsing results.
+
+Interestingly,
+
+As has already been reported in related work,
+parsing performance also increases if spoken
+data is removed of its most prominent syntac-
+tic structures, such as disﬂuencies, discourse
+markers and ﬁllers.
+for Stan-
+ford parser,
+the removal of discourse mark-
+ers (sst no-discourse) is even more ben-
+eﬁcial than the removal of seemingly less pre-
+dictable false starts, repairs and other disﬂuencies
+(sst no-disfl). On the contrary, the removal
+of prosody markers (sst no-pros) damages the
+baseline results for both parsers, suggesting that
+the presence of these markers might even con-
+tribute to parsing accuracy for certain types of con-
+structions given their punctuation-like function in
+speech.
+
+As for spelling,
+
+the results on the tree-
+bank based on pronunciation-based word spelling
+(sst pron-spell) support our initial hypothe-
+sis that the multiplication of token types damages
+parser performance, yet not to a great extent. This
+could be explained by the fact that token pronun-
+ciation information can sometimes help with syn-
+tactic disambiguation of the word form in context,
+if a certain word form pronunciation is only asso-
+ciated with a speciﬁc syntactic role (e.g. the col-
+loquial pronunciation tko da of the discourse con-
+nective tako da “so that” that does not occur with
+other syntactic roles of this lexical string).
+
+43No deﬁnite conclusion can be drawn from
+the parsing results
+for different alternations
+of speech-speciﬁc UD annotations, as the re-
+sults vary by parsing system and by the
+types of UD modiﬁcation. While both sys-
+tems beneﬁt from an alternative attachment of
+prosodic markers to their nearest preceding to-
+ken (sst punct),3 and prefer the current la-
+beling and attachment principles for clausal re-
+pairs (sst parataxis:restart) and clausal
+discourse markers (parataxis:discourse),
+the effect of other changes seems to be system-
+dependent. What is more, none of the changes in
+UD representations seem to affect the parsing per-
+formance to a great extent, which suggests that the
+original UD adaptations for speech-speciﬁc phe-
+nomena, applied to the Spoken Slovenian Tree-
+bank, represent a reasonable starting point for fu-
+ture applications of the scheme to spoken language
+data.
+
+Finally, all transcription and annotation vari-
+ables that were shown to improve spoken language
+LAS for each of the parsing systems, have been
+joined into a single representation, i.e. a treebank
+with new, syntax-bound utterance segmentation,
+excluding disﬂuencies and discourse elements,
+and a change in prosody-marker-attachment (UD-
+Pipe), as well as a change in ﬁller-attachment
+and addition of written parsing model (Stanford).4
+Both UDPipe and Stanford achieved substantially
+higher LAS scores for their best-ﬁtting combina-
+tion than the original SST baseline model (sst),
+i.e. 79.58 and 87.35, respectively, moving the SST
+parsing performance much closer to the perfor-
+mance achieved on its same-size written counter-
+part (ssj 20k, Table 1), with the gap narrowing
+to 4.63 for UDPipe and 2.25 for Stanford. This
+conﬁrms that the speech-speciﬁc phenomena out-
+lined in this paper are indeed the most important
+phenomena affecting spoken language processing
+scores. Nevertheless, the remaining gap between
+
+3Note that the sst punct results should be interpreted
+with caution, as a brief analysis into the punct-related pars-
+ing errors on the original SST treebank revealed a substantial
+amount of (incorrect) non-projective attachments of the [gap]
+marker indicating speech fragments. This issue should be re-
+solved in future releases of the SST treebank.
+
+4Modiﬁcations
+
+13
+(sst discourse:filler) and 16 (sst reparandum)
+that have also increased Stanford parser performance, are not
+applicable to the Stanford best-combination representation,
+since discourse ﬁllers and repairs have already been removed
+by modiﬁcations set out
+in 7 (sst no-disfl) and 8
+(sst no-discourse).
+
+out
+
+set
+
+in
+
+the two modalities encourages further data-based
+investigations into the complexity of spoken lan-
+guage syntax, which evidently reaches beyond the
+prototypical structural and pragmatic phenomena
+set forward in this paper and the literature in gen-
+eral.
+
+6 Conclusion and Future Work
+
+In this paper, we have investigated which speech-
+speciﬁc phenomena are responsible for below op-
+timal parsing performance of state-of-the-art pars-
+ing systems.
+Several experiments on Spoken
+Slovenian Treebank involving training data and
+treebank modiﬁcations were performed in order to
+identify and narrow the gap between the perfor-
+mances on spoken and written language data. The
+results show that besides disﬂuencies, the most
+common phenomena addressed in related work,
+segmentation of clauses without explicit lexical
+connection is also an important factor in low pars-
+ing performance.
+In addition to that, our re-
+sults suggest that for graph-based parsing systems,
+such as Stanford parser, spoken language parsing
+should be performed by joint modelling of both
+spoken and written data excluding punctuation.
+
+Other aspects of spoken data representation,
+such as the choice of spelling, the presence of
+basic prosodic markers and the syntactic anno-
+tation principles seem less crucial for the over-
+all parser performance. It has to be emphasized,
+however, that the UD annotation modiﬁcations set
+forward in this paper represent only a few se-
+lected transformations involving labeling and at-
+tachment, whereas many other are also possible,
+in particular experiments involving enhanced rep-
+resentations (Schuster and Manning, 2016).
+
+These ﬁndings suggest several lines of future
+work. For the SST treebank in particular and spo-
+ken language treebanks in general, it is essential to
+increase the size of annotated data and reconsider
+the existing transcription and annotation princi-
+ples to better address the difﬁculties in spoken lan-
+guage segmentation and disﬂuency detection. Par-
+ticularly in relation to the latter, our results should
+be evaluated against recent speech-speciﬁc parsing
+systems references in Section 2, as well as other
+state-of-the-art dependency parsers. A promising
+line of future work has also been suggested in re-
+lated work on other types of noisy data (Blod-
+gett et al., 2018), employing a variety of cross-
+domain strategies for improving parsing with little
+
+44in-domain data.
+
+Our primary direction of future work, however,
+involves an in-depth evaluation of parsing perfor-
+mance for individual dependency relations, to de-
+termine how the modiﬁcations presented in this
+paper affect speciﬁc constructions, and to over-
+come the prevailing approaches to spoken lan-
+guage parsing that tend to over-generalize the syn-
+tax of speech.
+
+References
+Alfred V. Aho and Jeffrey D. Ullman. 1972.
+
+The
+Theory of Parsing, Translation, and Compiling.
+Prentice-Hall, Inc., Upper Saddle River, NJ, USA.
+
+Su Lin Blodgett, Johnny Wei, and Brendan O’Connor.
+2018. Twitter Universal Dependency parsing for
+African-American and Mainstream American En-
+glish. In Proceedings of the 56th Annual Meeting of
+the Association for Computational Linguistics (Vol-
+ume 1: Long Papers), pages 1415–1425. Associa-
+tion for Computational Linguistics.
+
+Andrew Caines, Michael McCarthy, and Paula But-
+In Pro-
+tery. 2017. Parsing transcripts of speech.
+ceedings of the Workshop on Speech-Centric Natu-
+ral Language Processing, pages 27–36. Association
+for Computational Linguistics.
+
+Eugene Charniak and Mark Johnson. 2001. Edit de-
+tection and parsing for transcribed speech. In Pro-
+ceedings of the Second Meeting of the North Amer-
+ican Chapter of the Association for Computational
+Linguistics on Language Technologies, NAACL ’01,
+pages 1–9, Stroudsburg, PA, USA. Association for
+Computational Linguistics.
+
+Liesbeth Degand and Anne Catherine Simon. 2009. On
+identifying basic discourse units in speech: theoreti-
+cal and empirical issues. Discours, 4.
+
+Kaja Dobrovoljc, Tomaz Erjavec, and Simon Krek.
+2017. The Universal Dependencies Treebank for
+the 6th Work-
+Slovenian.
+shop on Balto-Slavic Natural Language Process-
+ing, BSNLP@EACL 2017, Valencia, Spain, April 4,
+2017, pages 33–38.
+
+In Proceedings of
+
+Kaja Dobrovoljc and Joakim Nivre. 2016. The Uni-
+versal Dependencies Treebank of Spoken Slovenian.
+In Proceedings of the Tenth International Confer-
+ence on Language Resources and Evaluation (LREC
+2016), Paris, France. European Language Resources
+Association (ELRA).
+
+Timothy Dozat and Christopher D. Manning. 2016.
+Deep biafﬁne attention for neural dependency pars-
+ing. CoRR, abs/1611.01734.
+
+Timothy Dozat, Peng Qi, and Christopher D. Manning.
+2017. Stanford’s graph-based neural dependency
+
+parser at the CoNLL 2017 Shared Task. In Proceed-
+ings of the CoNLL 2017 Shared Task: Multilingual
+Parsing from Raw Text to Universal Dependencies,
+pages 20–30, Vancouver, Canada. Association for
+Computational Linguistics.
+
+John J. Godfrey, Edward C. Holliman, and Jane Mc-
+Daniel. 1992. Switchboard: Telephone speech cor-
+In Proceed-
+pus for research and development.
+ings of the 1992 IEEE International Conference on
+Acoustics, Speech and Signal Processing - Volume
+1, ICASSP’92, pages 517–520, Washington, DC,
+USA. IEEE Computer Society.
+
+Erhard W. Hinrichs, Julia Bartels, Yasuhiro Kawata,
+Valia Kordoni, and Heike Telljohann. 2000. The
+T¨ubingen treebanks for spoken German, English,
+and Japanese.
+edi-
+tor, Verbmobil: Foundations of Speech-to-Speech
+Translation, Artiﬁcial Intelligence, pages 550–574.
+Springer Berlin Heidelberg.
+
+In Wolfgang Wahlster,
+
+Matthew Honnibal, Yoav Goldberg, and Mark John-
+son. 2013. A non-monotonic arc-eager transition
+system for dependency parsing. In Proceedings of
+the Seventeenth Conference on Computational Natu-
+ral Language Learning, pages 163–172, Soﬁa, Bul-
+garia. Association for Computational Linguistics.
+
+Matthew Honnibal and Mark Johnson. 2014.
+
+Joint
+incremental disﬂuency detection and dependency
+parsing. Transactions of the Association for Com-
+putational Linguistics, 2(1):131–142.
+
+Matthew Honnibal and Mark Johnson. 2015. An im-
+proved non-monotonic transition system for depen-
+In Proceedings of the 2015 Con-
+dency parsing.
+ference on Empirical Methods in Natural Language
+Processing, pages 1373–1378. Association for Com-
+putational Linguistics.
+
+Fredrik Jørgensen. 2007. The effects of disﬂuency de-
+tection in parsing spoken language. In Proceedings
+of the 16th Nordic Conference of Computational
+Linguistics NODALIDA-2007, pages 240–244.
+
+Jeremy G Kahn, Matthew Lease, Eugene Charniak,
+Mark Johnson, and Mari Ostendorf. 2005. Effective
+use of prosody in parsing conversational speech. In
+Proceedings of the conference on human language
+technology and empirical methods in natural lan-
+guage processing, pages 233–240. Association for
+Computational Linguistics.
+
+Anne Lacheret, Sylvain Kahane, Julie Beliao, Anne
+Dister, Kim Gerdes, Jean-Philippe Goldman, Nico-
+las Obin, Paola Pietrandrea, and Atanas Tchobanov.
+2014. Rhapsodie: a prosodic-syntactic treebank for
+In Proceedings of the Ninth In-
+spoken French.
+ternational Conference on Language Resources and
+Evaluation (LREC’14), pages 295–301, Reykjavik,
+Iceland. European Language Resources Association
+(ELRA).
+
+45tional Conference on Language Resources and Eval-
+uation (LREC 2016), Paris, France. European Lan-
+guage Resources Association (ELRA).
+
+Milan Straka, Jan Hajic, and Jana Strakov´a. 2016. Ud-
+pipe: Trainable pipeline for processing CoNLL-U
+ﬁles performing tokenization, morphological anal-
+In Proceedings
+ysis, POS tagging and parsing.
+of the Tenth International Conference on Language
+Resources and Evaluation (LREC 2016), Paris,
+France. European Language Resources Association
+(ELRA).
+
+Milan Straka and Jana Strakov´a. 2017. Tokenizing,
+pos tagging, lemmatizing and parsing UD 2.0 with
+UDPipe. In Proceedings of the CoNLL 2017 Shared
+Task: Multilingual Parsing from Raw Text to Univer-
+sal Dependencies, pages 88–99, Vancouver, Canada.
+Association for Computational Linguistics.
+
+Trang Tran, Shubham Toshniwal, Mohit Bansal, Kevin
+Gimpel, Karen Livescu, and Mari Ostendorf. 2017.
+Joint modeling of text and acoustic-prosodic cues for
+neural parsing. CoRR, abs/1704.07287.
+
+Darinka Verdonik, Iztok Kosem, Ana Zwitter Vitez, Si-
+mon Krek, and Marko Stabej. 2013. Compilation,
+transcription and usage of a reference speech cor-
+pus: the case of the Slovene corpus GOS. Language
+Resources and Evaluation, 47(4):1031–1048.
+
+Ton van der Wouden, Heleen Hoekstra, Michael
+Moortgat, Bram Renmans, and Ineke Schuurman.
+2002. Syntactic analysis in the Spoken Dutch Cor-
+In Proceedings of the Third Interna-
+pus (CGN).
+tional Conference on Language Resources and Eval-
+uation, LREC 2002, May 29-31, 2002, Las Palmas,
+Canary Islands, Spain.
+
+Masashi Yoshikawa, Hiroyuki Shindo, and Yuji Mat-
+sumoto. 2016.
+Joint transition-based dependency
+parsing and disﬂuency detection for automatic
+In Proceedings of the
+speech recognition texts.
+2016 Conference on Empirical Methods in Natural
+Language Processing, EMNLP 2016, Austin, Texas,
+USA, November 1-4, 2016, pages 1036–1041.
+
+Daniel Zeman et al. 2017. CoNLL 2017 Shared Task:
+Multilingual parsing from raw text to Universal De-
+In Proceedings of the CoNLL 2017
+pendencies.
+Shared Task: Multilingual Parsing from Raw Text
+to Universal Dependencies, pages 1–19, Vancouver,
+Canada. Association for Computational Linguistics.
+
+Ana Zwitter Vitez, Jana Zemljariˇc Miklavˇciˇc, Simon
+Krek, Marko Stabej, and Tomaˇz Erjavec. 2013. Spo-
+ken corpus Gos 1.0. Slovenian language resource
+repository CLARIN.SI.
+
+Matthew Lease, Mark Johnson, and Eugene Charniak.
+2006. Recognizing disﬂuencies in conversational
+speech. IEEE Transactions on Audio, Speech, and
+Language Processing, 14(5):1566–1573.
+
+Yang Liu, Elizabeth Shriberg, Andreas Stolcke, Dustin
+Hillard, Mari Ostendorf, and Mary Harper. 2006.
+Enriching speech recognition with automatic detec-
+tion of sentence boundaries and disﬂuencies. IEEE
+Transactions on audio, speech, and language pro-
+cessing, 14(5):1526–1540.
+
+Ryan McDonald and Joakim Nivre. 2007. Character-
+izing the errors of data-driven dependency parsing
+In Proceedings of the 2007 Joint Confer-
+models.
+ence on Empirical Methods in Natural Language
+Processing and Computational Natural Language
+Learning (EMNLP-CoNLL).
+
+Ryan McDonald, Fernando Pereira, Kiril Ribarov, and
+Jan Hajiˇc. 2005. Non-projective dependency pars-
+ing using spanning tree algorithms. In Proceedings
+of the conference on Human Language Technology
+and Empirical Methods in Natural Language Pro-
+cessing, pages 523–530. Association for Computa-
+tional Linguistics.
+
+Alexis Nasr, Frederic Bechet, Benoit Favre, Thierry
+Bazillon, Jose Deulofeu, and andre Valli. 2014. Au-
+tomatically enriching spoken corpora with syntactic
+In Proceedings
+information for linguistic studies.
+of the Ninth International Conference on Language
+Resources and Evaluation (LREC’14), Reykjavik,
+Iceland. European Language Resources Association
+(ELRA).
+
+Joakim Nivre. 2015. Towards a universal grammar
+for natural language processing. In Alexander Gel-
+bukh, editor, Computational Linguistics and Intelli-
+gent Text Processing, volume 9041 of Lecture Notes
+in Computer Science, pages 3–16. Springer Interna-
+tional Publishing.
+
+Joakim Nivre, Jens Nilsson, and Johan Hall. 2006. Tal-
+banken05: A Swedish treebank with phrase struc-
+ture and dependency annotation. In Proceedings of
+the 5th International Conference on Language Re-
+sources and Evaluation (LREC), pages 1392–1395.
+
+Joakim Nivre et al. 2018. Universal Dependencies 2.2.
+LINDAT/CLARIN digital library at the Institute of
+Formal and Applied Linguistics (UFAL), Faculty of
+Mathematics and Physics, Charles University.
+
+Mohammad Sadegh Rasooli and Joel Tetreault. 2013.
+Joint parsing and disﬂuency detection in linear time.
+In Proceedings of the 2013 Conference on Empiri-
+cal Methods in Natural Language Processing, pages
+124–129, Seattle, Washington, USA. Association
+for Computational Linguistics.
+
+Sebastian Schuster and Christopher D. Manning. 2016.
+Enhanced english universal dependencies: An im-
+proved representation for natural language under-
+standing tasks. In Proceedings of the Tenth Interna-
+
+46
