@@ -1,0 +1,1268 @@
+MATERIAL
+
+Designing an MT Program for IARPA
+
+Dr. Carl Rubino
+
+IARPA
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+Intelligence Advanced Research Projects Activity
+
+IARPA envisions and leads high-risk, high-payoff research 
+
+that delivers innovative technology for future 
+
+overwhelming intelligence advantage
+
+Our problems are complex and multidisciplinary
+We emphasize technical excellence & technical truth
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+2
+
+IARPA does everything “from AI to Zika” and is 
+
+a world scientific leader 
+
+Although best known for quantum computing, superconducting 
+
+computing and forecasting tournaments – IARPA’s research portfolio is 
+
+diverse, including math, physics, chemistry, biology, neuroscience, 
+
+linguistics, political science, cognitive psychology and more. 
+
+70% of completed research transitions to U.S. Government 
+partners
+2,000+ journal articles published through FY2016
+Physicist David Wineland won the Nobel Prize in Physics for 
+quantum computing research funded by IARPA
+World’s leading funder of quantum computing academic research, 
+and quantum research cited as Science Magazine’s “Breakthrough of 
+the Year”
+White House BRAIN Initiative, National Strategic Computing Initiative
+Dr. Craig Gentry named a MacArthur Fellow
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+3
+
+Program Impetus
+
+ለሆዳም ሰው ማብላት ውቅያኖስን ለመደልደል መቃጣት
+
+东南西北 方方 福星高照
+
+ගිය ලූලා මහා එකා ලු
+
+Kuelekeza si kufuma,
+na kuchumbia si kuoa
+
+नजाने गाउँको बाटै नसोध्नु ।
+
+ęŇÞĹŢĚŰŽďŀ Ăđ ĿÐ 
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+4
+
+MATERIAL Goal
+
+• Revolutionize multilingual triage by enabling rapid 
+
+development of language-independent methods (when 
+possible) to field systems capable of fulfilling domain-specific 
+cross-language information retrieval tasks over both text and 
+speech data, with:
+
+– Limited bitext and transcribed speech training data
+– English domain-specific queries as input
+– English summaries of retrieved results as output
+– Methods for domain adaptation and portability to new languages
+– Assessment of the technology via a resonating end-to-end use case
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+5
+
+The MATERIAL System
+
+• An “English-in, English-out” information retrieval system that, 
+given a domain-sensitive English query, will retrieve relevant 
+data from a large multilingual repository and display the 
+retrieved information in English as summaries that reflect the 
+document relevance:
+
+English query in
+
+English Summary Out
+
+ تارﺎﺑﺧﺗﺳﻻا توﺑورﻟا مﺣﺗﻗا
+ثﺣﺑ عورﺷﻣ مدﻘﺗﻣﻟا ﺔﻟﺎﻛو
+
+Η ψήφος 
+εμπιστοσύν
+ης στην 
+κυβέρνηση
+είναι 
+δεδομένη
+
+(specifying
+
+WORDS = “Robot”;
+DOMAIN= “Military”)
+
+俄罗斯国防
+工业部门最
+新推出的“铀
+-6”扫雷机器
+人极
+
+Russian defense industry 
+uranium 6 minesweeper 
+robot
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+6
+
+MATERIAL Technical Areas
+
+Machine 
+Translation
+
+Information 
+Retrieval
+
+Speech
+
+Machine Learning
+
+Cross-lingual 
+Summarization
+
+Other language 
+technologies 
+
+(e.g., 
+
+Morphology, 
+
+Semantics, Data 
+
+Acquisition)
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+7
+
+Why Low Resource Languages?
+
+ಅಂ�ಾ�ಾ: ಟ�� �ಾಜ�ಾ� ಅಂ�ಾರದ����ಟ�ಪ�ೆಯನು� ಗು��ಾ��� ಬುಧ�ಾರ ಸಂಭ��ದ �ಾರು �ಾಂಬ್
+�ಾ�ಯ�� 28 ಮಂ� �ಾ��ೕ�ಾ�ದು�, 61 ಮಂ��ೆ �ಾಯಗ�ಾ��ೆ. ��ಟ��ಾಹನಗಳ� �ಾದು �ೋಗು��ರುವ
+
+• Fundamental Challenges
+
+Military convoy
+
+Lack of bitexts or commercial products to exploit
+Incomplete grammatical descriptions
+
+•
+•
+• Scant lexical resources
+• May have radically divergent typologies and complex morphologies
+• May have encoding anomalies
+• Segmentation issues
+•
+•
+
+Lack of orthographic standardization; Multiple scripts
+Informal genres of text will capture orthographic deviation (typos vs. truncations)
+
+Car 
+Bomb
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+8
+
+Query Format
+
+• Domain-specific (e.g., Government, Lifestyle)
+• Address domain-restricted information need
+
+“polio vaccine”
+Domain: Government and Politics
+
+Subject Domain
+
+…In response, the Armenian Ministry of Health urged all Syrian 
+Armenians under age 15 to get the polio vaccination…
+
+…Severe adverse reactions to this vaccine are rare.…
+
+…The oral vaccine was made by weakening the three strains of 
+poliovirus that caused disease by growing them in monkey 
+kidney cells…
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+9
+
+Non-traditional Query Constructs
+
+Semantic Expansion:
+“environmental protection”+
+“planting okra”+
+Surigao, irrigation+
+
+Constraint Disambiguation:
+Fly [hypernym: insect]
+Light [event frame:weight]
+“Buddha’s hand” [synonym: Citrus medica sarcodactylis]
+
+Categorical Membership:
+EXAMPLE_OF (mammal)
+EXAMPLE_OF (dairy product)
+
+Morphological Constraint:
+<helicopters>
+
++ domain!
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+10
+
+Key Technical Challenges
+
+– Techniques appropriate for a wide variety of languages
+– Performance on formal and informal text and speech in a wide variety 
+
+of genres that do not match the training conditions
+
+– Development of new methods for domain adaptation without 
+
+monolingual or parallel training data in that domain
+
+– Limited time to develop a fully automatic E2E system to process a 
+
+new language
+
+– Inter-language domain mismatches reflecting a cultural component
+– Use of web resources to complement limited training data
+
+Performers must develop methods
+
+that are not data intensive.
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+11
+
+MATERIAL Training Data
+
+• Each language will be provided at kick-off to performers in a “pack” from 
+the IARPA T&E Team that will contain training data for MT and ASR as 
+well as relevant language information
+
+• Speech data will include:
+
+• Roughly 50 hours of conversational speech transcriptions in a normalized orthography 
+
+in two demographically balanced partitions (40 hours training; 10 hours dev test)
+
+• Phonetic Lexica
+• Not all genres and domains will be present in the training data
+
+• MT Training data will include:
+
+• 800K word bitexts in each program language, sentence-aligned. Up to five sentences 
+
+may be included with a denoted grouping. Translations are purely human and new.
+
+• Not all genres and domains will be present in the training data
+
+• Language information will include:
+
+• Description of the language (e.g., dialect regions, phoneme set definitions)
+• Basic information on dialects, spelling and encoding
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+12
+
+MATERIAL Data Partitioning
+
+Query Releases:
+
+QR1: 2 Domains – Open
+QR2: 4 Domains – Closed
+QR3: 5 Domains – Closed
+
+Build Packs for Training:
+
+ASR Training & Phonetic Lexica
+MT Bitexts
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+13
+
+Domains and Genres Used for 
+Development and Evaluation
+
+Program data will include formal and informal varieties of text and speech, 
+
+including genres that are not present in the MT or ASR training data. 
+
+Mode
+
+Text
+
+Speech
+
+~ 75
+
+% Collect Genre
+News
+Topical
+Social Media
+Broadcast News
+Topical Broadcasts
+Conversation
+
+~ 25
+
+Domains (Broad Subject Fields) will vary from language to language based on 
+corpus characteristics, e.g. Government and Politics, Health, Military, etc.
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+14
+
+Test Structure Rationale
+
+• T&E regimen designed to drive R&D towards the program goal, viz:
+
+Language independent methods, tools, and technologies to provide 
+rapid-deployment of domain-adapted MT for low-resource languages 
+effectively integrated in a usable CLIR system
+
+• So:
+
+– Multiple languages with varying characteristics
+– Only small amounts of IARPA-furnished bitexts for training
+– Domain contextualized queries
+– Decreasing lead-time for development & surprise language evaluation
+
+Length (months)
+# Practice Languages
+Surprise Language Period (months)
+
+Base
+18
+2
+6
+
+Option 1 Option 2
+16
+2
+4
+
+12
+3
+1.5
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+15
+
+Training Data at Each Kickoff Period per language: 800K Words Bitexts; 50 Hours Transcribed Audio
+
+Program at a Glance
+
+Stage 1: Development and Testing on Practice Languages
+
+Kick Off 
+
+Epoch 1
+
+2 Domains (X)
+
+Dev 
+Cycle 
+(Dry run)
+
+Epochs 1-2
+X + 2 New (Y)
+
+CLE Eval
+
+Epochs 1-3
+
+X+Y+ 1 New (Z)
+
+CLE+S
+Eval
+
+Stage 2: Evaluation on 1 Surprise Language
+
+Kick Off 
+
+Epoch 1
+
+2 Domains (X)
+
+Dev 
+Cycle 
+(Dry run)
+
+Epochs 1-2
+X + 2 New (Y)
+
+CLE Eval
+
+Epochs 1-3
+
+X+Y+ 1 New (Z)
+
+CLE+S
+Eval
+
+Base Opt 1 Opt 2
+
+Staging in of Queries:
+
+# Dev Languages 2
+18
+Phase Duration
+7
+Practice CLE
+Practice CLE+S
+10
+13
+Surprise CLE
+Surprise CLE+S
+16
+6
+Surprise duration
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+Test 1
+75% X & 50% 
+Y queries
+
+Kickoff
+50% X 
+queries
+
+3
+13
+8
+9
+10.5
+11.5
+1.5
+
+2
+16
+8
+10
+12
+14
+4
+
+10% responsive data translations provided at each stage 
+for analysis that cannot be used for further training.
+
+Test 2
+100% X, Y & 
+Z queries
+
+16
+
+CLIR Detection Metric: AQWV
+Actual Query Weighted Value
+
+• All queries are treated equally (regardless of whether they 
+
+generate single or multiple hits).
+
+• Must be able to calibrate the metric against a baseline CLIR 
+system that has two inputs: GOTS MT and human translation.
+• Metrics will be reported to performers as an average over the 
+
+set of queries (not individually for each query).
+
+• Calculated as a representation of error rate taking into account 
+
+probability of hits, false alarms, and the total number of 
+responsive documents.  These parameters will be set by T&E 
+once the data are collected and evaluated.
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+17
+
+Actual Query Weighted Value (AQWV)
+Developers choose Θ, the detection threshold for their 
+“Actual Decisions”, to optimize query-weighted value
+ V is the a priori value (benefit) of a correct response
+ C is the a priori cost of an incorrect response
+ Prel is the prior probability that a document is relevant to a query, e.g. 10-3
+
+Developers will tune 
+their systems to the 
+threshold that 
+maximizes the 
+AQWV.  Note that 1 
+is a perfect score; 
+that is, error rate is 
+zero. 
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+18
+
+Evaluating Summarization
+
+CLIR Contingency Matrix
+
+Y
+
+N
+
+Key
+
+Crowd Summary Judgments
+
+True Positive X2
+Y X1
+False Negative
+False Positive X4
+N X3
+True Negative
+Y/Y   (=X1) A B
+Y/N   (=X3) C D
+hold Bat zero and reduce Cto zero
+
+A “perfect” summarization capability would 
+
+CLIR/
+Key
+
+N
+
+Y
+
+Y/Y: Retrieved docs that are relevant
+Y/N: Retrieved docs that are not relevant
+
+CROWD-SOURCED JUDGMENTS:
+A: # Relevant docs judged relevant 
+B: # Relevant docs judged non-relevant
+C: # Non-relevant docs judged relevant
+D: # Non-relevant docs judged non-relevant
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+19
+
+Evaluating Summarization (cont.)
+
+CLIR Contingency Matrix
+
+A “perfect” summarization capability would 
+
+Y
+
+N
+
+Key
+
+Y X1
+N X3
+
+True Positive X2
+False Negative
+False Positive X4
+True Negative
+hold Bat zero and reduce Cto zero
+Y A X2+B
+N C X4+D
+
+End to End Contingency Matrix
+
+Key
+
+N
+
+Y
+
+Y
+
+CLIR/
+Key
+
+Crowd Summary Judgments
+N
+
+Y/Y   (=X1) A B
+Y/N   (=X3) C D
+(C≤ X3) but cannot reduce the number of 
+missed detections (B≥ 0)
+
+Summarization can reduce the false alarm rate 
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+20
+
+T&E (Test and Evaluation)
+
+• The Data
+Data and/or annotation were supplied from four primary sources: 
+Appen Butler Hill, Inc. (Appen), The Center for Applied Machine 
+Translation at NSA, The National Virtual Translation Center at FBI, and 
+Air Force Research Laboratories (AFRL).
+
+• The T&E Team
+
+Test & 
+Evaluation
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+T&E Team Roles
+
+• The Center for the Advanced Study of Language (CASL) 
+
+provides guidance on the languages, data quality, annotation 
+and linguistic aspects of evaluation.   
+POCs: Anne David and Aric Bills
+
+• The National Institute of Standards and Technology (NIST) is 
+
+the evaluation lead for the T&E team.  They design and 
+administer the CLIR test sets via their test server.  
+POCs: Greg Sanders and Audrey Tong
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+T&E Team Roles
+
+• MIT Lincoln Laboratory (LL) supports the program with data collection, data 
+
+annotation, partitioning and vetting. They have built a baseline system to 
+better understand program challenges and appropriately set expectations.
+POCs: Nick Malyska and Jennifer Melot
+
+• Tarragon Consulting provides ontological support for the program, crucial 
+
+for our data annotation contract effort. They also lead the efforts for 
+summary evaluation.
+POC: Richard Tong
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+First Two Practice Languages
+
+• From a Broad language portfolio:
+
+– Different Language Families
+– Mixed language typology (i.e., with different phonotactic, morphological, 
+
+syntactic characteristics)
+
+Tagalog
+
+Swahili
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+24
+
+Swahili (1A)
+
+• SVO Word Order
+• Agglutinative 
+
+Morphology with 
+prefixes and suffixes
+• Verbs and adjectives 
+agree with noun class 
+of subjects and objects
+
+• 18 noun classes
+• Latin script, 5 vowels, 
+33 consonants (4 pre-
+nasalized, 4 borrowed)
+
+• Variability (dialects)
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+25
+
+Tagalog (1B)
+
+• Predicate-initial word 
+order, Agent usually 
+precedes patient
+
+•
+
+• Agglutinative Morphology 
+
+with prefixes, suffixes, 
+infixes and reduplication
+• Verbs take derivational 
+
+affixes to denote 
+semantic relation of NOM
+•
+• Latin script. Contrastive 
+
+•
+
+lexical stress. Heavy 
+borrowing – diglossia.
+
+Agglutinative morphology with reduplication:
+– Prefix: mag-Tagalog = ‘to speak Tagalog’ 
+– Suffix: Tagalug-in = ‘say in Tagalog’
+– Infix: T[in]agalog = ‘translated into Tagalog’
+– Circumfix: ka-Tagalug-an = ‘Tagalog area’
+– Reduplication: nag-ta-Tagalog = “speaking Tagalog”
+– And combinations thereof
+
+Predicate initial language, Agent usually precedes patient
+– Inubus
+– finished
+– ‘I finished his/her noodles’
+
+pansit niya.
+noodles 3s.GEN
+
+yung
+SPEC
+
+ko
+1s
+
+Traditionally a three vowel system written with five vowels
+– Word final vowel lowering: U > O, I > E / _#
+
+Kababaihan (from babae)
+Tagalugin (from Tagalog)
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+26
+
+Query Development
+
+Query 1B-2034
+Domain GOV
+Named Entity
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+Vetting Query Development
+
+Contains 
+
+named entity?
+
+Polysemous in 
+
+English?
+
+Mark Polysemy or 
+Homophony as 
+
+applicable
+
+Mark 
+Named 
+Entity
+
+Constrain 
+Appropriately
+
+Query Developers will 
+want to try to create 
+
+queries that hit both text 
+and speech documents 
+with a reasonable pREL
+
+Check Retrieval 
+
+Methods
+
+If a morphological query, 
+does constraint make sense
+
+If applicable, Does Semantic 
+
+Expansion Make Sense?
+
+Return Query to 
+
+Developer for editing. Do 
+
+not Accept
+
+Edit Search Appropriately for 
+Semantics and Morphology
+
+Finalize for 
+Annotation
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+Baseline Metric Correlation, Eval1
+
+NMT
+
+PBMT
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+29
+
+Baseline Metric Correlation, Analysis1
+
+NMT
+
+PBMT
+
+Swahlii
+
+Tagalog
+
+Tagalog Cybertrans
+
+Swahili Cybertrans
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+30
+
+Four MATERIAL Performing Teams
+
+… and some initial results and discoveries
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+Team Scoring
+
+• Web-based scoring server 
+hosted by NIST
+• Allows performer teams to 
+submit their system outputs 
+and get score feedback on 
+various datasets
+
+Detailed results for CLIR task include 
+AQWV breakdown by:
+
+Document types (text, speech)
+Domains
+Query types (lexical, conceptual, 
+hybrid)
+Query characteristics
+
+EXAMPLE_OF
+Semantic constraint (hypernym, 
+synonym, event frame)
+Morphological constraint
+Conjunction
+Constituent phrase
+Multi-word phrase
+Contains capital letter
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+Mismatch Degradation from Analysis Docs
+
+• Conversational vs. Broadcast Performance
+
+Word Error Rate Metric – Lower is Better
+60
+
+)
+
+%
+
+(
+ 
+R
+E
+W
+
+50
+
+40
+
+30
+
+20
+
+10
+
+0
+
+Conversational
+Telephone Speech
+Topical Broadcast
+
+News Broadcast
+
+Swahili
+
+Tagalog
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+33
+
+Data Needs: SMT vs. NMT
+
+ 
+
+n
+o
+i
+t
+i
+d
+n
+o
+C
+L
+A
+R
+E
+T
+A
+M
+
+I
+
+Adapted from:
+Philipp Koehn
+
+Johns Hopkins University
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+34
+
+Substantial OOV Problem
+
+•
+
+Languages with a large 
+number of word variants 
+will not be covered by the 
+very limited amounts of 
+training data.
+
+• Doing well with limited 
+training data requires 
+accurate search for word 
+forms not observed in 
+training.
+10% of queries OOV from 
+English training; 15% not 
+seen in Analysis Pack 
+
+•
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+35
+
+Vocabulary Growth Rate –
+
+BABEL Languages
+
+“Chinese 
+Room” 
+Analysis 
+(USC)
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+36
+
+Data Crawling
+
+• Performers collecting heterogeneous monolingual and 
+
+parallel corpora from large number of sources
+– Text: News/tabloids/blogs, Bible/Quran, bilingual dicts, Wikipedia
+– Audio/Video: News, YouTube, Bible
+
+Swahili
+
+Tagalog
+
+Text
+
+Audio
+
+• 3M documents, 130M sentences
+• 22K dictionary entries
+• 15K Bible verses
+• 93 hours of YouTube videos
+• 1600 hours of News videos
+• 99 hours of Audio Bible
+
+• 9M documents, 300M sentences
+• 36K dictionary entries
+• 63K Bible verses
+• 5 hours of YouTube videos
+• 260 hours of News videos
+• 25 hours of Audio Bible
+
+• Provided boost in ASR and MT domain/genre adaptations; 
+
+eventually will be used in all MATERIAL tasks
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+37
+
+Using Raw Crawled Data
+
+• Unfiltered harvest, high-recall crawling output
+• Data from Johns Hopkins University
+
+Benefit to SMT    , severe harm to NMT 
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+38
+
+Comparing MT Systems with BLEU
+(Columbia’s Baseline MT Results on Eval using Bitexts only)
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+39
+
+Comparing MT Systems with BLEU
+
+(Columbia’s Improved MT Results using parallel + monolingual texts)
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+40
+
+Comparing MT Systems with BLEU
+
+(ISI’s 90%/6.5%/3.5% train/dev/test split of the build set)
+
+• Baseline systems
+
+– sbmt: Syntactic string-to-tree (from Galley et al. 2004)
+– hiero: Hierarchical Phrase-Based (from Chiang, 2005)
+– nmt: Neural seq2seq (Luo and Barzilay 2018, based on Bahdanau et al. 
+
+2014)
+
+– conv: Pure convolutional neural (adapted from Gehring et al., 2017)
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+41
+
+Equal Error Rate results with seeded Analysis 1 docs
+
+DOMAIN DETECTION
+
+Swahili
+
+R
+E
+E
+
+R
+E
+E
+
+40
+35
+30
+25
+20
+15
+10
+5
+0
+
+40
+35
+30
+25
+20
+15
+10
+5
+0
+
+Full MT GIZA ttable
+
+1-best
+
+GIZA ttable
+200-best
+
+GIZA ttable
+100-best
+Tagalog
+
+GIZA ttable
+400-best
+
+text
+audio
+
+text
+audio
+
+Reminder: “GIZA ttable”
+is a translation table that
+contains word-to-word 
+probabilities computed 
+from the GIZA alignments 
+of the parallel data.
+
+The two practice 
+languages behave
+quite differently!
+
+Source: BBN
+
+Full MT GIZA ttable
+
+1-best
+
+GIZA ttable
+100-best
+
+GIZA ttable
+200-best
+
+GIZA ttable
+400-best
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+42
+
+What’s Next?
+
+MATERIAL BASE PERIOD SCHEDULE
+
+Development Cycle for Base Period Ends
+CLIR Eval; Practice Summary Submissions
+Domain 5 Released for both languages
+CLIR/Domain ID Results Disseminated
+Third query set release; Eval 3 Data released
+CLIR+Summary Dry Run
+CLIR+Summary Eval
+Analysis Set 3 Release
+Surprise Language Kickoff; DC Area Workshop
+CLIR+S Eval for Surprise Language
+CLIR+S Results Disseminated; Performer downselect
+
+April 6, 2018
+May 14, 2018
+May 18, 2018
+May 25, 2018
+July 5, 2018
+July 24, 2018
+Aug 6, 2018
+Aug 14, 2018
+Sept 5, 2018
+January 2019
+March 2019
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+43
+
+How to Engage with IARPA
+
+iarpa.gov  | 301-851-7500
+
+info@iarpa.gov
+
+Reach out to our Program Managers. 
+
+Schedule a visit if you are in the DC area 
+or invite us to visit you
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+44
+
+Questions?
+
+May tanong ba?
+
+Maswali?
+
+INTELLIGENCE ADVANCED RESEARCH PROJECTS ACTIVITY (IARPA)
+
+45
+
+

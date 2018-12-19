@@ -1,0 +1,210 @@
+EMNLP2018Proceedingsofthe5thWorkshoponArgumentMiningNovember1,2018Brussels,Belgiumii
+
+c(cid:13)2018TheAssociationforComputationalLinguisticsOrdercopiesofthisandotherACLproceedingsfrom:AssociationforComputationalLinguistics(ACL)209N.EighthStreetStroudsburg,PA18360USATel:+1-570-476-8006Fax:+1-570-476-0860acl@aclweb.orgISBN978-1-948087-69-8iii
+
+IntroductionArgumentmining(also,“argumentationmining”)isarelativelynewresearchﬁeldwithintherapidlyevolvingareaofComputationalArgumentation.Thetaskspursuedwithinthisﬁeldarehighlychallengingwithmanyimportantpracticalapplications.Theseincludeautomaticallyidentifyingargumentativestructureswithindiscourse,e.g.,premises,conclusion,andargumentationschemeofeachargument,aswellasrelationshipsbetweenpairsofargumentsandtheircomponents.Todate,researchershaveinvestigatedaplethoraofmethodstoaddressthesetasksinvariousareas,includinglegaldocuments,usergeneratedWebdiscourse,on-linedebates,productreviews,academicliterature,newspaperarticles,dialogicaldomains,andWikipediaarticles.Relevantmanuallyannotatedcorporaarereleasedatanincreasingpace,furtherenhancingtheresearchintheﬁeld.Inaddition,argumentminingisinherentlytiedtosentimentanalysis,sinceanargumentfrequentlycarriesaclearsentimenttowardsitstopic.Correspondingly,thisyear’sworkshopwillbecoordinatedwiththecorrespondingWASSAworkshop,aimingtohaveajointpostersession.Argumentminingcangiverisetovariousapplicationsofgreatpracticalimportance.Forinstance,bydevelopingmethodsthatcanextractandvisualizethemainproandconargumentsraisedinacollectionofdocumentstowardsaqueryofinterest,onecanenhancedata-drivendecisionmaking.Ininstructionalcontexts,argumentationisapedagogicallyimportanttoolforconveyingandassessingthestudents’commandofcoursematerial,aswellasforadvancingcriticalthinking.Writtenanddiagrammedargumentsbystudentsrepresenteducationaldatathatcanbeminedforpurposesofassessmentandinstruction.Thisisespeciallyimportantgiventhewide-spreadadoptionofcomputer-supportedpeerreview,computerizedessaygrading,andlarge-scaleonlinecoursesandMOOCs.Additionally,miningprosandconsmaybeusefulinmultiplebusinessapplications,forinstance,forresearchingacompanyorconsideringthepotentialofapossibleinvestment.Successinargumentminingrequiresinterdisciplinaryapproachesinformedbynaturallanguageprocessingtechnology,artiﬁcialintelligenceapproaches,theoriesofsemantics,pragmaticsanddiscourse,knowledgeofdiscourseofdomainssuchaslawandscience,argumentationtheory,computationalmodelsofargumentation,andcognitivepsychology.Thegoalofthisworkshopistoprovideafollow-onforumtothelastfouryears’ArgumentMiningworkshopsatACLandEMNLP,themajorresearchforumdevotedtoargumentmininginalldomainsofdiscourse.v
+
+Organizers:NoamSlonim,IBMResearchAI(chair)RanitAharonov,IBMResearchAI(chair)KevinAshley,UniversityofPittsburghClaireCardie,CornellUniversityNancyGreen,UniversityofNorthCarolinaGreensboroIrynaGurevych,TechnischeUniversitätDarmstadtIvanHabernal,TechnischeUniversitätDarmstadtDianeLitman,UniversityofPittsburghGeorgiosPetasis,NationalCenterforScientiﬁcResearch(NCSR)“Demokritos”ChrisReed,UniversityofDundeeVernR.Walker,MauriceA.DeaneSchoolofLawatHofstraUniversity,NewYorkProgramCommittee:AhmetAker,UniversityofDuisburg-EssenCarlosAlzate,IBMResearchAIRoyBar-Haim,IBMResearchAIYonatanBilu,IBMResearchAIKatarzynaBudzynska,PolishAcademyofSciences(Poland)&UniversityofDundee(UK)ElenaCabrio,UniversitéCôted’Azur,Inria,CNRS,I3S,FranceLeshemChoshen,IBMResearchAIJohannesDaxenberger,TechnischeUniversitätDarmstadtLiatEinDor,IBMResearchAIMatthaisGrabmair,CarnegieMellonUniversityGraemeHirst,UniversityofTorontoVangelisKarkaletsis,NationalCenterforScientiﬁcResearch(NCSR)“Demokritos”JohnLawrence,CentreforArgumentTechnology-UniversityofDundeeRanLevy,IBMResearchAIBeishuiLiao,ZhejiangUniversityRobertMercer,TheUniversityofWesternOntarioMarie-FrancineMoens,TheKatholiekeUniversiteitLeuvenSmarandaMuresan,ColumbiaUniversityElenaMusi,ColumbiaUniversityMatanOrbach,IBMResearchAIJoonsukPark,WilliamsCollegeSimonParsons,King’sCollegeLondonArielRosenfeld,WeizmannInstituteofSciencePatrickSaint-Dizier,CentreNationaldelaRechercheScientiﬁque(CNRS)JodiSchneider,UniversityofIllinoisatUrbana-ChampaignEyalShnarch,IBMResearchAIChristianStab,TechnischeUniversitätDarmstadtBennoStein,Bauhaus-UniversitätWeimarSerenaVillata,CentreNationaldelaRechercheScientiﬁque(CNRS)HenningWachsmuth,Bauhaus-UniversitätWeimarZhongyuWei,FudanUniversityvi
+
+InvitedSpeaker:HugoMercier,InstitutJeanNicod,CNRSTable of Contents
+
+Argumentative Link Prediction using Residual Networks and Multi-Objective Learning
+
+Andrea Galassi, Marco Lippi and Paolo Torroni . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+
+End-to-End Argument Mining for Discussion Threads Based on Parallel Constrained Pointer Architec-
+ture
+
+Gaku Morio and Katsuhide Fujita . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+ArguminSci: A Tool for Analyzing Argumentation and Rhetorical Aspects in Scientiﬁc Writing
+
+Anne Lauscher, Goran Glavaš and Kai Eckert. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .22
+
+Evidence Type Classiﬁcation in Randomized Controlled Trials
+
+Tobias Mayer, Elena Cabrio and Serena Villata . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+
+Predicting the Usefulness of Amazon Reviews Using Off-The-Shelf Argumentation Mining
+
+Marco Passon, Marco Lippi, Giuseppe Serra and Carlo Tasso . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+
+An Argument-Annotated Corpus of Scientiﬁc Publications
+
+Anne Lauscher, Goran Glavaš and Simone Paolo Ponzetto . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+
+Annotating Claims in the Vaccination Debate
+
+Benedetta Torsi and Roser Morante . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 47
+
+Argument Component Classiﬁcation for Classroom Discussions
+
+Luca Lugini and Diane Litman . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+
+Evidence Types, Credibility Factors, and Patterns or Soft Rules for Weighing Conﬂicting Evidence: Ar-
+gument Mining in the Context of Legal Rules Governing Evidence Assessment
+
+Vern R. Walker, Dina Foerster, Julia Monica Ponce and Matthew Rosen . . . . . . . . . . . . . . . . . . . . . . 68
+
+Feasible Annotation Scheme for Capturing Policy Argument Reasoning using Argument Templates
+
+Paul Reisert, Naoya Inoue, Tatsuki Kuribayashi and Kentaro Inui . . . . . . . . . . . . . . . . . . . . . . . . . . . . 79
+
+Frame- and Entity-Based Knowledge for Common-Sense Argumentative Reasoning
+
+Teresa Botschen, Daniil Sorokin and Iryna Gurevych . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 90
+
+Incorporating Topic Aspects for Online Comment Convincingness Evaluation
+
+Yunfan Gu, Zhongyu Wei, Maoran Xu, Hao Fu, Yang Liu and Xuanjing Huang . . . . . . . . . . . . . . . 97
+
+Proposed Method for Annotation of Scientiﬁc Arguments in Terms of Semantic Relations and Argument
+Schemes
+
+Nancy Green . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 105
+
+Using context to identify the language of face-saving
+
+Nona Naderi and Graeme Hirst . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 111
+
+Dave the debater: a retrieval-based and generative argumentative dialogue agent
+
+Dieu-Thu Le, Cam Tu Nguyen and Kim Anh Nguyen . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 121
+
+PD3: Better Low-Resource Cross-Lingual Transfer By Combining Direct Transfer and Annotation Pro-
+jection
+
+Steffen Eger, Andreas Rücklé and Iryna Gurevych . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 131
+
+vii
+
+Cross-Lingual Argumentative Relation Identiﬁcation: from English to Portuguese
+
+Gil Rocha, Christian Stab, Henrique Lopes Cardoso and Iryna Gurevych . . . . . . . . . . . . . . . . . . . . 144
+
+More or less controlled elicitation of argumentative text: Enlarging a microtext corpus via crowdsourcing
+Maria Skeppstedt, Andreas Peldszus and Manfred Stede . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 155
+
+viii
+
+Conference Program
+
+Thursday, November 1, 2018
+
+09:00–09:10 Openings
+
+Session 1
+
+09:10–10:10 Keynote Talk: Argumentation and Human Reason
+
+Hugo Mercier
+
+10:10–10:30
+
+Argumentative Link Prediction using Residual Networks and Multi-Objective
+Learning
+Andrea Galassi, Marco Lippi and Paolo Torroni
+
+10:30–11:00 Coffee Break
+
+Session 2
+
+11:00–11:20
+
+End-to-End Argument Mining for Discussion Threads Based on Parallel Con-
+strained Pointer Architecture
+Gaku Morio and Katsuhide Fujita
+
+11:20–11:40
+
+ArguminSci: A Tool for Analyzing Argumentation and Rhetorical Aspects in Scien-
+tiﬁc Writing
+Anne Lauscher, Goran Glavaš and Kai Eckert
+
+11:40–12:00
+
+Evidence Type Classiﬁcation in Randomized Controlled Trials
+Tobias Mayer, Elena Cabrio and Serena Villata
+
+12:00–12:20
+
+Predicting the Usefulness of Amazon Reviews Using Off-The-Shelf Argumentation
+Mining
+Marco Passon, Marco Lippi, Giuseppe Serra and Carlo Tasso
+
+12:20–14:30 Lunch and Poster Presentations
+
+An Argument-Annotated Corpus of Scientiﬁc Publications
+Anne Lauscher, Goran Glavaš and Simone Paolo Ponzetto
+
+ix
+
+Thursday, November 1, 2018 (continued)
+
+Annotating Claims in the Vaccination Debate
+Benedetta Torsi and Roser Morante
+
+Argument Component Classiﬁcation for Classroom Discussions
+Luca Lugini and Diane Litman
+
+Evidence Types, Credibility Factors, and Patterns or Soft Rules for Weighing Con-
+ﬂicting Evidence: Argument Mining in the Context of Legal Rules Governing Evi-
+dence Assessment
+Vern R. Walker, Dina Foerster, Julia Monica Ponce and Matthew Rosen
+
+Feasible Annotation Scheme for Capturing Policy Argument Reasoning using Argu-
+ment Templates
+Paul Reisert, Naoya Inoue, Tatsuki Kuribayashi and Kentaro Inui
+
+Frame- and Entity-Based Knowledge for Common-Sense Argumentative Reasoning
+Teresa Botschen, Daniil Sorokin and Iryna Gurevych
+
+Incorporating Topic Aspects for Online Comment Convincingness Evaluation
+Yunfan Gu, Zhongyu Wei, Maoran Xu, Hao Fu, Yang Liu and Xuanjing Huang
+
+Proposed Method for Annotation of Scientiﬁc Arguments in Terms of Semantic Re-
+lations and Argument Schemes
+Nancy Green
+
+Using context to identify the language of face-saving
+Nona Naderi and Graeme Hirst
+
+x
+
+Thursday, November 1, 2018 (continued)
+
+Session 3
+
+14:30–15:10
+
+Special Presentation: Project Debater
+Noam Slonim and Ranit Aharonov
+
+15:10–15:30 Dave the debater: a retrieval-based and generative argumentative dialogue agent
+
+Dieu-Thu Le, Cam Tu Nguyen and Kim Anh Nguyen
+
+15:30–16:00 Coffee Break
+
+Session 4
+
+16:00–16:20
+
+PD3: Better Low-Resource Cross-Lingual Transfer By Combining Direct Transfer
+and Annotation Projection
+Steffen Eger, Andreas Rücklé and Iryna Gurevych
+
+16:20–16:40 Cross-Lingual Argumentative Relation Identiﬁcation: from English to Portuguese
+
+Gil Rocha, Christian Stab, Henrique Lopes Cardoso and Iryna Gurevych
+
+16:40–17:00 More or less controlled elicitation of argumentative text: Enlarging a microtext
+
+corpus via crowdsourcing
+Maria Skeppstedt, Andreas Peldszus and Manfred Stede
+
+17:00–17:30 Best paper announcement and closing
+
+xi
+
+

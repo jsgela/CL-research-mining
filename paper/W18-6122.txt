@@ -1,0 +1,952 @@
+Learning to Deﬁne Terms in the Software Domain
+
+Vidhisha Balachandran
+
+Dheeraj Rajagopal
+
+Rose Catherine
+
+William Cohen
+
+School of Computer Science
+
+{vbalacha,dheeraj,rosecatherinek,wcohen}@cs.cmu.edu
+
+Carnegie Mellon University, Pittsburgh, USA
+
+Abstract
+
+One way to test a person’s knowledge of a do-
+main is to ask them to deﬁne domain-speciﬁc
+terms. Here, we investigate the task of au-
+tomatically generating deﬁnitions of technical
+terms by reading text from the technical do-
+main. Speciﬁcally, we learn deﬁnitions of soft-
+ware entities from a large corpus built from
+the user forum Stack Overﬂow. To model def-
+initions, we train a language model and incor-
+porate additional domain-speciﬁc information
+like word co-occurrence, and ontological cate-
+gory information. Our approach improves pre-
+vious baselines by 2 BLEU points for the def-
+inition generation task. Our experiments also
+show the additional challenges associated with
+the task and the short-comings of language-
+model based architectures for deﬁnition gen-
+eration.
+Introduction
+
+1
+Dictionary deﬁnitions have been previously used
+in various Natural Language Processing (NLP)
+pipelines like knowledge base population (Dolan
+et al., 1993), relationship extraction, and extract-
+ing semantic information (Chodorow et al., 1985).
+Creating dictionaries in a new domain is time con-
+suming, often requiring hand curation by domain
+experts with signiﬁcant expertise. Developing sys-
+tems to automatically learn and generate deﬁni-
+tions of words can lead to greater time-efﬁciency
+(Muresan and Klavans, 2002). Additionally, it
+helps accelerate resource-building efforts for any
+new domain.
+
+In this paper, we study the task of generating
+deﬁnitions of domain-speciﬁc entities. In partic-
+ular, our goal is to generate deﬁnitions for tech-
+nical terms with the freely available Stack Over-
+ﬂow1 (SO) as our primary corpus. Stack Overﬂow
+is a technical question-and-answer forum aimed
+
+1https://stackoverﬂow.com
+
+Figure 1: Screenshot from Stack Overﬂow showing
+questions and corresponding tags in blue boxes
+
+at supporting programmers in various aspects of
+computer science. Each question is tagged with
+associated entities or “tags”, and the top answers
+are ranked based on user upvotes (de Souza et al.,
+2014). Figure 1 shows a screenshot from the fo-
+rum of a question and the entities tagged with the
+question. Our work explores the challenge of gen-
+erating deﬁnitions of entities in SO using the back-
+ground data of question-answer pairs and their as-
+sociated tags.
+
+Our base deﬁnition generation model is adapted
+from Noraset et al. (2017), a Recurrent Neural
+Network (RNN) language model to learn to gen-
+erate deﬁnitions for common English words us-
+ing embeddings trained on Google News Cor-
+pus. Over this base model, we leverage the
+distributed word information via the embeddings
+trained on domain speciﬁc Stack Overﬂow corpus.
+We improve this model to additionally incorporate
+domain-speciﬁc information such as co-occurring
+entities and domain ontology in the deﬁnition gen-
+eration process. Our model also uses an additional
+loss function to reconstruct the entity word rep-
+resentation from the generated sequence. Our best
+model can generate deﬁnitions in software domain
+with a BLEU score of 10.91, improving upon the
+baseline by 2 points.
+
+In summary, our contributions are as follows,
+1. We propose a new dataset of entities in the
+
+Proceedingsofthe2018EMNLPWorkshopW-NUT:The4thWorkshoponNoisyUser-generatedText,pages164–172Brussels,Belgium,Nov1,2018.c(cid:13)2018AssociationforComputationalLinguistics164software domain and their corresponding deﬁni-
+tions, for the deﬁnition generation task.
+
+2. We provide ways to incorporate domain-
+speciﬁc knowledge such as co-occurring entities
+and ontology information into a language model
+trained for the deﬁnition generation task.
+
+3. We study the effectiveness of the model us-
+ing the BLEU (Papineni et al., 2002) metric and
+present the results and discussion about our re-
+sults.
+
+Section 4 of this paper presents the dataset. Sec-
+tion 5 discusses the model in detail. In Section 6
+and 7 we present the experimental details and re-
+sults of our experiments. Section 8 provides an
+analysis and discussion of the results and the gen-
+erated deﬁnitions.
+
+2 Related Work
+
+Deﬁnition modeling: The closest work related
+to ours is Noraset et al. (2017) who learn to gen-
+erate deﬁnitions for general English words using a
+RNN language model initialized with pre-trained
+word embeddings. We adapt the method proposed
+by them and use it in a domain-speciﬁc construct.
+We aim to learn deﬁnitions of entities in the soft-
+ware domain. Hill et al. (2015) learn to produce
+distributed embeddings for words using their dic-
+tionary deﬁnitions as a means to bridge the gap
+between lexical and phrase semantics. Similarly,
+Tissier et al. (2017) use lexical deﬁnitions to aug-
+ment the Word2Vec algorithm by adding an objec-
+tive of reconstructing the words in the deﬁnition.
+In contrast, we focus solely on generating the def-
+initions of entities. We add an objective of recon-
+structing the embedding of the word from the gen-
+erated sequence. Also, all the above work focus on
+lexical deﬁnitions of general English words, while
+we focus on closed domain software terms. Dhin-
+gra et al. (2017) present a dataset of cloze-style
+queries constructed from deﬁnitions of software
+entities on Stack Overﬂow.
+In contrast to their
+work, we focus on generating the entire deﬁnition
+of entities.
+
+RNN Language Models : We use RNN
+based language models, conditioned on the term
+to be deﬁned and its ontological category, to gen-
+erate deﬁnitions.
+Such neural language mod-
+els have been shown to successfully work for
+image-captioning tasks (Karpathy and Fei-Fei,
+2015; Kiros et al., 2014), concept to text gener-
+ation (Lebret et al., 2016; Mei et al., 2015), ma-
+
+chine translation (Luong et al., 2014; Bahdanau
+et al., 2014) and conversations and dialog systems
+(Shang et al., 2015; Wen et al., 2015).
+
+Reconstruction Loss Framework : We also
+build an explicit loss framework to reconstruct the
+term by reducing the cosine distance between the
+embedding of the term and the embedding of the
+reconstructed term. We adapt this approach from
+Hill et al. (2015) who apply it to learn word rep-
+resentations using dictionaries. Inan et al. (2016)
+propose a loss framework for language modeling
+to minimize the distribution distance between the
+prediction distribution and the true data distribu-
+tion. Though we use a different loss framework,
+we use a similar type of parameter tying in our
+implementation.
+
+3 Deﬁnitions
+Dictionary deﬁnitions represent a large source of
+our knowledge of meaning of words (Amsler,
+1980). Deﬁnitions are composed of a ‘genus’
+phrase and a ‘differentia’ phrase (Amsler, 1980).
+The ‘genus’ phrase identiﬁes the general category
+of the deﬁned word. This helps derive an ‘Is A’
+relationship between the general category and the
+word being deﬁned. The ‘differentia’ phrase dis-
+tinguishes this instance of the general category
+from other instances. Deﬁnitions can have further
+set of differentia to imply more granular explana-
+tion. For example, Merriam-Webster 2 deﬁnes the
+word ‘house’ as ‘a building that serves as living
+quarters for one or a few families’. Here the phrase
+‘a building’ is the genus that denotes that a house
+is a building. The phrases ‘that serves as living
+quarters’ and ‘for one or a few families’ are dif-
+ferentia phrases which help identify house from
+other buildings. Our model of deﬁnitions adapts
+this interpretation. From a modeling perspective,
+we hypothesize that using language models would
+learn the template structure of deﬁnitions, and in-
+corporating entity-entity co-occurrence as well as
+ontological category information would help us ﬁll
+the speciﬁc differentia and genus concepts to the
+template structure.
+
+4 Dataset
+In SO, users can associate a question with a ‘tag’,
+such as ‘Java’ or ‘machine learning’, to help other
+users ﬁnd and answer it. These tags are nearly al-
+ways names of domain speciﬁc entities. Each tag
+
+2https://www.merriam-webster.com/dictionary/house
+
+165Software Tag Deﬁnition
+hmac
+
+in cryptography hmac hash-based message au-
+thentication code is a speciﬁc construction
+for calculating a message authentication code
+mac involving a cryptographic hash-function in
+combination with a secret-key
+persistence in computer programming refers to
+the capability of saving data outside the appli-
+cation memory .
+ndjango is a port of
+template-engine to .net .
+intellisense is microsoft s implementation of
+automatic code-completion best known for its
+use in the microsoft visual-studio integrated
+development-environment .
+
+the popular django
+
+Category
+authentication
+
+database
+
+framework
+
+compiler
+
+persistence
+
+ndjango
+
+intellisense
+
+Table 1: Sample deﬁnitions from the dataset
+
+# samples
+# avg deﬁnition length
+
+train
+22334
+16.54
+
+val
+1240
+16.53
+
+test
+1240
+16.69
+
+Table 2: Dataset Statistics
+
+has a deﬁnition on SO. For the deﬁnitions, we cre-
+ated a dataset of 25K software entities (tags from
+SO) and their deﬁnitions on SO. The data collec-
+tion and pre-processing for the task is similar to
+cloze-style software questions collected in Dhin-
+gra et al. (2017). The deﬁnitions dataset was built
+from the deﬁnitional “excerpt” entry for each tag
+(entity) on Stack Overﬂow. For example, the ex-
+cerpt for the “java” tag is, “Java is a general pur-
+pose object-oriented programming language de-
+signed to be used in conjunction with the Java Vir-
+tual Machine (JVM).” The dataset statistics can be
+seen in Table 2. This dataset is used for train-
+ing our deﬁnition generation models. Examples
+of deﬁnitions in the dataset are shown in Table 1.
+We use a background corpus of top 50 threads 3
+tagged with every entity on Stack Overﬂow (Dhin-
+gra et al., 2017) and attempt to learn deﬁnitions of
+entities from this data. We use this background
+corpus for training word embeddings and to give
+us tag co-occurrences. In SO, a particular ques-
+tion can have multiple tags associated with it,
+which we call ‘co-occurring tags’. We extracted
+the top 50 question posts for each tag, along with
+any answer-post responses and metadata (tags, au-
+
+3A question along with the answers provided by other
+users is collectively called a thread. The threads are ranked
+in terms of votes from the community.
+
+thorship, comments) using Scrapy 4. From each
+thread, we used all text that is not marked as code
+and segmented them into sentences. Each sen-
+tence is truncated to 2048 characters, lower-cased
+and tokenized using a custom tokenizer compati-
+ble with special characters in software terms (e.g.
+.net, c++). The background corpus for our task
+consists of 27 million sentences.
+
+5 Model
+5.1 Deﬁnition generation as language
+
+modeling
+
+We model the task of generating deﬁnitions as
+a language modeling task. The architecture of
+the model is shown in Figure 2. We model
+the problem of generating a deﬁnition D =
+w1, w2...wT given the entity w∗, where the prob-
+ability of generating a token p(wt) is given by
+P (wt|w1..wt−1, w∗) and the probability of gener-
+ating the entire deﬁnition is given by:
+
+P (D|w∗) =
+
+P (wt|w1..wt−1, w∗)
+
+t=1
+
+We model this using LSTM language models
+(Mikolov et al., 2010; Hochreiter and Schmidhu-
+ber, 1997). An LSTM unit is composed of three
+multiplicative gates which control the proportions
+of information to forget and to pass on to the next
+time step. During training, the input to the LSTM
+are the word embeddings of the gold deﬁnition se-
+quence. At test time, the input is the embedding of
+the input entity and previously generated words.
+
+4https://scrapy.py
+
+T(cid:89)
+
+166Figure 2: Model Architecture
+
+We outline the functions in our model below :
+
+entity, we as :
+
+x(cid:48)
+t = E[wt]
+ht = LST M (x(cid:48)
+
+t, ht−1)
+
+PEE(we|w∗) =
+
+(cid:40) c(we,w∗)
+
+c(w∗) + ,
+
+,
+
+if we is an entity
+otherwise
+
+PLM (wt|w1...wt−1, w∗) = sm(Wk ∗ ht)
+
+(1)
+
+where E is an embedding matrix,
+
+initialized
+with pre-trained embeddings and Wk is a weight
+matrix. sm is the softmax function.
+
+Adapting the baselines from Noraset et al.
+(2017), we explore two variants of providing the
+model with the input entity :
+
+Seed Model: The input entity is given as the
+ﬁrst input token to the RNN as a seed. The loss
+of predicting the start token, < sos >, given the
+word is not taken into account.
+
+Concat Model: Along with being given as a
+seed to the model, the input entity is concatenated
+with the input token of the RNN at every timestep.
+We use these as baselines for our approach as well.
+
+5.2
+
+Incorporating Entity-Entity
+Co-occurrence
+
+We propose an extended model to incorporate
+entity-entity association information from the tags
+to generate the ﬁnal deﬁnition. We deﬁne a co-
+occurrence based probability measure for every
+
+where c is count function and we is deﬁned as
+any software entity which is not the entity being
+deﬁned. c(we, w∗) is the count of sentences for
+which entities we and w∗ were tagged together.
+This probability is smoothed for non-entity words
+with an  value. We use  = 0.0001 for all cases.
+To incorporate this probability into our model, we
+interpolate it with the language model probability
+deﬁned in Equation 1 as follows :
+
+P (wt|w1..wt−1, w∗) = λt ∗ PEE(wt|w∗)
++(1 − λt) ∗ PLM (wt|w1..wt−1, w∗)
+
+where λt is a learned parameter, given as follows :
+
+zt = tanh(Wp ∗ ht−1 + Wq ∗ E(w∗) + b)
+λt = σ(Wr ∗ zt)
+
+where Wp, Wq, Wr, b are learn-able parameters.
+The λt parameter learns to switch between the
+contextual language model probability when gen-
+erating tokens forming the structure of the deﬁni-
+tion and the entity-entity probability when gener-
+ating tokens which are themselves entities.
+
+1675.3 Modeling Ontological Category
+
+Information
+
+We use a pre-deﬁned set of 86 categories which are
+the ontological categories for the software domain
+proposed as part of the GNAT 5 project. For each
+category, we compute a distributed representation
+vector by taking the mean of every dimension of
+the constituent tokens in the category name. We
+term this the average category embedding. We
+map every entity to its closest category in embed-
+ding space using cosine distance. Examples of cat-
+egory mappings to the terms are shown in Table 1.
+We explore two ways of using the average cate-
+
+gory embedding :
+1) Adding the category embedding vector (ACE)
+to the word vector of the entity to extract a new
+vector which we hope is closer to words deﬁn-
+ing the entity. This is inspired from the idea of
+additive compositionality of vectors as shown in
+(Mikolov et al., 2013b).
+
+x(cid:48)
+1 = E[w∗] + E(cid:48)[c(w∗)]
+
+2) Concatenating the category embedding vec-
+tor (CCE) with the input embeddings at every
+timestep of the LSTM.
+
+x(cid:48)
+t = E[wt]; E(cid:48)[c(w∗)]
+
+where E is the word embedding matrix, E(cid:48) is the
+category embedding matrix and c(x) is a function
+that maps every entity to its corresponding onto-
+logical category.
+
+5.4 Loss Augmentation
+To enforce the model to condition on the entity and
+generate deﬁnitions, we propose to augment the
+standard cross entropy loss with a loss framework
+that focuses on reconstructing the entity from the
+generated sequence. This additionally constrains
+the model to generate tokens close to the tokens
+in the deﬁnition. We introduce a second LSTM
+model which reverse encodes the output text se-
+quence of the forward mode and projects the en-
+coded sequence into an embedding space of the
+same dimension as the term being deﬁned.
+
+t = LST M (y(cid:48)
+h(cid:48)
+wr = Wb ∗ h(cid:48)
+e∗
+
+t
+
+1....y(cid:48)
+T )
+
+(2)
+
+5http://curtis.ml.cmu.edu/gnat/software/
+
+1...y(cid:48)
+
+where y(cid:48)
+and Wb is a weight matrix.
+
+T is the generated deﬁnition sequence
+
+We add an additional objective to the model
+to minimize the cosine distance between the pro-
+jected vector and the embedding of the input term:
+
+losscosine(w∗, e∗
+
+wr ) = 1 − cos(E(w∗), e∗
+wr )
+
+where, w∗ is the input term, and e∗
+structed term vector.
+
+wr is the recon-
+
+The resulting network can be trained end-to-
+end to minimize the cross entropy loss between
+the output and target sequence L(y, y(cid:48)) in addi-
+tion to the reconstruction loss between the input
+and reconstructed input vector L(w∗, e∗
+wr ). Since
+the decode step is a greedy decode step, gradi-
+ents cannot propagate through it. To solve this, we
+share the parameters between the two LSTM net-
+works and forward and reconstruction linear layers
+(Chisholm et al., 2017). To generate deﬁnitions at
+test time, the backward network does not need to
+be evaluated.
+
+6 Experimental Setup
+To train the model, we use the 25k deﬁnitions
+dataset built as described in Section 4. We split
+the data randomly into 90:5:5 train, test and val-
+idation sets as shown in Table 2. The words be-
+ing deﬁned are mutually exclusive across the three
+sets, and thus our experiments evaluate how well
+the models generalize to new words.
+
+All of the models utilize the same set of ﬁxed
+word embeddings from two different corpora. The
+ﬁrst set of vectors are trained entirely on the Stack
+Overﬂow background corpus and the other set are
+pre-trained open domain word embeddings7. Both
+these embeddings are concatenated and we use
+this as the representation for each word. For the
+embeddings trained on Stack Overﬂow corpus, we
+use the Word2Vec (Mikolov et al., 2013a) imple-
+mentation of Gensim8 toolkit. In the corpus, we
+prepend to every sentence in a question-answer
+pair, every tag it is associated with. We further
+eliminated stopwords from the corpus and set a
+larger context window size of 10.
+
+For the model, we use a 2 layer LSTM with 500
+hidden unit size for both the forward and recon-
+struction layers of the models. The size of the em-
+
+6Our implementation of baselines from (Noraset et al.,
+
+2017) using greedy decode approach
+
+7https://code.google.com/archive/p/word2vec/
+8https://radimrehurek.com/gensim/models/word2vec.html
+
+168Model
+Seed + SO Emb*
+Seed + SO Emb + Eng Emb**
+Concat Model
+Concat Model + Entity-Entity Model
+Concat Model + Category Model (CCE)
+Concat Model + Category Model (ACE)
+Concat Model + Category Model (ACE) + Cosine Loss Model
+
+BLEU
+8.90
+9.01
+9.44
+9.28
+10.19
+10.86
+10.91
+
+Table 3: Experimental results for our different models. *SO Emb = Embeddings learned on Stack Overﬂow. **Eng
+Emb = Embeddings learned on general open domain English dataset
+
+Model
+Seed (Noraset et al., 2017)
+Concat (Noraset et al., 2017)
+Seed (English words) 6
+Concat (English words)
+
+BLEU
+26.69
+28.44
+
+32.79
+36.37
+
+Table 4: Experimental results of our baselines on com-
+mon English words dataset (Noraset et al., 2017)
+
+bedding layer is set to 300 dimension. For train-
+ing, we minimize the cross-entropy and recon-
+struction loss using Adam (Kingma and Ba, 2014)
+optimizer with a learning rate of 0.001 and gradi-
+ent clip of 5. We evaluate the task using BLEU
+(Papineni et al., 2002).
+
+7 Results
+
+The results for the different models are summa-
+rized in Table 4. The ﬁrst section are results of
+the baselines as reported by Noraset et al. (2017).
+The second section shows results of our imple-
+mentation of the baselines on common English
+word deﬁnitions dataset. We report BLEU scores
+on deﬁnitions generated using a greedy approach.
+The remaining two sections are results from our
+proposed models on software entity deﬁnitions
+dataset.
+
+In comparison, on the software entity deﬁni-
+tions dataset, the same baselines do not gener-
+ate any reasonable deﬁnitions, giving low BLEU
+scores. This demonstrates that using a language-
+model with embeddings trained on general pur-
+pose large-scale, domain-speciﬁc corpora is inad-
+equate when the deﬁnitions are longer and more
+domain-speciﬁc.
+
+The Seed model,
+
+instantiated with both the
+Stack Overﬂow embeddings as well as the open
+domain Google News English embeddings, shows
+better performance than the model that only uses
+Stack Overﬂow embeddings. For all further mod-
+
+els, we adopt the concatenated Stack Overﬂow
+embeddings and open domain English embed-
+dings. We see from the table, that the Concat
+Model performs better than the Seed Model. We
+choose the best model among Seed and Concat
+and perform additional experiments to evaluate the
+additional proposed changes to the model.
+
+Surprisingly, adding the entity-entity relation-
+ships to the Concat Model does not provide any
+gains. Although, providing the category informa-
+tion from the ontology by adding it to the input
+word vector (ACE) provides us a higher BLEU
+score of 10.86.
+
+Further, adding the reconstruction loss objec-
+tive to the ACE model provides us small addi-
+tional gains and achieves a 10.91 BLEU score. Al-
+though we see incremental improvements on the
+task, overall our results show that language models
+are inadequate to model deﬁnitions, as empirically
+shown by the low overall BLEU scores.
+
+8 Discussion
+
+Noraset et al. (2017) showed that RNN language
+models can be used to learn to generate deﬁnitions
+for common English words. On adapting their
+techniques for closed domain software entities, we
+ﬁnd that the language models generate deﬁnitions
+which follow the template of deﬁnitions, but have
+incorrect terms in the genus and differentia com-
+ponents.
+
+Table 5 shows some reference deﬁnitions and
+deﬁnitions generated from our best model. In the
+generated deﬁnition of “virtual-pc”, we observe
+that the model generates a deﬁnition which has
+a distinguishable genus and differentia, but the
+genus is not the right ontological category for the
+entity. The differentia is incorrect as well. Simi-
+larly in the deﬁnition of “esper”, we observe that
+the model generates ‘open source software’ as the
+genus, while the reference genus is ‘open source
+
+169esper
+
+Reference
+
+Entity
+windows-server-2000 microsoft windows-2000 server
+is an operating-system for use on
+server computers.
+UNK is a lightweight open-
+source library for cep complex-
+event-processing and esp event
+stream processing applications.
+virtual-pc is a virtualization pro-
+gram that simulates a hardware
+environment using software.
+
+virtual-pc
+
+Generated
+microsoft s UNK is a free open-
+source
+content-management-
+system ..
+UNK is a open-source software
+for the java programming lan-
+guage.
+
+a
+
+commercial
+the UNK is
+operating-system for the win-
+dows operating-system.
+
+Table 5: Reference and generated sentences
+
+library’ which shows that the model is able to
+learn the right genus for the entity but generates
+an incorrect differentia component. We see that
+the reference differentia is quite long with many
+non-entity tokens which would be hard to model.
+This explains our results of obtaining lower BLEU
+scores using the entity-entity co-occurrence mod-
+els as most differentia terms consist of many non-
+entity tokens. We also observed that the genus
+and differentia components for technical deﬁni-
+tions have longer and very speciﬁc phrases com-
+pared to common English words. These phrases
+also tend to be very sparse in the vocabulary, mak-
+ing the task even more challenging.
+
+The general English deﬁnitions dataset pre-
+sented by Noraset et al. (2017) has 20K most com-
+mon English words and their deﬁnitions. The En-
+glish words for which the deﬁnitions are gener-
+ated, also tend to appear in the corpus very fre-
+quently, thereby having better distributed repre-
+sentations. We presume that the higher BLEU
+scores for common English words are reﬂective
+of that. In contrast, entities in closed domains are
+much less frequent in background corpora increas-
+ing the difﬁculty of the task. Also, the average
+deﬁnition length in common English words deﬁni-
+tion corpus is 6.6 while the average length of def-
+initions for software entities is 16.54, which adds
+additional complexity in generating these deﬁni-
+tions. We hypothesize that due to low expressive-
+ness of word representations of entities in compar-
+isons to common English words, language mod-
+els are unable to learn relations between entities
+and their genus and differentia components. The
+addition of the ontological category information
+alleviates the problem by a small margin, but is
+still insufﬁcient for the model to learn to generate
+
+close-to-perfect deﬁnitions.
+
+Through our observations, we ﬁnd that RNN
+language models initialized with distributed word
+representations of entities is inadequate to gener-
+ate deﬁnitions from scratch. We envision that fu-
+ture models should be able to learn better associa-
+tions between entities and its genus and differentia
+phrases. Also, the model should ensure it has ad-
+equate long term memory to generate deﬁnitions
+that are longer in length.
+
+9 Conclusion and Future Work
+
+In this paper, we present our initial work in the
+task of deﬁnition generation for software enti-
+ties or terms. We introduced different approaches
+for the task, where we explore ways of incorpo-
+rating ontology information and entity-entity co-
+occurrence relationships. We also present the re-
+sults and analysis for the same. Given the com-
+plexity of the task, we achieve around 2 BLEU im-
+provements over baselines. We demonstrate that
+the current models are inadequate to automatically
+learn to generate complex deﬁnitions for entities.
+As an immediate next step, we would like to ap-
+proach the task from an encoder-decoder perspec-
+tive by collecting external data about the word be-
+ing deﬁned and using it to guide the generation
+process. Our hypothesis is that providing exter-
+nal information about an entity and it’s usage in
+various contexts, would help us better identify the
+genus and differentia for the entity. Currently, we
+give only the immediate parent category as an in-
+put from the ontology, we would also like to ex-
+plore how to leverage on the entire ontology struc-
+ture for deﬁnition generation.
+
+170Acknowledgments
+This work was funded by NSF under grant CCF-
+1414030. Additionally, the authors would like to
+thank Kathryn Mazaitis for her help with data col-
+lection and analysis.
+
+References
+Robert Alfred Amsler. 1980. The structure of the
+
+merriam-webster pocket dictionary.
+
+Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Ben-
+gio. 2014. Neural machine translation by jointly
+arXiv preprint
+learning to align and translate.
+arXiv:1409.0473.
+
+Andrew Chisholm, Will Radford, and Ben Hachey.
+Learning to generate one-sentence bi-
+preprint
+
+from wikidata.
+
+arXiv
+
+2017.
+ographies
+arXiv:1702.06235.
+
+Martin S Chodorow, Roy J Byrd, and George E Hei-
+dorn. 1985. Extracting semantic hierarchies from a
+large on-line dictionary. In Proceedings of the 23rd
+annual meeting on Association for Computational
+Linguistics, pages 299–304. Association for Com-
+putational Linguistics.
+
+Bhuwan Dhingra, Kathryn Mazaitis, and William W
+Cohen. 2017. Quasar: Datasets for question an-
+arXiv preprint
+swering by search and reading.
+arXiv:1707.03904.
+
+William Dolan, Lucy Vanderwende, and Stephen D
+Richardson. 1993. Automatically deriving struc-
+tured knowledge bases from on-line dictionaries. In
+Proceedings of the First Conference of the Paciﬁc
+Association for Computational Linguistics, pages 5–
+14.
+
+Felix Hill, Kyunghyun Cho, Anna Korhonen, and
+Yoshua Bengio. 2015.
+Learning to understand
+phrases by embedding the dictionary. arXiv preprint
+arXiv:1504.00548.
+
+Sepp Hochreiter and J¨urgen Schmidhuber. 1997.
+Neural computation,
+
+Long short-term memory.
+9(8):1735–1780.
+
+Hakan Inan, Khashayar Khosravi, and Richard Socher.
+2016. Tying word vectors and word classiﬁers:
+A loss framework for language modeling. arXiv
+preprint arXiv:1611.01462.
+
+Andrej Karpathy and Li Fei-Fei. 2015. Deep visual-
+semantic alignments for generating image descrip-
+the IEEE conference
+tions.
+on computer vision and pattern recognition, pages
+3128–3137.
+
+In Proceedings of
+
+Ryan Kiros, Ruslan Salakhutdinov, and Richard S
+Zemel. 2014. Unifying visual-semantic embeddings
+arXiv
+with multimodal neural language models.
+preprint arXiv:1411.2539.
+
+R´emi Lebret, David Grangier, and Michael Auli. 2016.
+Neural text generation from structured data with ap-
+plication to the biography domain. arXiv preprint
+arXiv:1603.07771.
+
+Minh-Thang Luong, Ilya Sutskever, Quoc V Le, Oriol
+Vinyals, and Wojciech Zaremba. 2014. Addressing
+the rare word problem in neural machine translation.
+arXiv preprint arXiv:1410.8206.
+
+Hongyuan Mei, Mohit Bansal, and Matthew R Walter.
+2015. What to talk about and how? selective gen-
+eration using lstms with coarse-to-ﬁne alignment.
+arXiv preprint arXiv:1509.00838.
+
+Tomas Mikolov, Kai Chen, Greg Corrado, and Jef-
+frey Dean. 2013a. Efﬁcient estimation of word
+arXiv preprint
+representations in vector space.
+arXiv:1301.3781.
+
+Tom´aˇs Mikolov, Martin Karaﬁ´at, Luk´aˇs Burget, Jan
+ˇCernock`y, and Sanjeev Khudanpur. 2010. Recur-
+rent neural network based language model.
+In
+Eleventh Annual Conference of the International
+Speech Communication Association.
+
+Tomas Mikolov, Ilya Sutskever, Kai Chen, Greg S Cor-
+rado, and Jeff Dean. 2013b. Distributed representa-
+tions of words and phrases and their compositional-
+In Advances in neural information processing
+ity.
+systems, pages 3111–3119.
+
+Smaranda Muresan and Judith Klavans. 2002. A
+method for automatically building and evaluating
+In LREC, volume 2, pages
+dictionary resources.
+231–234.
+
+Thanapon Noraset, Chen Liang, Larry Birnbaum, and
+Doug Downey. 2017. Deﬁnition modeling: Learn-
+ing to deﬁne word embeddings in natural language.
+In AAAI, pages 3259–3266.
+
+Kishore Papineni, Salim Roukos, Todd Ward, and Wei-
+Jing Zhu. 2002. Bleu: a method for automatic eval-
+In Proceedings of
+uation of machine translation.
+the 40th annual meeting on association for compu-
+tational linguistics, pages 311–318. Association for
+Computational Linguistics.
+
+Lifeng Shang, Zhengdong Lu, and Hang Li. 2015.
+Neural responding machine for short-text conversa-
+tion. arXiv preprint arXiv:1503.02364.
+
+Lucas Batista Leite de Souza, Eduardo Cunha Cam-
+pos, and Marcelo de Almeida Maia. 2014. Ranking
+crowd knowledge to assist software development. In
+ICPC.
+
+Diederik P Kingma and Jimmy Ba. 2014. Adam: A
+method for stochastic optimization. arXiv preprint
+arXiv:1412.6980.
+
+Julien Tissier, Christophe Gravier,
+
+and Amaury
+Habrard. 2017. Dict2vec: Learning word embed-
+In Conference on
+dings using lexical dictionaries.
+
+171Empirical Methods in Natural Language Processing
+(EMNLP 2017), pages 254–263.
+
+Tsung-Hsien Wen, Milica Gasic, Nikola Mrksic, Pei-
+Hao Su, David Vandyke, and Steve Young. 2015.
+Semantically conditioned lstm-based natural lan-
+guage generation for spoken dialogue systems.
+arXiv preprint arXiv:1508.01745.
+
+172

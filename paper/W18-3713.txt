@@ -1,0 +1,1314 @@
+Augmenting Textual Qualitative Features in Deep Convolution Recurrent
+
+Neural Network for Automatic Essay Scoring
+
+Tirthankar Dasgupta, Abir Naskar, Rupsa Saha and Lipika Dey
+
+(dasgupta.tirthankar, abir.naskar, rupsa.s, lipika.dey)@tcs.com
+
+TCS Innovation Lab, India
+
+Abstract
+
+In this paper we present a qualitatively en-
+hanced deep convolution recurrent neural
+network for computing the quality of a text
+in an automatic essay scoring task. The
+novelty of the work lies in the fact that
+instead of considering only the word and
+sentence representation of a text, we try to
+augment the different complex linguistic,
+cognitive and psychological features asso-
+ciated within a text document along with
+a hierarchical convolution recurrent neu-
+ral network framework. Our preliminary
+investigation shows that incorporation of
+such qualitative feature vectors along with
+standard word/sentence embeddings can
+give us better understanding about im-
+proving the overall evaluation of the input
+essays.
+
+1
+
+Introduction
+
+The quality of text depends upon a number of lin-
+guistic factors, corresponding to different textual
+properties, such as grammar, vocabulary, style,
+topic relevance, clarity, comprehensibility, infor-
+mativeness, lexical diversity, discourse coherence,
+and cohesion (Crossley et al., 2008)(McNamara
+et al., 2002).
+In addition, there are deep cogni-
+tive and psychological features, such as types of
+syntactic constructions, grammatical relations and
+measures of sentence complexity, that make auto-
+matic analysis of text quality a non-trivial task.
+
+Developing tools for automatic text quality
+to
+analysis have become extremely important
+organizations that need to assess writing skills
+among adults and students on a regular basis. Be-
+cause of the high participation in such assess-
+ments, the amount of time and effort required to
+grade the large volume of textual data generated
+is too high to be feasible by a human evaluator.
+
+Manual evaluation processes by multiple evalua-
+tors may also be prone to erroneous judgments
+due to mutual disagreements between the eval-
+uators. Therefore, developing a means through
+which such essays can be automatically scored,
+with minimum human interference, seem to be the
+best way forward to meet the growing demands of
+the education world, while keeping inter-evaluator
+disagreements to a minimum. Automatic Essay
+Scoring (AES) systems have thus been in the re-
+search focus of multiple organizations to counter
+the above issues (Landauer, 2003).
+
+A typical AES system takes as input an essay
+written on a speciﬁc topic. The system then as-
+signs a numeric score to the essay reﬂecting its
+quality, based on its content, grammar, organiza-
+tion and other factors discussed above.
+
+A plethora of research have been done to
+develop AES systems on various
+languages
+(Taghipour and Ng, 2016; Dong et al., 2017;
+Alikaniotis et al., 2016; Attali and Burstein, 2004;
+Chen and He, 2013; Chen et al., 2010; Cummins
+et al., 2016). Most of these tools are based on re-
+gression methods applied to a set of carefully de-
+signed complex linguistic and cognitive features.
+Knowledge of such complex features have been
+shown to achieve performance that is indistin-
+guishable from that of human examiners. How-
+ever, since it is difﬁcult to exhaustively enumerate
+all the multiple factors that inﬂuence the quality
+of texts, the challenge of automatically assigning
+a satisfactory score to an essay still remains.
+
+Recent advancement
+
+in deep learning tech-
+niques have inﬂuenced researchers to apply them
+for AES tasks. The deep multi-layer neural net-
+works can automatically learn useful features from
+data, with lower layers learning basic feature de-
+tectors and upper levels learning more high-level
+abstract features. Deep neural network models,
+however, do not allow us to identify and extract
+those properties of text that the network identi-
+
+Proceedingsofthe5thWorkshoponNaturalLanguageProcessingTechniquesforEducationalApplications,pages93–102Melbourne,Australia,July19,2018.c(cid:13)2018AssociationforComputationalLinguistics93ﬁes as discriminative (Alikaniotis et al., 2016). In
+particular, deep network models fail to take into
+account integral linguistic and cognitive factors
+present in text, which play an important role in
+an essay score assigned by experts. Such models
+emphasizes a simple uniform paradigm for NLP:
+”language is just sequences of words”. While this
+approach has rapidly found enormous popular-
+ity and success, its limitations are now becoming
+more apparent. Gradually researchers stressing to-
+wards the importance of linguistic structure and
+the fact that it reduces the search space of possible
+outputs, making it easier to generate well-formed
+output (Lapata, 2017). Dyer (Dyer, 2017) also ar-
+gued for the importance of incorporating linguistic
+structure into deep learning. He drew attention to
+the inductive biases inherent in the sequential ap-
+proach, arguing that RNNs have an inductive bias
+towards sequential recency, while syntax-guided
+hierarchical architectures have an inductive bias
+towards syntactic recency. Several papers noted
+the apparent inability of RNNs to capture long-
+range dependencies, and obtained improvements
+using recursive models instead (Chen et al., 2017).
+
+In order to overcome the aforementioned is-
+sues, in this paper we propose a qualitatively en-
+hanced deep convolution recurrent neural network
+architecture for automatic scoring of essays. Our
+model takes into account both the word-level and
+sentence-level representations, as well as linguis-
+tic and psychological feature embeddings. To the
+best of our knowledge, no other prior work in this
+ﬁeld has investigated the effectiveness of combin-
+ing word and sentence embeddings with linguistic
+features for AES tasks. Our preliminary investiga-
+tion shows that incorporation of linguistic feature
+vectors along with standard word/sentence embed-
+dings do improve the overall scoring of the input
+essays.
+
+The rest of the paper is organized as follows:
+Section 2 describes the recent state of art
+in
+AES systems. Our proposed Linguistically in-
+formed Convolution LSTM model architecture is
+discussed in Section 3, while section 4 has fur-
+ther details on generation of linguistic feature vec-
+tors. In section 5, we cover the experimentation
+and evaluation technique, reporting the obtained
+results in section 6, and ﬁnally concluding the pa-
+per in section 7.
+
+2 Related Works
+
+A plethora of attempts have been taken to develop
+AES systems over the years. A detailed overview
+of the early works on AES is reported in (Valenti
+et al., 2003). An Intelligent Essay Assessor (Foltz
+et al., 1999) was proposed more recently that uses
+Latent Semantic Analysis to compute the seman-
+tic similarity between texts. Lonsdale and Strong-
+Krause (Lonsdale and Strong-Krause, 2003) used
+the Link Grammar parser (Sleator and Temperley,
+1995) to score texts based on average sentence-
+level scores calculated from the parser’s cost vec-
+tor. In Rudner and Liang’s Bayesian Essay Test
+Scoring System (Rudner and Liang, 2002), stylis-
+tic features in a text are classiﬁed using a Naive
+Bayes classiﬁer. Attali and Burstein’s e-Rater (At-
+tali and Burstein, 2004), includes aspects of gram-
+mar, vocabulary and style among other linguistic
+features, whose weights are ﬁtted by regression.
+A weakly supervised bag-of-word approach was
+proposed by Chen et al. (Chen et al., 2010). A
+discriminative learning based approach was pro-
+posed by Yannakoudakis et al.
+(Yannakoudakis
+and Cummins, 2015) that extracts deep linguis-
+tic features and employs a discriminative learning-
+to-rank model that out-performs regression. Re-
+cently, Farra et al.
+(Farra et al., 2015) utilized
+variants of logistic and linear regression and de-
+veloped scoring models. McNamara et al.’s hier-
+archical classiﬁcation approach (McNamara et al.,
+2015) uses linguistic, semantic and rhetorical fea-
+tures. Despite the existing body of work, at-
+tempts to incorporate more diverse features to
+text scoring models are ongoing. (Klebanov and
+Flor, 2013) demonstrated improved performance
+by adding information about levels of association
+among word pairs in a given text. (Somasundaran
+et al., 2014) used the interaction of lexical chains
+with discourse elements for evaluating the qual-
+ity of essays. Crossley et al.
+(Crossley et al.,
+2015) identiﬁed student attributes, such as stan-
+dardized test scores, and used them in conjunc-
+tion with textual features to develop essay scoring
+models. Readability features (Zesch et al., 2015)
+and text coherence have also been proposed as a
+source of information to assess the ﬂow of infor-
+mation and argumentation of an essay (Chen and
+He, 2013). A detailed overview of the features
+used in AES systems can be found in (Zesch et al.,
+2015). Some attempts have been made to address
+different aspects of essay writing, like argument
+
+94strength and organization, independently, through
+designing task-speciﬁc features for each aspect
+(Persing et al., 2010; Persing and Ng, 2015). There
+has been a lot of recent work in deep neural net-
+work models based on continuous-space represen-
+tation of the input and non-linear functions. Re-
+cently, deep learning techniques have been ap-
+plied to text analysis problems including AES sys-
+tems (Alikaniotis et al., 2016; Dong and Zhang,
+2016; Dong et al., 2017; Taghipour and Ng, 2016),
+giving better results compared to statistical mod-
+els with handcrafted features (Dong and Zhang,
+2016). Both recurrent neural networks (Williams
+and Zipser, 1989; Mikolov et al., 2010) and convo-
+lution neural networks (LeCun et al., 1998; Kim,
+2014) have been used to automatically score input
+essays. In comparison to the work of Alikaniotis et
+al. (Alikaniotis et al., 2016) and Taghipour and Ng
+(Taghipour and Ng, 2016) that uses single-layer
+LSTM (Hochreiter and Schmidhuber, 1997) over
+the word embeddings for essay scoring, and Dong
+and Zhang (Dong and Zhang, 2016) used a two-
+level hierarchical CNN structure to model sen-
+tences and documents separately. More recently,
+(Dong et al., 2017) et al. proposed a hierarchical
+attention based CNN-LSTM model for automatic
+essay scoring.
+
+Although the deep learning based approaches
+are reported to be performing better than the previ-
+ous approaches, the performance may yet be bet-
+tered by the use of the complex linguistic and
+cognitive features that are important in modeling
+such texts. Our proposed system, takes into ac-
+count both word and sentence level embeddings,
+as well as deep linguistic features available within
+the given text document and together learns the
+model. The detail architecture and working of the
+model is depicted in the following sections.
+
+3 The Qualitatively Enhanced
+
+Convolution Recurrent Neural
+Network
+
+As mentioned earlier, neural network based mod-
+els are capable of modeling complex patterns in
+data and do not depend on manual engineering of
+features, but they do not consider the latent lin-
+guistic characteristics of a text. In this section, we
+will present a deep neural network based model
+that takes into account different complex linguis-
+tic, cognitive and psychological features associ-
+ated within a text document along with a hierar-
+
+chical convolution network connected with a bidi-
+rectional long-short term memory (LSTM) model
+(Hochreiter and Schmidhuber, 1997) (Schmidhu-
+ber et al., 2006). We will begin the model archi-
+tecture by ﬁrst explaining about generating the lin-
+guistic and psychological feature embeddings that
+will in turn be used by the neural network archi-
+tecture.
+
+3.1 Generating Linguistic and Psychological
+
+Feature Embeddings
+
+We have used different linguistic and psycholog-
+ical features available within a text to augment
+them with the deep neural architecture.
+
+The psychological features used in this work
+are mostly derived from Linguistic Information
+and Word Count (LIWC) tool (Tausczik and Pen-
+nebaker, 2010). The rapid development of AI, In-
+ternet technologies, social network, and elegant
+new statistical strategies have helped usher in a
+new age of the psychological study of language.
+By drawing on massive amounts of text, it is in-
+deed possible to link everyday language use with
+behavioral and self-reported measures of personal-
+ity, social behavior, and cognitive styles (Tausczik
+and Pennebaker, 2010). LIWC is a text analysis
+tool that counts words in psychologically mean-
+ingful categories. Empirical results using LIWC
+already demonstrated its ability to detect meaning
+in a wide variety of experimental settings, such as
+to show attentional focus, emotionality, social re-
+lationships, thinking styles, and individual differ-
+ences.
+
+linguistically informed are:
+
+The linguistic features we use to make our
+Part of
+model
+Speech(POS) (Manning et al., 2014), Universal
+Dependency relations (De Marneffe et al., 2006)
+, Structural Well-formedness, Lexical Diversity,
+Sentence Cohesion, Causality and Informative-
+ness of the text.
+
+The lexical diversity of a given text is deﬁned
+as the ratio of different unique word stems (types)
+to the total number of words (tokens). According
+to Jarvis’s model (Jarvis, 2002), lexical diversity
+includes six properties that are measured by the
+indices discussed in Table 1.
+
+We device a novel algorithm to determine cohe-
+sion between sentences in a document. The algo-
+rithm follows the following steps: a) identify the
+GloVe word embeddings(Pennington et al., 2014)
+of each constituent word of two sentences S1, /S2.
+
+95Figure 1: Overview of the qualitatively enhanced convolution recurrent neural network for AES.
+
+Table 1: Lexical Diversity Indices
+
+Total number of words in the text
+
+Property Measure
+Variability Measure of Textual Lexical Diversity (MTLD)
+Volume
+Evenness Standard deviation of tokens per type
+Rarity
+Dispersion Mean distance between tokens of type
+Disparity Mean number of words per sense
+
+Mean BNC rank
+
+b) create sentence embeddings by computing a
+tensor product between the individual word em-
+beddings. For example, given two sentences S1
+and S2 S1 = w1, w2..., wi and S2 = w(cid:48)
+2, ...w(cid:48)
+j,
+where w1, w2, ...wk and w(cid:48)
+k are the word
+embeddings of S1 and S2. Sentence embedding
+SE(S1) is (w1
+
+(cid:78) w2)(cid:78) w3)...(cid:78) wk). Where
+(cid:78) refers to the tensor product of each adjacent
+
+2...w(cid:48)
+
+1, w(cid:48)
+
+1, w(cid:48)
+
+N1+1
+
+are computed as: S(cid:48) = (cid:80)∀wi∈C1
+
+word embedding pairs in S1. Similarly for sen-
+tence S2. c) deﬁne A and B as the number of
+word embeddings in S1 andS2 respectively. d)
+the cohesion score between S1 and S2 can be
+computed as coh(S1, S2) = (S(cid:48)+Sim(p1,p2))
+The
+expression N1 represents A ∪ B. S(cid:48) and S(cid:48)(cid:48)
+Swi Where,
+j)) p1 and p2 are
+Swi = max∀w(cid:48)
+sentence embeddings of S1 and S2 respectively,
+and Sim(x, y) is the cosine similarity between
+two vector Vi and Vj.
+
+j∈C2(Sim(wi, w(cid:48)
+
+To indicate presence of causality, we use the
+semantic features as identiﬁed by Girju (Girju,
+2003) - nine noun hierarchies (H(1) to H(9)) in
+WordNet, namely, entity, psychological feature,
+abstraction, state, event, act, group, possession,
+and phenomenon. A single feature Primary Causal
+
+If wi ∈
+Class (PCC) is deﬁned for a word wi.
+Hi where Hi is as deﬁned, P CC = Hi, else
+P CC = null. Another feature, Secondary Causal
+Class(SCC) is also deﬁned. This takes value H(i)
+if any WordNet synonym of the word belongs to
+H(i), and is N ull otherwise.
+
+The informativeness of a text refers to how
+much information is present in a text with re-
+spect to a given collection. We have introduced
+an information theoretic approach towards deter-
+mining such informativeness in text. We consider
+each document d, represented by a bag-of-word
+as, < (q1, w1), (q2, w2), ..., (qn, wn) > where qi
+is the ith unique term in document d and wi is the
+corresponding weight computed with respect to a
+collection of documents C. The Informativeness
+score N S(d, C) of each new text document d, is
+computed with respect to the collection C, indi-
+cating the informativeness of d amongst C. In the
+described context, we declare a document di as in-
+formative when the corresponding N S(di, C) is
+higher than a threshold θ. We have deﬁned the in-
+formativeness of d in terms of its information con-
+tent (IC). Information content is a heuristic mea-
+sure for term speciﬁcity and is a function of term
+use. Our idea is to therefore use it as an estima-
+tor of informativeness an informative document
+is more likely to use unique vocabulary than other
+documents. We compute the information content
+of a document in terms of its Entropy. We de-
+(cid:80)n
+ﬁne the entropy of a text T , with N words out
+of which n are unique, as:ET (p1, p2, ..., pn) =
+i=1(pi∗(log10 N −log10 pi). pi(i = 1...n) is
+1
+N
+
+96the probabilistic measure of the speciﬁcity of the
+ith word in the T . The technique to compute term
+speciﬁcity is discussed below.
+In order to avoid
+the problem of zero probabilities, we have used
+linear interpolation smoothing, where document
+weights are smoothed against the set of the docu-
+ments in the corpus. Then the probabilities are de-
+ﬁned as:θdn(q) = λ∗θd(q)+(1−λ)∗θd1...θdn(q).
+Where, λ ∈ [0, 1] is the smoothing parameter and
+is the probability of term q in the corpus C. In our
+experiments, λ was set to 0.9.
+
+As discussed earlier,
+
+the cornerstone of our
+informativeness prediction engine is to compute
+the rarity of a document, which can, in turn, be
+computed by determining the rarity of individual
+terms. Accordingly, we have applied the principle
+of Inverse Document Frequency (IDF) (Karkali
+et al., 2014). Aggregating all the IDF of the terms
+of a given document may led us to a better estima-
+tor of the documents Informativeness. IDF is orig-
+inally deﬁned as,IDF (q, C) = log( N
+) where, q
+dfq
+is the term in hand, dfq is the document frequency
+of the term q across the corpus C and N is the
+total number of documents in the collection. On
+the other hand, in probabilistic terms IDF can be
+computed as:IDFp(q, c) = log( N−dfq
+
+).
+
+dfq
+
+3.2 Model architecture
+
+The proposed linguistically informed convolution
+recurrent neural network architecture that we have
+used in this paper is illustrated in Figure 1. In the
+next few subsections, we describe each layer in de-
+tail.
+
+Generating Embeddings: Pre-trained GloVe
+word vector representations of dimension 300
+have been used for this work (Pennington et al.,
+2014) for the word embeddings. Similarly we
+have constructed a pre-trained sentence vectors.
+The Sentence vectors from each input essay is ap-
+pended with the vector formed from the linguistic
+features identiﬁed for that particular sentence.
+
+Convolution Layer: Since convolution net-
+works works best in determining local features
+from texts, it is important to feed each of the gen-
+erated word embeddings to a convolution layer.
+Accordingly, the convolution layer applies a lin-
+ear transformation to all K windows in the given
+sequence of vectors. We perform a zero padding to
+ensure the same dimensionality between the input
+and output vectors. Therefore, given a word rep-
+resentations X1, X2, ...Xl, the convolution layer
+
+ﬁrst concatenates these vectors to form a vec-
+tor ¯x of length l.dLT and then uses Conv(¯x) =
+W.¯(x) + b to calculate the output vector of length
+dc. Where, W and b are the weights that the net-
+work learns.
+
+Long short-term memory In AES systems,
+the surrounding context is of paramount informa-
+tion. While typical LSTMs allow the preceding
+elements to be considered as context for an ele-
+ment under scrutiny, we prefer to use bidirectional
+LSTMs (Bi-LSTM) networks (Graves et al., 2012)
+that are connected so that both future and past se-
+quence context (i.e. both preceding and succeed-
+ing elements) can be examined. Corresponding to
+each input text, we determine the word embedding
+representation (We) of each word of the text and
+the different linguistic feature embeddings (Wl).
+The input to the Bi-LSTM unit is an embedding
+vector E which is the composition of We and Wl,
+i.e.
+
+(cid:78)−→
+
+−→
+E =
+
+−→
+We
+
+Wl
+
+Activation layer: After obtaining the inter-
+mediate hidden layers from the Bi-LSTM layer
+h1, h2, ..., hT , we use an attention pooling layer
+over the sentence representations. The attention
+pooling helps to acquire the weights of sentence
+contribution to ﬁnal quality of the text. The at-
+tention pooling over sentences is represented as:
+
+(cid:80)(αi.hi). Where Wa, wα are weight matrix and
+ai = tanh(Wa.hi + ba), αi = ewα.ai(cid:80) ewα.ai , O =
+
+vector respectively, ba is the bias vector, ai is at-
+tention vector for i-th sentence, and αi is the at-
+tention weight of i-th sentence. O is the ﬁnal text
+representation, which is the weighted sum of all
+the sentence vectors.
+
+The Sigmoid Activation Function: The linear
+layer performs a linear transformation of the input
+vector that maps it to a continuous scalar value.
+We apply a sigmoid function to limit the possi-
+ble scores to the range [0, 1]. The mapping of the
+linear layer after applying the sigmoid activation
+function is given by s(x) = sigmoid(w.x + b).
+Where, x is the input vector, w is the weight vec-
+tor, and b is bias value. We normalize all gold-
+standard scores to [0, 1] and use them to train the
+network. However, during testing, we rescale the
+output of the network to the original score range
+and use the rescaled scores to evaluate the system.
+
+97the Kaggle dataset;
+
+Statistics of
+
+Table 2:
+Range:score range and Med: median scores.
+Set #Essays Genere Avg. Len. Range Med.
+1
+2
+3
+4
+5
+6
+7
+8
+
+ARG 350
+ARG 350
+RES
+150
+150
+RES
+150
+RES
+RES
+150
+NAR 250
+NAR 650
+
+2-12 8
+3
+1-6
+0-3
+1
+1
+0-3
+2
+0-4
+0-4
+2
+0-30 16
+0-60 36
+
+1783
+1800
+1726
+1772
+1805
+1800
+1569
+723
+
+Table 3: Hyper-parameters
+Parameter Name
+
+Parameter Value
+
+Layer
+Lookup Word embedding dim 50
+5
+CNN
+100
+100
+1.0
+200
+10
+
+Window size
+No. of ﬁlters
+Bi-LSTM Hidden units
+Dropout Dropout rate
+
+Epochs
+Batch size
+Initial learning rate η 0.001
+Momentum
+
+0.9
+
+4 Experiments
+
+4.1 Dataset
+
+An Automated Student Assessment Prize (ASAP)
+contest was hosted at Kaggle in 2012.
+It was
+supported by the Hewlett Foundation, aiming to
+explore the capabilities of automated text scor-
+ing systems (Shermis and Burstein, 2013). The
+dataset released consists of around twenty thou-
+sand texts (60% of which are marked), pro-
+duced by middle-school English-speaking stu-
+dents, which we use as part of our experiments to
+develop our models. In order to train and test the
+proposed models, we have used the same dataset
+as published at the Kaggle challenge. Table 2 re-
+ports some of the basic statistics about the dataset.
+Due to the unavailability of the testing set, we
+have performed a 7-fold cross validation to eval-
+uate our proposed models. In each fold, 80% of
+the data is used for training, 10% as the develop-
+ment set, and 10% as the test set. We train the
+model for a ﬁxed number of epochs (around 8000)
+and then choose the best model based on the de-
+velopment set. We have used the NLTK toolkit to
+perform various NLP tasks over the given dataset.
+For ease of experimentation, we have further nor-
+malized the expert scores (gold-standard scores) to
+the range of [0, 1]. During testing, we rescale the
+system-generated normalized scores to the origi-
+nal range of scores and measure the performance.
+
+4.2 Training and parameter estimation
+For a given learning function our goal is to min-
+imize the mean squared error (MSE) rate. Ac-
+cordingly, we have used the RMSProp optimiza-
+tion algorithm (Dauphin et al., 2015) to mini-
+mize the mean squared error (MSE) loss func-
+tion over the training data. This is represented
+i=1(si − s∗
+as: M SE(s∗, s) = 1
+i )2. There-
+fore, given N training samples and their corre-
+sponding expert generated scores p∗
+i normalized
+within a range of [0.1], the model computes the
+predicted scores pi for all training essays and then
+updates the network parameters such that the mean
+squared error is minimized.
+
+N ∗(cid:80)N
+
+The 10% data kept for development is used
+to identify the different hyper-parameters for the
+models. There are several hyper-parameters that
+need to be set. We use the RMSProp optimizer
+with decay rate (ρ) set to 0.9 to train the net-
+work and we set the base learning rate to 0.001.
+The mini-batch size is 64 in our experiments and
+we train the network for 400 epochs. We have
+also make use of dropout regularization (Srivas-
+tava et al., 2014) to avoid over-ﬁtting. We also clip
+the gradient if the norm of the gradient is larger
+than a threshold. We do not use any early stop-
+ping methods, instead, we train the neural network
+model for a ﬁxed number of epochs and monitor
+the performance of the model on the development
+set after each epoch. Once training is ﬁnished, we
+select the model with the best QWK score on the
+development set. During training, the norm of the
+gradient is clipped to a maximum value of 10. We
+set the word embedding dimension (dLT ) to 50
+and the output dimension of the recurrent layer
+(dr) to 300. For the convolution layer, the win-
+dow size (l) is set to 5 and the output dimension
+of this layer (dc) is set to 50. The details of the
+hyper-parameters are summarized in Table 3.
+
+4.3 Evaluation
+In past literature, a number of techniques were
+used to measure the quality of AES systems. This
+includes Pearson’s correlation r, Spearman’s rank-
+ing correlation ρ, Kendall’s Tau and kappa, and
+quadratic weighted kappa (QWK). (Alikaniotis
+et al., 2016) proposed to evaluate their model in
+terms of the ﬁrst three parameters, whereas works
+of (Taghipour and Ng, 2016; Dong and Zhang,
+2016; Dong et al., 2017) uses QWK as the evalua-
+tion criteria. This is primarily due to the fact that
+
+986
+
+5
+
+4
+
+3
+
+2
+
+1
+
+Models/Prompts
+
+Table 4: Comparing the performance of the present system with that of the state-of-the-art
+AVG
+QWK
+0.705
+0.722
+0.746
+0.761
+0.742
+0.734
+0.764
+0.786
+
+0.761
+EASE (BLRR)
+0.797
+CNN
+0.775
+LSTM
+LSTM-CNN
+0.821
+LSTM-MoT
+0.818
+CNN-CNN-MoT 0.805
+LSTM-CNN-att
+0.822
+Qe-C-LSTM
+0.799
+
+0.784
+0.746
+0.818
+0.807
+0.808
+0.800
+0.803
+0.801
+
+0.742
+0.767
+0.795
+0.805
+0.805
+0.778
+0.814
+0.711
+
+0.606
+0.634
+0.687
+0.688
+0.688
+0.613
+0.682
+0.631
+
+0.621
+0.646
+0.683
+0.694
+0.679
+0.662
+0.672
+0.712
+
+0.775
+0.757
+0.813
+0.819
+0.817
+0.809
+0.811
+0.831
+
+0.730
+0.746
+0.805
+0.808
+0.797
+0.758
+0.801
+0.815
+
+0.617
+0.687
+0.594
+0.644
+0.527
+0.644
+0.705
+0.695
+
+7
+
+8
+
+Table 5: Comparing performance of the proposed model taking all the prompts together with that of the
+existing models
+
+Pearson’s r
+Models
+0.63
+doc2vec
+0.77
+SVM
+0.60
+LSTM
+0.5
+Bi-LSTM
+0.86
+word2vec + Bi-LSTM
+SSWE+ Bi-LSTM
+0.92
+SSWE+ Two-layer Bi-LSTM 0.96
+Qe-C-LSTM
+0.97
+
+Spearman’s ρ RMSE Cohen’s κ
+0.62
+0.78
+0.59
+0.70
+0.75
+0.80
+0.91
+0.94
+
+4.43
+8.85
+6.80
+7.32
+4.34
+3.21
+2.40
+2.1
+
+0.85
+0.75
+0.54
+0.36
+0.85
+0.95
+0.96
+0.97
+
+the Automated Student Assessment Prize (ASAP)
+competition ofﬁcial criteria takes QWK as evalua-
+tion metric.
+
+The QWK statistics or its other variants are
+widely used to measure inter-rater agreement of
+the annotators or experts. In our case inter-raters
+refer to the human rater and the system predicted
+ratings. QWK is modiﬁed from kappa which takes
+quadratic weights. The quadratic weight matrix in
+QWK is deﬁned as: Wi,j = (i−j)2
+(R−1)2 , where i and
+j are the reference rating (assigned by a human
+rater) and the system rating (assigned by an AES
+system), respectively, and R is the number of pos-
+sible ratings.
+
+An observed agreement score O is calculated
+such that Oi,j refers to the number of essays that
+receive a rating i by the human rater and a rat-
+ing j by the AES system. An expected score E is
+calculated as the outer product of the two ratings.
+Finally, given the three matrices W, O, and E, the
+
+QWK value is calculated as:κ = 1 − (cid:80)(Wi,j∗Oi,j )
+(cid:80)(Wi,j∗Ei,j )
+
+5 Results
+
+known state-of-the-art models. These models are:
+a) the publicly available ’Enhanced AI Scoring
+Engine’ (EASE1). EASE is based on hand-crafted
+linguistic features and regression methods includ-
+ing support vector regression (SVR) and Bayesian
+linear ridge regression (BLRR). In the present pa-
+per we have used only the BLRR model as our
+baseline systems due to its improved performance
+in comparison to the SVR model. b) The LSTM-
+MoT models proposed by (Taghipour and Ng,
+2016). c) the Attention-based Recurrent Convo-
+lution Neural Network model proposed by (Dong
+et al., 2017). d) The hierarchical CNN (CNN-
+CNN-MoT)(Dong and Zhang, 2016) and e) the hi-
+erarchical CNN layer with LSTM along with an
+additional attention layer (CNN-LSTM-att) (Dong
+and Zhang, 2016) (Dong et al., 2017) as our base-
+lines.
+
+The LSTM-MoT uses one layer of LSTM over
+the word embeddings, and takes the average pool-
+ing over all time-step states as the ﬁnal text repre-
+sentation, which is called Mean-over-Time (MoT)
+pooling (Taghipour and Ng, 2016). Next, a lin-
+ear layer with sigmoid function follows the MoT
+
+We evaluate the performance of our proposed
+model by comparing it with some of the well
+
+1https://github.com/edx/ease
+
+99layer to predict the score of an essay script. On
+the other hand, CNN-CNN-MoT uses two layers
+of CNN, in which one layer operates over each
+sentence to obtain representation for each sentence
+and the other CNN is stacked above, followed by
+mean-over-time pooling to get the ﬁnal text rep-
+resentation. Similarly, the CNN-LSTM-att model
+uses hierarchical architecture with the CNN layer
+followed by an LSTM layer attached with an at-
+tention layer instead of the MoT layer(Dong et al.,
+2017).
+
+Table 4 reports the comparison of the perfor-
+mance of our system and the existing baselines by
+taking the eight prompts from the Kaggle ASAP
+dataset individually.
+In general we can observe
+that our proposed performance of the proposed
+Qe-CLSTM model is comparable to that of the ex-
+isting baseline systems. However, in certain cases
+it outperforms all the base-line models. For ex-
+ample, in prompt 3, 6 and 7 we have achieved an
+QWK of 0.712, 0.831 and 0.815 respectively as
+compared to the best reported average QWK score
+of 0.694, 0.827 and .0.811 respectively for the 10
+fold run of CNN-LSTM and LSTM only.
+
+It is worth mentioning here that all these mod-
+els are compared with respect to the QWK score.
+On the other hand, we have also used evalua-
+tion matrices like, Pearson’s correlation r, Spear-
+man’s ranking correlation ρ, RMSE scores in or-
+der to compare our model with systems proposed
+by (Alikaniotis et al., 2016).
+
+Table 5 shows the comparison of the perfor-
+mance of our system and the existing baselines by
+taking all the prompts together. We have compared
+the systems with respect to the different models as
+discussed in 5. We found that that in terms of all
+these parameters our system performs better than
+the existing, LSTM, Bi-LSTM and EASE mod-
+els. We have achieved a Pearson’s and Spearman’s
+correlation of 0.94 and 0.97 respectively as com-
+pared to that of 0.91 and 0.96 in (Alikaniotis et al.,
+2016). We also achieved and RMSE score of 2.09.
+We also compute a pair wise Cohen’s κ value of
+0.97.
+
+Apart from scoring each of the individual es-
+says, we also tried to analyze some of the typical
+cases where our model fails to predict the desired
+output. Figure 2 shows the general distribution of
+difference in average expert score and the system
+predicted score. We observe a minimum differ-
+ence of 0 and maximum difference of 20 with me-
+
+Figure 2: Distribution of difference in predicted
+scores with respect to the actual score
+
+dian of 1 and average of 1.08. In 82% cases the
+difference lies between the range of [0,1].
+
+6 Conclusion
+
+In this paper, we have proposed a novel technique
+that uses deep neural network model to perform
+Automatic Essay Assessment task. The tradi-
+tional way of applying deep neural nets like CNN,
+LSTM or their other forms fails to identify the
+interconnection between the different factors in-
+volved in assessing the quality of a text. To ad-
+dress this issue, our method not only rely upon
+the pre-trained word or sentence representations
+of text, but also takes into account qualitatively
+enhanced features such as, lexical diversity, infor-
+mativeness, cohesion, well-formedness etc., that
+have proved to be important in determining text
+quality. Further, we have explored a variety of
+neural network model architectures for automated
+essay scoring and have achieved signiﬁcant im-
+provements over baseline in certain cases. We
+would like to conclude that it is indeed possible
+to enhance the performance of such AES system
+by intelligently incorporating the supporting lin-
+guistic features into the model. One of the limi-
+tations of the present approach is that all the lin-
+guistic and qualitative features used in this work
+are computed off-line and then fed into the deep
+learning architecture. However, in principle deep
+learning models are supposed to learn these fea-
+tures apriori and perform accordingly. Therefore,
+one possible future directions of this work is to de-
+velop or modify the existing intermediate scores in
+such a way that the task speciﬁc models can auto-
+matically learn these features.
+
+100References
+Dimitrios Alikaniotis, Helen Yannakoudakis, and
+Marek Rei. 2016. Automatic text scoring using neu-
+ral networks. arXiv preprint arXiv:1606.04289.
+
+Yigal Attali and Jill Burstein. 2004. Automated essay
+scoring with e-rater R(cid:13) v. 2.0. ETS Research Report
+Series, 2004(2).
+
+Hongbo Chen and Ben He. 2013. Automated essay
+scoring by maximizing human-machine agreement.
+In Proceedings of the 2013 Conference on Empiri-
+cal Methods in Natural Language Processing, pages
+1741–1752.
+
+Huadong Chen, Shujian Huang, David Chiang, and Ji-
+ajun Chen. 2017. Improved neural machine transla-
+tion with a syntax-aware encoder and decoder. arXiv
+preprint arXiv:1707.05436.
+
+Yen-Yu Chen, Chien-Liang Liu, Chia-Hoang Lee, Tao-
+Hsing Chang, et al. 2010. An unsupervised auto-
+IEEE Intelligent sys-
+mated essay scoring system.
+tems, 25(5):61–67.
+
+Scott Crossley, Laura K Allen, Erica L Snow, and
+Danielle S McNamara. 2015. Pssst... textual fea-
+tures... there is more to automatic essay scoring than
+In Proceedings of the Fifth International
+just you!
+Conference on Learning Analytics And Knowledge,
+pages 203–207. ACM.
+
+Scott A Crossley, Jerry Greenﬁeld, and Danielle S Mc-
+Namara. 2008. Assessing text readability using cog-
+nitively based indices. Tesol Quarterly, 42(3):475–
+493.
+
+Ronan Cummins, Meng Zhang, and Ted Briscoe. 2016.
+Constrained multi-task learning for automated essay
+scoring. Association for Computational Linguistics.
+
+Yann Dauphin, Harm de Vries, and Yoshua Bengio.
+2015. Equilibrated adaptive learning rates for non-
+In Advances in neural infor-
+convex optimization.
+mation processing systems, pages 1504–1512.
+
+Marie De Marneffe, Bill MacCartney, Christopher
+Manning, et al. 2006. Generating typed dependency
+parses from phrase structure parses. In Proceedings
+of LREC, volume 6.
+
+Fei Dong and Yue Zhang. 2016. Automatic features
+In Proceed-
+for essay scoring–an empirical study.
+ings of the 2016 Conference on Empirical Methods
+in Natural Language Processing, pages 1072–1077.
+
+Fei Dong, Yue Zhang, and Jie Yang. 2017. Attention-
+based recurrent convolutional neural network for au-
+In Proceedings of the 21st
+tomatic essay scoring.
+Conference on Computational Natural Language
+Learning (CoNLL 2017), pages 153–162.
+
+Chris Dyer. 2017. Should neural network architecture
+
+reﬂect linguistic structure? CoNLL 2017, page 1.
+
+Noura Farra, Swapna Somasundaran, and Jill Burstein.
+2015. Scoring persuasive essays using opinions and
+their targets. In Proceedings of the Tenth Workshop
+on Innovative Use of NLP for Building Educational
+Applications, pages 64–74.
+
+Peter W Foltz, Darrell Laham, and Thomas K Lan-
+dauer. 1999. Automated essay scoring: Applica-
+tions to educational technology. In EdMedia: World
+Conference on Educational Media and Technology,
+pages 939–944. Association for the Advancement of
+Computing in Education (AACE).
+
+Roxana Girju. 2003. Automatic detection of causal re-
+In Proceedings of
+lations for question answering.
+the ACL 2003 workshop on Multilingual summariza-
+tion and question answering-Volume 12. Association
+for Computational Linguistics.
+
+Alex Graves et al. 2012.
+
+Supervised sequence la-
+belling with recurrent neural networks, volume 385.
+Springer.
+
+Sepp Hochreiter and J¨urgen Schmidhuber. 1997.
+Neural computation,
+
+Long short-term memory.
+9(8):1735–1780.
+
+Scott Jarvis. 2002. Short texts, best-ﬁtting curves and
+new measures of lexical diversity. Language Test-
+ing, 19(1):57–84.
+
+Margarita Karkali, Franc¸ois Rousseau, Alexandros
+Ntoulas, and Michalis Vazirgiannis. 2014. Using
+temporal idf for efﬁcient novelty detection in text
+streams. arXiv preprint arXiv:1401.1456.
+
+Yoon Kim. 2014.
+
+works for sentence classiﬁcation.
+arXiv:1408.5882.
+
+Convolutional neural net-
+arXiv preprint
+
+Beata Beigman Klebanov and Michael Flor. 2013.
+Word association proﬁles and their use for auto-
+In Proceedings of the
+mated scoring of essays.
+51st Annual Meeting of the Association for Compu-
+tational Linguistics (Volume 1: Long Papers), vol-
+ume 1, pages 1148–1158.
+
+Thomas K Landauer. 2003. Automatic essay assess-
+ment. Assessment in education: Principles, policy
+& practice, 10(3):295–308.
+
+Mirella Lapata. 2017.
+
+Translating from multiple
+
+modalities to text and back. ACL 2017, page 1.
+
+Yann LeCun, L´eon Bottou, Yoshua Bengio, and Patrick
+Haffner. 1998. Gradient-based learning applied to
+document recognition. Proceedings of the IEEE,
+86(11):2278–2324.
+
+Deryle Lonsdale and Diane Strong-Krause. 2003. Au-
+tomated rating of esl essays. In Proceedings of the
+HLT-NAACL 03 workshop on Building educational
+applications using natural
+language processing-
+Volume 2, pages 61–67. Association for Computa-
+tional Linguistics.
+
+101Nitish Srivastava, Geoffrey E Hinton, Alex Krizhevsky,
+Ilya Sutskever, and Ruslan Salakhutdinov. 2014.
+Dropout: a simple way to prevent neural networks
+from overﬁtting. Journal of machine learning re-
+search, 15(1):1929–1958.
+
+Kaveh Taghipour and Hwee Tou Ng. 2016. A neural
+approach to automated essay scoring. In Proceed-
+ings of the 2016 Conference on Empirical Methods
+in Natural Language Processing, pages 1882–1891.
+
+Yla R Tausczik and James W Pennebaker. 2010. The
+psychological meaning of words: Liwc and comput-
+erized text analysis methods. Journal of language
+and social psychology, 29(1):24–54.
+
+Salvatore Valenti, Francesca Neri, and Alessandro
+Cucchiarelli. 2003. An overview of current research
+on automated essay grading. Journal of Information
+Technology Education: Research, 2:319–330.
+
+Ronald J Williams and David Zipser. 1989. A learn-
+ing algorithm for continually running fully recurrent
+neural networks. Neural computation, 1(2):270–
+280.
+
+Helen Yannakoudakis and Ronan Cummins. 2015.
+Evaluating the performance of automated text scor-
+ing systems. In Proceedings of the Tenth Workshop
+on Innovative Use of NLP for Building Educational
+Applications, pages 213–223.
+
+Torsten Zesch, Michael Wojatzki, and Dirk Scholten-
+Akoun. 2015. Task-independent features for auto-
+In Proceedings of the Tenth
+mated essay grading.
+Workshop on Innovative Use of NLP for Building
+Educational Applications, pages 224–232.
+
+Christopher Manning, Bauer Surdeanu, Mihai, Finkel
+John, Bethard Jenny, J. Steven, and David. Mc-
+Closky. 2014. The stanford corenlp natural language
+processing toolkit. In 52nd Annual Meeting of the
+Association for Computational Linguistics: System
+Demonstrations.
+
+Danielle S McNamara, Scott A Crossley, Rod D
+Roscoe, Laura K Allen, and Jianmin Dai. 2015. A
+hierarchical classiﬁcation approach to automated es-
+say scoring. Assessing Writing, 23:35–59.
+
+Danielle S McNamara, Max M Louwerse,
+
+and
+Arthur C Graesser. 2002. Coh-metrix: Automated
+cohesion and coherence scores to predict text read-
+ability and facilitate comprehension. Technical re-
+port, Technical report, Institute for Intelligent Sys-
+tems, University of Memphis, Memphis, TN.
+
+Tom´aˇs Mikolov, Martin Karaﬁ´at, Luk´aˇs Burget, Jan
+ˇCernock`y, and Sanjeev Khudanpur. 2010. Recur-
+rent neural network based language model.
+In
+Eleventh Annual Conference of the International
+Speech Communication Association.
+
+Jeffrey Pennington, Richard Socher, and Christopher
+Manning. 2014. Glove: Global vectors for word
+In Empirical Methods in Natural
+representation.
+Language Processing (EMNLP).
+
+Isaac Persing, Alan Davis, and Vincent Ng. 2010.
+In Pro-
+Modeling organization in student essays.
+ceedings of the 2010 Conference on Empirical Meth-
+ods in Natural Language Processing, pages 229–
+239. Association for Computational Linguistics.
+
+Isaac Persing and Vincent Ng. 2015. Modeling ar-
+gument strength in student essays. In Proceedings
+of the 53rd Annual Meeting of the Association for
+Computational Linguistics and the 7th International
+Joint Conference on Natural Language Processing
+(Volume 1: Long Papers), volume 1, pages 543–552.
+
+Lawrence M Rudner and Tahung Liang. 2002. Au-
+tomated essay scoring using bayes’ theorem. The
+Journal of Technology, Learning and Assessment,
+1(2).
+
+J¨urgen Schmidhuber, F Gers, and Douglas Eck. 2006.
+Learning nonregular languages: A comparison of
+Learning,
+simple recurrent networks and lstm.
+14(9).
+
+Mark D Shermis and Jill Burstein. 2013. Handbook of
+automated essay evaluation: Current applications
+and new directions. Routledge.
+
+Daniel DK Sleator and Davy Temperley. 1995. Parsing
+english with a link grammar. arXiv preprint cmp-
+lg/9508004.
+
+Swapna Somasundaran,
+
+Jill Burstein, and Martin
+Chodorow. 2014.
+Lexical chaining for measur-
+ing discourse coherence quality in test-taker essays.
+In Proceedings of COLING 2014, the 25th Inter-
+national Conference on Computational Linguistics:
+Technical Papers, pages 950–961.
+
+102

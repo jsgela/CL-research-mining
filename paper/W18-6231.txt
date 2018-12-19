@@ -1,0 +1,262 @@
+NL-FIIT at IEST-2018: Emotion Recognition utilizing Neural Networks
+
+and Multi-level Preprocessing
+
+Samuel Pecar, Michal Farkas, Marian Simko, Peter Lacko, Maria Bielikova
+
+Slovak University of Technology in Bratislava
+
+Faculty of Informatics and Information Technologies
+
+lkoviˇcova 2, 842 16 Bratislava, Slovakia
+
+{samuel.pecar, michal.farkas, marian.simko, peter.lacko
+
+maria.bielikova}@stuba.sk
+
+Abstract
+
+In this paper, we present neural models sub-
+mitted to Shared Task on Implicit Emotion
+Recognition, organized as part of WASSA
+2018. We propose a Bi-LSTM architecture
+with regularization through dropout and Gaus-
+sian noise. Our models use three different
+embedding layers: GloVe word embeddings
+trained on Twitter dataset, ELMo embeddings
+and also sentence embeddings. We see pre-
+processing as one of the most important parts
+of the task. We focused on handling emojis,
+emoticons, hashtags, and also various short-
+ened word forms.
+In some cases, we pro-
+posed to remove some parts of the text, as
+they do not affect emotion of the original sen-
+tence. We also experimented with other modi-
+ﬁcations like category weights for learning and
+stacking multiple layers. Our model achieved
+a macro average F1 score of 65.55 %, signif-
+icantly outperforming the baseline model pro-
+duced by a simple logistic regression.
+Introduction
+
+1
+Both text reconstruction and sentiment analysis
+are well studied and highly practical areas of re-
+search in the ﬁeld of natural language processing.
+Recently, there have been signiﬁcant advances and
+improvements (Buechel and Hahn, 2017), at least
+partly due to the wider adoption of neural net-
+works (Köper et al., 2017).
+
+As it is, Implicit Emotion Recognition, as pro-
+posed by organizers of WASSA 2018 workshop
+(Klinger et al., 2018), can be seen both as a text
+reconstruction and as a sentiment analysis task.
+This is possible because, in this task, sentiment of
+a sentence should be equal to the missing word.
+In practice, the difference is marginal, neverthe-
+less for both these tasks bi-directional LSTMs are
+widely used.
+
+In recent years, there have been several com-
+petitions, papers and shared tasks dealing with
+
+emotion recognition and classiﬁcation (Moham-
+mad et al., 2018; Mohammad and Bravo-Marquez,
+2017). Dealing with noisy and ungrammatical
+user-generated text can be also challenging in
+other high-level NLP tasks like summarization
+(Pecar, 2018).
+
+In this paper, we present a neural network ar-
+chitecture with special focus on the preprocessing
+phase. We believe preprocessing can have signif-
+icant impact on accuracy of each system in nat-
+ural language processing. We explored many se-
+tups and also different types of regularization as
+dropout, Gaussian noise, kernel and activity regu-
+larization – L1 and L2, and also recurrent dropout
+within LSTM cells. We also experimented with
+three different types of embedding layers – GloVe,
+ELMo and various sentence representations. Fi-
+nally, we explored impact of different setups on
+model accuracy. In this paper, we report on results
+of these experiments.
+
+2 Preprocessing
+
+We are aware that preprocessing of input is one of
+the most important phases in natural language pro-
+cessing. This need is also highlighted when using
+user generated content which is more difﬁcult to
+process. We can distinguish our preprocessing in
+a few stages displayed in Figure 1. We also eval-
+uate different setups of our preprocessing in the
+results section.
+
+Word-level Cleaning Word-level cleaning con-
+sists of several rules to handle various forms of
+words in language. Especially, we focused on han-
+dling short forms of auxiliaries and also its nega-
+tive variations. We split negative auxiliaries into
+its full form (e.g. don’t as do not, isn’t as is not).
+We also handled non negative auxiliaries and ex-
+panded them into their full form (e.g. ’ll as will).
+In analysis of original dataset we decided to also
+
+Proceedingsofthe9thWorkshoponComputationalApproachestoSubjectivity,SentimentandSocialMediaAnalysis,pages217–223Brussels,Belgium,October31,2018.c(cid:13)2018AssociationforComputationalLinguisticshttps://doi.org/10.18653/v1/P17217placed emojis symbolizing sport, moon, earth, an-
+imal, fruit, food, lag, music, ﬂower, plant, drink,
+dress, money with their category word surrounded
+by colon (Figure 2). Another categories were pro-
+duced by uniﬁcation of different emojis with sim-
+ilar sense.
+
+Figure 1: Preprocessing pipeline
+
+omit some of the words which do not affect clas-
+siﬁcation (e.g. @username, http://url.removed).
+The [NEWLINE] sign was replaced by sentence
+endings followed by space.
+
+Character-level Cleaning Similarly to word-
+level cleaning, this phase consists of several rules
+operating on character-level preprocessing. We
+can describe this preprocessing in several cate-
+gories, such as: currency handling, character es-
+caping, replacing, and removing. In currency han-
+dling, we replaced signs for pounds, dollars, euros
+and yens with its word form. Other currency signs
+were replaced with the word ’currency’. Character
+replacing consists of uniﬁcation of different forms
+used for apostrophe and as quotation marks.
+In
+character escaping, we surrounded characters like
+apostrophe, quotation mark, colon, dash, and caret
+with white-spaces to separate them from words
+and make tokenization easier. Finally, we decided
+to remove other unmentioned punctuation marks.
+We also considered removing all numbers as they
+often do not determine any sentiment.
+
+Emoji and Emoticons Processing Handling
+emoticons and emojis is a more extensive part in
+our preprocessing phase. The ﬁrst step consists
+of replacing emoticons (punctuation, numbers and
+characters used to create pictorial icons) with their
+emoji equivalent (only one unicode character). In
+phase of handling emojis, we removed all char-
+acters which modify original emoji with gender
+or skin color. We also tried to categorize emoji
+into categories (Figure 2). This step helped us
+to reduce amount of emojis used in text. We re-
+
+Figure 2: Emoji categorization
+
+Finally, we surround all emojis with white-
+spaces. This step can signiﬁcantly help in tok-
+enization, as emojis were sometimes recognized
+as part of words and also group of emojis were
+recognized as one token.
+
+Hashtags Processing The last phase of prepro-
+cessing consists of handling hashtags. We ex-
+amined different options of hashtag handling. In
+our ﬁnal setup, we replaced only those hashtags,
+which can be found in word embeddings in their
+form without hash sign. We suppose removing
+other, unknown hashtags should be also consid-
+ered as one of the step within hashtag processing.
+We also considered splitting hashtags into words
+but some of the separated words can bring differ-
+ent sentiment as the original hashtag. Hence, we
+decided to omit this step.
+
+218Word-level CleaningCharacter-level CleaningEmoji and Emoticon ProcessingHashtag Processinghowever these experiments were done addition-
+ally, after submission deadline. We used pre-
+trained model of ELMo available online2.
+
+Both GloVe and ELMo embeddings were in-
+cluded in model in such way that they can be fur-
+ther ﬁne-tuned. However, available implementa-
+tion of InferSent is done in Torch and integrating
+that model into Keras model proved to be prob-
+lematic, this is mainly due to their use of custom
+layer. Hence, we encoded sentences into their vec-
+tors outside of the model and stored it in a separate
+ﬁle. We are considering a whole tweet as a single
+sentence and have a ﬁle that has a label and an
+embedding of the entire tweet. On the other hand,
+both variants of USE are available as a Tensorﬂow
+module3 4. This enables us to use them as an em-
+bedding layer, although without any ﬁne tuning.
+
+3.2 Hidden Layers
+Embedding layer is followed by several Bi-LSTM
+layers, when sentence embeddings were not used.
+We have experimented with up to two stacked lay-
+ers.
+In case of sentence embedding models, we
+have experimented with several architectures with
+varying number of layers, however in the end we
+have settled on simple feed-forward network with
+one hidden layer, which uses parametric rectiﬁed
+linear unit.
+
+We experimented with a different size of each
+layer and also a different number of stacked layers.
+While using 1024 units in each of hidden layers
+was the best option, we also tested a much bigger
+model with sentence embeddings containing more
+units within each layer and also more stacked lay-
+ers.
+
+3.3 Activation
+We experimented with several different activation
+functions, but their impact was either insigniﬁ-
+cant or obvious. Hence, all our results use the
+same conﬁguration as far as activation functions
+are concerned.
+
+In LSTM cells, we use typical activation func-
+tions – hard sigmoid and hyperbolic tangent. In
+case of models that utilize sentence embeddings,
+we use parametric rectiﬁed linear activation, al-
+though its contribution is uncertain.
+
+2https://tfhub.dev/google/elmo/2
+3https://tfhub.dev/google/universal-sentence-encoder/2
+4https://tfhub.dev/google/universal-sentence-encoder-
+
+large/3
+
+Figure 3: Emoji replacing
+
+Examples of preprocessed texts are displayed in
+Figure 4. We can see examples of each preprocess-
+ing step described in this chapter.
+
+3 Model
+In this shared task, we experimented with many
+different setups, based on a different embedding
+layer and also different neural layers on top of an
+embedding layer.
+
+3.1 Embedding Layer
+We experimented some of the commonly used
+embedding layers like Word2Vec (Mikolov et al.,
+2013), GloVe (Pennington et al., 2014) or ELMo
+(Peters et al., 2018) but also sentence embeddings
+like Universal Sentence Encoder (Cer et al., 2018)
+and InferSent (Conneau et al., 2017). For en-
+coding input words, we used various pre-trained
+word embeddings available online like GloVe em-
+beddings1. With GloVe embeddings, we experi-
+mented with domain speciﬁc embeddings trained
+on Twitter data but also with embeddings trained
+on data extracted by CommonCrawl. We have
+also experimented with recent ELMo embeddings,
+
+1https://nlp.stanford.edu/projects/glove/
+
+219

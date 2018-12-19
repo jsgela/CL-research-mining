@@ -1,0 +1,840 @@
+A Shared Attention Mechanism for Interpretation
+
+of Neural Automatic Post-Editing Systems
+
+Inigo Jauregi Unanue1,2, Ehsan Zare Borzeshi2, Massimo Piccardi1
+
+1 University of Technology Sydney, Sydney, Australia
+
+2 Capital Markets Cooperative Research Centre, Sydney, Australia
+
+{ijauregi,ezborzeshi}@cmcrc.com, massimo.piccardi@uts.edu.au
+
+Abstract
+
+Automatic post-editing (APE) systems
+aim to correct the systematic errors made
+by machine translators. In this paper, we
+propose a neural APE system that encodes
+the source (src) and machine translated
+(mt) sentences with two separate encoders,
+but leverages a shared attention mecha-
+nism to better understand how the two in-
+puts contribute to the generation of the
+post-edited (pe) sentences. Our empiri-
+cal observations have showed that when
+the mt is incorrect,
+the attention shifts
+weight toward tokens in the src sentence
+to properly edit the incorrect translation.
+The model has been trained and evaluated
+on the ofﬁcial data from the WMT16 and
+WMT17 APE IT domain English-German
+shared tasks. Additionally, we have used
+the extra 500K artiﬁcial data provided by
+the shared task. Our system has been able
+to reproduce the accuracies of systems
+trained with the same data, while at the
+same time providing better interpretability.
+
+Introduction
+
+1
+In current professional practice, translators tend to
+follow a two-step approach: ﬁrst, they run a ma-
+chine translator (MT) to obtain a ﬁrst-cut transla-
+tion; then, they manually correct the MT output
+to produce a result of adequate quality. The lat-
+ter step is commonly known as post-editing (PE).
+Stemming from this two-step approach and the re-
+cent success of deep networks in MT (Sutskever
+et al., 2014; Bahdanau et al., 2014; Luong et al.,
+2015), the MT research community has devoted
+increasing attention to the task of automatic post-
+editing (APE) (Bojar et al., 2017).
+
+The rationale of an APE system is to be able to
+
+automatically correct the systematic errors made
+by the MT and thus dispense with or reduce the
+work of the human post-editors. The data for train-
+ing and evaluating these systems usually consist of
+triplets (src, mt, pe), where src is the sentence in
+the source language, mt is the output of the MT,
+and pe is the human post-edited sentence. Note
+that the pe is obtained by correcting the mt, and
+therefore these two sentences are closely related.
+An APE system is “monolingual” if it only uses
+the mt to predict the post-edits, or “contextual” if
+it uses both the src and the mt as inputs (B´echara
+et al., 2011).
+
+Despite their remarkable progress in recent
+years, neural APE systems are still elusive when it
+comes to interpretability. In deep learning, highly
+interpretable models can help researchers to over-
+come outstanding issues such as learning from
+fewer annotations, learning with human-computer
+interactions and debugging network representa-
+tions (Zhang and Zhu, 2018). More speciﬁcally
+in APE, a system that provides insights on its deci-
+sions can help the human post-editor to understand
+the system’s errors and consequently provide bet-
+ter corrections. As our main contribution, in this
+paper we propose a contextual APE system based
+on the seq2seq model with attention which allows
+for inspecting the role of the src and the mt in the
+editing. We modify the basic model with two sep-
+arate encoders for the src and the mt, but with a
+single attention mechanism shared by the hidden
+vectors of both encoders. At each decoding step,
+the shared attention has to decide whether to place
+more weight on the tokens from the src or the mt.
+In our experiments, we clearly observe that when
+the mt translation contains mistakes (word order,
+incorrect words), the model learns to shift the at-
+tention toward tokens in the source language, aim-
+ing to get extra “context” or information that will
+help to correctly edit the translation.
+Instead, if
+
+Proceedingsofthe2ndWorkshoponNeuralMachineTranslationandGeneration,pages11–17Melbourne,Australia,July20,2018.c(cid:13)2018AssociationforComputationalLinguistics11the mt sentence is correct, the model simply learns
+to pass it on word by word.
+In Section 4.4, we
+have plotted the attention weight matrices of sev-
+eral predictions to visualize this ﬁnding.
+
+The model has been trained and evaluated
+with the ofﬁcial datasets from the WMT16 and
+WMT17 Information Technology (IT) domain
+APE English-German (en-de) shared tasks (Bojar
+et al., 2016, 2017). We have also used the 500K
+artiﬁcial data provided in the shared task for extra
+training. For some of the predictions in the test
+set, we have analysed the plots of attention weight
+matrices to shed light on whether the model relies
+more on the src or the mt at each time step. More-
+over, our model has achieved higher accuracy than
+previous systems that used the same training set-
+ting (ofﬁcial datasets + 500K extra artiﬁcial data).
+
+2 Related work
+
+In an early work, (Simard et al., 2007) combined
+a rule-based MT (RBMT) with a statistical MT
+(SMT) for monolingual post-editing. The reported
+results outperformed both systems in standalone
+translation mode. In 2011, (B´echara et al., 2011)
+proposed the ﬁrst model based on contextual post-
+editing, showing improvements over monolingual
+approaches.
+
+More recently, neural APE systems have at-
+tracted much attention.
+(Junczys-Dowmunt and
+Grundkiewicz, 2016) (the winner of the WMT16
+shared task) integrated various neural machine
+translation (NMT) components in a log-linear
+model. Moreover, they suggested creating artiﬁ-
+cial triplets from out-of-domain data to enlarge the
+training data, which led to a drastic improvement
+in PE accuracy. Assuming that post-editing is re-
+versible, (Pal et al., 2017) have proposed an atten-
+tion mechanism over bidirectional models, mt→
+pe and pe → mt. Several other researchers have
+proposed using multi-input seq2seq models for
+contextual APE (B´erard et al., 2017; Libovick`y
+et al., 2016; Varis and Bojar, 2017; Pal et al.,
+2017; Libovick`y and Helcl, 2017; Chatterjee et al.,
+2017). All these systems employ separate en-
+coders for the two inputs, src and mt.
+
+2.1 Attention mechanisms for APE
+A key aspect of neural APE systems is the atten-
+tion mechanism. A conventional attention mech-
+anism for NMT ﬁrst learns the alignment scores
+(eij) with an alignment model (Bahdanau et al.,
+
+2014; Luong et al., 2015) given the j-th hid-
+den vector of the encoder (hj) and the decoder’s
+hidden state (si−1) at time i − 1 (Equation 1).
+Then, Equation 2 computes the normalized atten-
+tion weights, with Tx the length of the input sen-
+tence. Finally, the context vector is computed as
+the sum of the encoder’s hidden vectors weighed
+by the attention weights (Equation 3). The de-
+coder uses the computed context vector to predict
+the output.
+
+eij = aligment model(hj, si−1)
+
+(cid:80)Tx
+Tx(cid:88)
+
+αij =
+
+exp(eij)
+m=1 exp(eim)
+
+ci =
+
+αi,jhj
+
+(1)
+
+(2)
+
+(3)
+
+j=1
+
+In the APE literature, two recent papers have
+extended the attention mechanism to contextual
+APE. (Chatterjee et al., 2017) (the winner of
+the WMT17 shared task) have proposed a two-
+encoder system with a separate attention for each
+encoder. The two attention networks create a con-
+text vector for each input, csrc and cmt, and con-
+catenate them using additional, learnable param-
+eters, Wct and bct, into a merged context vector,
+cmerge (Equation 4).
+
+ci
+merge = [ci
+
+src; ci
+
+mt] ∗ Wct + bct
+
+(4)
+
+(Libovick`y and Helcl, 2017) have proposed,
+among others, an attention strategy named the
+ﬂat attention.
+In this approach, all the attention
+weights corresponding to the tokens in the two in-
+puts are computed with a joint soft-max:
+
+αij
+(k) =
+
+(cid:80)2
+
+n=1
+
+exp(eij
+
+(cid:80)T (n)
+
+x
+
+(k))
+
+m=1 exp(eim
+(n))
+
+(5)
+
+where eij
+(k) is the attention energy of the j-th step
+of the k-th encoder at the i-th decoding step and
+T (k)
+is the length of the input sequence of the k-th
+x
+encoder. Note that because the attention weights
+are computed jointly over the different encoders,
+this approach allows observing whether the sys-
+tem assigns more weight to the tokens of the src
+or the mt at each decoding step. Once the atten-
+tion weigths are computed, a single context vector
+(c) is created as:
+
+12N(cid:88)
+
+x(cid:88)
+
+T (k)
+
+k=1
+
+j=1
+
+ci =
+
+(k)Uc(k)hj
+αi,j
+
+(k)
+
+(6)
+
+x
+
+where hj
+(k) is the j-th hidden vector from the k-
+th encoder, T (k)
+is the number of hidden vectors
+from the k-th encoder, and Uc(k) is the projection
+matrix for the k-th encoder that projects its hidden
+vectors to a common-dimensional space. This pa-
+rameter is also learnable and can further re-weigh
+the two inputs.
+
+3 The proposed model
+The main focus of our paper is on the interpretabil-
+ity of the predictions made by neural APE sys-
+tems. To this aim, we have assembled a contex-
+tual neural model that leverages two encoders and
+a shared attention mechanism, similarly to the ﬂat
+attention of (Libovick`y and Helcl, 2017). To de-
+scribe it, let us assume that Xsrc = {x1
+src}
+is the src sentence and Xmt = {x1
+mt} is
+the mt sentence, where N and M are their respec-
+tive numbers of tokens. The two encoders encode
+the two inputs separately:
+
+mt, ..., xM
+
+src, ..., xN
+
+hj
+src = encsrc(xj
+hj
+mt = encmt(xj
+
+src, hj−1
+src )
+mt, hj−1
+mt )
+
+j = 1, ..., N
+
+j = 1, ..., M
+
+(7)
+
+All the hidden vectors outputs by the two en-
+coders are then concatenated as if they were com-
+ing from a single encoder:
+
+hjoin = {h1
+
+src, ..., hN
+
+src, h1
+
+mt}
+mt, ..., hM
+
+(8)
+
+Then, the attention weights and the context vec-
+tor at each decoding step are computed from the
+hidden vectors of hjoin (Equations 9-11):
+
+eij = aligment model(hj
+
+join, si−1)
+
+αij =
+
+exp(eij)
+
+m=1 exp(eim)
+
+(cid:80)N +M
+N +M(cid:88)
+
+ci =
+
+αi,jhj
+
+join
+
+(9)
+
+(10)
+
+(11)
+
+j=1
+
+where i is the time step on the decoder side, j is
+the index of the hidden encoded vector. Given that
+
+the αi,j weights form a normalized probability dis-
+tribution over j, this model is “forced” to spread
+the weight between the src and mt inputs. Note
+that our model differs from that proposed by (Li-
+bovick`y and Helcl, 2017) only in that we do not
+employ the learnable projection matrices, Uc(k).
+This is done to avoid re-weighing the contribution
+of the two inputs in the context vectors and, ul-
+timately, in the predictions. More details of the
+proposed model and its hyper-parameters are pro-
+vided in Section 4.3.
+
+4 Experiments
+
+4.1 Datasets
+training and evaluation we have used
+For
+the WMT17 APE1 IT domain English-German
+dataset. This dataset consists of 11,000 triplets for
+training, 1,000 for validation and 2,000 for test-
+ing. The hyper-parameters have been selected us-
+ing only the validation set and used unchanged
+on the test set. We have also trained the model
+with the 12,000 sentences from the previous year
+(WMT16), for a total of 23,000 training triplets.
+
+4.2 Artiﬁcial data
+Since the training set provided by the shared
+task is too small to effectively train neural net-
+works,
+(Junczys-Dowmunt and Grundkiewicz,
+2016) have proposed a method for creating extra,
+“artiﬁcial” training data using round-trip transla-
+tions. First, a language model of the target lan-
+guage (German here) is learned using a mono-
+lingual dataset. Then, only the sentences from
+the monolingual dataset that have low perplex-
+ity are round-trip translated using two off-the-
+shelf translators (German-English and English-
+German). The low-perplexity sentences from the
+monolingual dataset are treated as the pe,
+the
+German-English translations as the src, and the
+English-German back-translations as the mt. Fi-
+nally, the (src, mt, pe) triplets are ﬁltered to only
+retain sentences with comparable TER statistics
+to those of the manually-annotated training data.
+These artiﬁcial data have proved very useful for
+improving the accuracy of several neural APE
+systems, and they have therefore been included
+in the WMT17 APE shared task.
+In this paper,
+we have limited ourselves to using 500K artiﬁcial
+triplets as done in (Varis and Bojar, 2017; B´erard
+
+1http://www.statmt.org/wmt17/ape-task.html
+
+132
+B-LSTM
+2
+
+# encoders
+encoder type
+encoder layers
+encoder hidden dim 500
+# decoders
+decoder type
+decoder layers
+decoder hidden dim 500
+300
+word vector dim
+general
+attention type
+0.3
+dropout
+beam size
+5
+
+1
+LSTM
+2
+
+Table 1: The model and its hyper-parameters.
+
+et al., 2017). To balance artiﬁcial and manually-
+annotated data during training, we have resampled
+the ofﬁcial 23K triplets 10 times.
+
+4.3 Training and hyper-parameters
+Hereafter we provide more information about the
+model’s implementation, its hyper-parameters, the
+pre-processing and the training to facilitate the re-
+producibility of our results. We have made our
+code publicly available2.
+
+To implement the encoder/decoder with sepa-
+rate encoders for the two inputs (src, mt) and a
+single attention mechanism, we have modiﬁed the
+open-source OpenNMT code (Klein et al., 2017).
+Table 1 lists all hyper-parameters which have
+all been chosen using only training and validation
+data. The two encoders have been implemented
+using a Bidirectional Long Short-Term Memory
+(B-LSTM) (Hochreiter and Schmidhuber, 1997)
+while the decoder uses a unidirectional LSTM.
+Both the encoders and the decoder use two hidden
+layers. For the attention network, we have used the
+OpenNMT’s general option (Luong et al., 2015).
+As for the pre-processing, the datasets come al-
+ready tokenized. Given that German is a mor-
+phologically rich language, we have learned the
+subword units using the BPE algorithm (Sennrich
+et al., 2015) only over the ofﬁcial training sets
+from the WMT16 and WMT17 IT-domain APE
+shared task (23,000 sentences). The number of
+merge operations has been set to 30,000 under the
+intuition that one or two word splits per sentence
+could sufﬁce. Three separate vocabularies have
+been used for the (src, mt and pe) sentences. Each
+vocabulary contains a maximum of 50,000 most-
+
+2https://github.com/ijauregiCMCRC/Shared
+
+Attention for APE
+
+Model
+MT (Bojar et al., 2017)
+SPE (Bojar et al., 2017)
+(Varis and Bojar, 2017)
+(B´erard et al., 2017)
+train 11K
+train 23K
+train 23K + 500K
+
+TER
+24.48
+24.69
+24.03
+22.81
+41.58
+30.23
+22.60
+
+BLEU
+62.49
+62.97
+64.28
+65.91
+43.05
+57.14
+66.21
+
+Table 2: Results on the WMT17 IT domain
+English-German APE test set.
+
+frequent subword units; the remaining tokens are
+treated as unknown (<unk>).
+
+As mentioned in Section 4.2, we have trained
+our model with 500K extra triplets as in (B´erard
+et al., 2017). We have oversampled the 23K ofﬁ-
+cial triplets 10 times, added the extra 500K, and
+trained the model for 20 epochs. We have used
+Stochastic Gradien Descent (SGD) with a learn-
+ing rate of 1 and a learning rate decay of 0.5. The
+learning rate decays if there are no improvements
+on the validation set.
+
+In all cases, we have selected the models and
+hyper-parameters that have obtained the best re-
+sults on the validation set (1,000 sentences), and
+reported the results blindly over the test set (2,000
+sentences). The performance has been evaluated
+in two ways: ﬁrst, as common for this task, we
+have reported the accuracy in terms of Translation
+Error Rate (TER) (Snover et al., 2006) and BLEU
+score (Papineni et al., 2002). Second, we present
+an empirical analysis of the attention weight ma-
+trices for some notable cases.
+
+4.4 Results
+Table 2 compares the accuracy of our model on the
+test data with two baselines and two state-of-the-
+art comparable systems. The MT baseline simply
+consists of the accuracy of the mt sentences with
+respect to the pe ground truth. The other baseline
+is given by a statistical PE (SPE) system (Simard
+et al., 2007) chosen by the WMT17 organizers.
+Table 2 shows that when our model is trained with
+only the 11K WMT17 ofﬁcial training sentences,
+it cannot even approach the baselines. Even when
+the 12K WMT16 sentences are added, its accuracy
+is still well below that of the baselines. However,
+when the 500K artiﬁcial data are added, it reports a
+major improvement and it outperforms them both
+signiﬁcantly. In addition, we have compared our
+model with two recent systems that have used our
+
+14Figure 1: An example of perfect correction of an
+mt sentence.
+
+Figure 3: Passing on a correct mt sentence.
+
+Figure 2: Partial improvement of an mt sentence.
+
+Figure 4: A completely incorrect prediction.
+
+15same training settings (500K artiﬁcial triplets +
+23K manual triplets oversampled 10 times), re-
+porting a slightly higher accuracy than both (1.43
+TER and 1.93 BLEU p.p. over (Varis and Bojar,
+2017) and 0.21 TER and 0.30 BLEU p.p. over
+(B´erard et al., 2017)). Since their models explic-
+itly predicts edit operations rather than post-edited
+sentences, we speculate that these two tasks are of
+comparable intrinsic complexity.
+
+In addition to experimenting with the proposed
+model (Equation 11), we have also tried to add
+the projection matrices of the ﬂat attention of (Li-
+bovick`y and Helcl, 2017) (Equation 6). However,
+the model with these extra parameters showed ev-
+ident over-ﬁtting, with a lower perplexity on the
+training set, but unfortunately also a lower BLEU
+score of 53.59 on the test set. On the other hand,
+(Chatterjee et al., 2017) and other participants of
+the WMT 17 APE shared task 3 were able to
+achieve higher accuracies by using 4 million ar-
+tiﬁcial training triplets. Unfortunately, using such
+a large dataset sent the computation out of mem-
+ory on a system with 32 GB of RAM. Nonetheless,
+our main goal is not to establish the highest pos-
+sible accuracy, but rather contribute to the inter-
+pretability of APE predictions while reproducing
+approximately the same accuracy of current sys-
+tems trained in a comparable way.
+
+For the analysis of the interpretability of the sys-
+tem, we have plotted the attention weight matrices
+for a selection of cases from the test set. These
+plots aim to show how the shared attention mech-
+anism shifts the attention weights between the to-
+kens of the src and mt inputs at each decoding
+step. In the matrices, the rows are the concatena-
+tion of the src and mt sentences, while the columns
+are the predicted pe sentence. To avoid cluttering,
+the ground-truth pe sentences are not shown in the
+plots, but they are commented upon in the discus-
+sion. Figure 1 shows an example where the mt sen-
+tence is almost correct. In this example, the atten-
+tion focuses on passing on the correct part. How-
+ever, the start (W¨ahlen) and end (L¨angsschnitte)
+of the mt sentence are wrong: for these tokens, the
+model learns to place more weight on the English
+sentence (click and Select Proﬁles). The predicted
+pe is eventually identical to the ground truth.
+
+Conversely, Figure 2 shows an example where
+the mt sentence is rather incorrect.
+In this case,
+the model learns to focus almost completely on
+
+3http://www.statmt.org/wmt17/ape-task.html
+
+Sentence Focus
+src
+23%
+mt
+45%
+Both
+31%
+
+Table 3: Percentage of the decoding steps with
+marked attention weight on either input (src, mt)
+or both.
+
+the English sentence, and the prediction is very
+aligned with it. The predicted pe is not identical
+to the ground truth, but it is signiﬁcantly more ac-
+curate than the mt. Figure 3 shows a case of a per-
+fect mt translation where the model simply learns
+to pass the sentence on word by word. Eventually,
+Figure 4 shows an example of a largely incorrect
+mt where the model has not been able to properly
+edit the translation. In this case, the attention ma-
+trix is scattered and defocused.
+
+src = (cid:80)N
+
+mt =(cid:80)N +M
+
+In addition to the visualizations of the attention
+weights, we have computed an attention statistic
+over the test set to quantify the proportions of the
+two inputs. At each decoding time step, we have
+added up the attention weights corresponding to
+the src input (αi
+j=1 αij) and those cor-
+responding to the mt (αi
+j=N +1 αij). Note
+that, obviously, αi
+mt = 1. Then, we have set
+src+αi
+an arbitrary threshold, t = 0.6, and counted step i
+src < 1−t,
+to the src input if αi
+we counted the step to the mt input. Eventually, if
+src ≤ t, we counted the step to both in-
+1 − t ≤ αi
+puts. Table 3 shows this statistic. Overall, we have
+recorded 23% decoding steps for the src, 45% for
+the mt and 31% for both. It is to be expected that
+the majority of the decoding steps would focus on
+the mt input if it is of sufﬁcient quality. However,
+the percentage of focus on the src input is signiﬁ-
+cant, conﬁrming its usefulness.
+
+src > t. If instead αi
+
+5 Conclusion
+
+In this paper, we have presented a neural APE sys-
+tem based on two separate encoders that share a
+single, joined attention mechanism. The shared
+attention has proved a key feature for inspecting
+how the selection shifts on either input, (src and
+mt), at each decoding step and, in turn, under-
+standing which inputs drive the predictions. In ad-
+dition to its easy interpretability, our model has re-
+ported a competitive accuracy compared to recent,
+similar systems (i.e., systems trained with the of-
+ﬁcial WMT16 and WMT17 data and 500K extra
+
+16training triplets). As future work, we plan to con-
+tinue to explore the interpretability of contempo-
+rary neural APE architectures.
+
+6 Acknowledgements
+We would like to acknowledge the ﬁnancial sup-
+port received from the Capital Markets Cooper-
+ative Research Centre (CMCRC), an applied re-
+search initiative of the Australian Government.
+
+References
+Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Ben-
+gio. 2014. Neural machine translation by jointly
+arXiv preprint
+learning to align and translate.
+arXiv:1409.0473 .
+
+Hanna B´echara, Yanjun Ma, and Josef van Genabith.
+2011. Statistical post-editing for a statistical mt sys-
+tem. In MT Summit. volume 13, pages 308–315.
+
+Olivier B´erard, Alexandre Pietquin, and Laurent Be-
+sacier. 2017. Lig-cristal system for the wmt17 au-
+In Proceedings of the
+tomatic post-editing task.
+Second Conference on Machine Translation. pages
+623–629.
+
+Ondˇrej Bojar, Rajen Chatterjee, Christian Federmann,
+Yvette Graham, Barry Haddow, Shujian Huang,
+Matthias Huck, Philipp Koehn, Qun Liu, Varvara
+Logacheva, Christof Monz, Matteo Negri, Matt
+Post, Raphael Rubino, Lucia Specia, and Marco
+Turchi. 2017. Findings of the 2017 conference on
+machine translation (wmt17). In Proceedings of the
+Second Conference on Machine Translation. pages
+169–214.
+
+Ondˇrej Bojar, Rajen Chatterjee, Christian Federmann,
+Yvette Graham, Barry Haddow, Matthias Huck, An-
+tonio Jimeno Yepes, Philipp Koehn, Varvara Lo-
+gacheva, Christof Monz, Matteo Negri, Aur´elie
+N´ev´eol, Mariana Neves, Martin Popel, Matt Post,
+Raphael Rubino, Carolina Scarton, Lucia Spe-
+cia, Marco Turchi, Karin Verspoor, and Marcos
+Zampieri. 2016. Findings of the 2016 conference
+on machine translation. In Proceedings of the First
+Conference on Machine Translation: Volume 2,
+Shared Task Papers. volume 2, pages 131–198.
+
+Rajen Chatterjee, M Amin Farajian, Matteo Negri,
+Marco Turchi, Ankit Srivastava, and Santanu Pal.
+2017. Multi-source neural automatic post-editing:
+Fbks participation in the wmt 2017 ape shared task.
+In Proceedings of the Second Conference on Ma-
+chine Translation. pages 630–638.
+
+Sepp Hochreiter and J¨urgen Schmidhuber. 1997.
+Neural computation
+
+Long short-term memory.
+9(8):1735–1780.
+
+Marcin Junczys-Dowmunt and Roman Grundkiewicz.
+2016. Log-linear combinations of monolingual and
+bilingual neural machine translation models for au-
+In Proceedings of the First
+tomatic post-editing.
+
+Conference on Machine Translation. pages 751–
+558.
+
+Guillaume Klein, Yoon Kim, Yuntian Deng, Jean
+Senellart, and Alexander M Rush. 2017. Opennmt:
+Open-source toolkit for neural machine translation.
+arXiv preprint arXiv:1701.02810 .
+
+Jindˇrich Libovick`y and Jindˇrich Helcl. 2017. Attention
+strategies for multi-source sequence-to-sequence
+learning. arXiv preprint arXiv:1704.06567 .
+
+Jindˇrich Libovick`y, Jindˇrich Helcl, Marek Tlust`y,
+Pavel Pecina, and Ondˇrej Bojar. 2016. Cuni system
+for wmt16 automatic post-editing and multimodal
+translation tasks. In Proceedings of the First Con-
+ference on Machine Translation.
+
+Minh-Thang Luong, Hieu Pham, and Christopher D
+Manning. 2015. Effective approaches to attention-
+based neural machine translation. arXiv preprint
+arXiv:1508.04025 .
+
+Santanu Pal, Sudip Kumar Naskar, Mihaela Vela, Qun
+Liu, and Josef van Genabith. 2017. Neural auto-
+matic post-editing using prior alignment and rerank-
+In Proceedings of the 15th Conference of the
+ing.
+European Chapter of the Association for Compu-
+tational Linguistics: Volume 2, Short Papers. vol-
+ume 2, pages 349–355.
+
+Kishore Papineni, Salim Roukos, Todd Ward, and Wei-
+Jing Zhu. 2002. Bleu: a method for automatic eval-
+In Proceedings of
+uation of machine translation.
+the 40th annual meeting on association for compu-
+tational linguistics. Association for Computational
+Linguistics, pages 311–318.
+
+Rico Sennrich, Barry Haddow, and Alexandra Birch.
+2015. Neural machine translation of rare words with
+subword units. arXiv preprint arXiv:1508.07909 .
+
+Michel Simard, Cyril Goutte, and Pierre Isabelle. 2007.
+In NAACL
+
+Statistical phrase-based post-editing.
+HLT. pages 505–515.
+
+Matthew Snover, Bonnie Dorr, Richard Schwartz, Lin-
+nea Micciulla, and John Makhoul. 2006. A study of
+translation edit rate with targeted human annotation.
+In Proceedings of association for machine transla-
+tion in the Americas. volume 200.
+
+Ilya Sutskever, Oriol Vinyals, and Quoc V Le. 2014.
+Sequence to sequence learning with neural net-
+works. In Advances in neural information process-
+ing systems. pages 3104–3112.
+
+Dusan Varis and Ondˇrej Bojar. 2017. Cuni system for
+wmt17 automatic post-editing task. In Proceedings
+of the Second Conference on Machine Translation.
+pages 661–666.
+
+Quan-shi Zhang and Song-Chun Zhu. 2018. Visual in-
+terpretability for deep learning: a survey. Frontiers
+of Information Technology & Electronic Engineer-
+ing 19(1):27–39.
+
+17

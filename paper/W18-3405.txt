@@ -1,0 +1,346 @@
+Multimodal Neural Machine Translation for Low-resource
+
+Language Pairs using Synthetic Data
+
+Koel Dutta Chowdhury
+
+ADAPT Centre
+
+School of Computing
+Dublin City University
+
+Dublin, Ireland
+
+Mohammed Hasanuzzaman
+
+ADAPT Centre
+
+School of Computing
+Dublin City University
+
+Dublin, Ireland
+
+koel.chowdhury@adaptcentre.ie
+
+mohammed.hasanuzzaman@adaptcentre.ie
+
+Qun Liu
+
+ADAPT Centre
+
+School of Computing
+Dublin City University
+
+Dublin, Ireland
+qun.liu@adaptcentre.ie
+
+Abstract
+
+In this paper, we investigate the effec-
+tiveness of training a multimodal neu-
+ral machine translation (MNMT) sys-
+tem with image features for a low-
+resource language pair, Hindi and En-
+glish, using synthetic data. A three-
+way parallel corpus which contains
+bilingual texts and corresponding im-
+ages is required to train a MNMT sys-
+tem with image features. However,
+such a corpus is not available for low re-
+source language pairs. To address this,
+we developed both a synthetic train-
+ing dataset and a manually curated de-
+velopment/test dataset for Hindi based
+on an existing English-image parallel
+corpus. We used these datasets to
+build our image description transla-
+tion system by adopting state-of-the-
+art MNMT models. Our results show
+that it is possible to train a MNMT
+system for low-resource language pairs
+through the use of synthetic data and
+that such a system can benefit from im-
+age features.
+
+1 Introduction
+Recent years have witnessed a surge in ap-
+plication of multimodal neural models as
+a sequence to sequence learning problem
+(Sutskever et al., 2014; Kalchbrenner and
+Blunsom, 2013; Cho et al., 2014b) for solving
+different tasks such as machine translations
+(Huang et al., 2016), image and video descrip-
+tion generation (Karpathy and Fei-Fei, 2015;
+
+Kiros et al., 2014; Donahue et al., 2015; Venu-
+gopalan et al., 2014), visual question answer-
+ing (Antol et al., 2015), etc. However, neural
+machine translation (NMT), which is an inher-
+ently data-dependent procedure, continues to
+be a challenging problem in the context of low-
+resourced and out-of-domain settings (Koehn
+and Knowles, 2017). In other words, there is
+a concern that the model will perform poorly
+with languages having limited resources, espe-
+cially in comparison with well-resourced major
+languages.
+
+Although English(En) and Hindi(Hi) lan-
+guages belong to the same family (Indo-
+European), they differ significantly in terms of
+word order, syntax and morphological struc-
+ture (Bharati et al., 1995). While English
+maintains a Subject-Verb-Object (SVO) tem-
+plate, Hindi
+follows a Subject-Object-Verb
+(SOV) convention. Moreover, compared to
+English, Hindi has a more complex inflec-
+tion system, where nouns, verbs and adjec-
+tives are inflected according to number, gen-
+der and case. These issues, combined with the
+data scarcity problem, makes Hi!En machine
+translation a challenging task.
+
+Bilingual corpora, which are an important
+component for machine translation systems,
+suffer from the problem of data scarcity when
+one of the languages is resource-poor. To
+achieve better quality translation, a potential
+solution is to extend along the language di-
+mension to construct bilingual corpora.
+In
+particular, for a distant language pair such as
+Hindi and English, building a bilingual corpus
+can prove to be a useful endeavor in multiple
+aspects.
+
+ProceedingsoftheWorkshoponDeepLearningApproachesforLow-ResourceNLP,pages33–42Melbourne,AustraliaJuly19,2018.c(cid:13)2018AssociationforComputationalLinguistics33We are inspired by the recent successes of
+using visual inputs for translation tasks (see
+Section 2 for relevant studies). For translat-
+ing image descriptions, given both the source
+image and it’s description, it can be seen that
+both modalities can bring more useful infor-
+mation for generating the target language de-
+scription. With the goal of preventing a low-
+resource language such as Hindi from being
+left behind in the advancement of multimodal
+machine translation, we take the first steps to-
+wards applying MNMT methods for Hi!En
+translation.
+
+Our contributions in this study are as fol-
+
+lows:
+
+• To the best of our knowledge, we are the
+first to tackle the problem of multimodal
+translation from Hindi into English.
+
+• We examine if visual features help to im-
+prove machine translation (MT) perfor-
+mance in low resource scenarios.
+
+• We investigate whether the multimodal
+machine
+less-
+resourced language can benefit from syn-
+thetic data.
+
+translation system for
+
+• We augment the Flickr30k dataset with
+synthetic Hindi descriptions, obtained
+from a MT system.
+
+• We manually develop a validation and
+test corpus of the English counterpart in
+the Flickr30k dataset. We plan to re-
+lease this dataset publicly for research
+purposes.
+
+This paper is divided as follows: Section 2
+provides the necessary background and estab-
+lishes the relevance of the presented work,
+both in terms of low-resourced MT and MT in
+multimodal contexts. Section 3 describes the
+overall methodology. In Section 4 we outline
+the backgrounds of datasets used for training,
+validation and testing. Section 5 provides de-
+tailed descriptions of the multimodal models
+used in our experiments. Section 6 details the
+experimental set-ups. Results and analysis are
+presented in Section 7. Finally, in Section 8,
+we provide conclusions and indicate possible
+directions for future work.
+
+2 Related Work
+There has been some previous work on us-
+ing visual context in tasks involving both neu-
+ral machine translation (NMT) and image de-
+scription generation (IDG) that explicitly uses
+an encoder-decoder framework as an instan-
+tiation of the sequence to sequence (seq2seq)
+learning problem (Cho et al., 2014a). Vinyals
+et al. (2015) proposed an IDG model that uses
+a vector, encoding the image as input based on
+the sequence-to-sequence framework. Specia
+et al. (2016) introduced a shared task to inves-
+tigate the role of images in Multi-modal MT.
+Similarly, Huang et al. (2016) introduced a
+model to associate textual and visual features
+extracted with the VGG19 network for trans-
+lation tasks (Simonyan and Zisserman, 2014).
+Elliott et al. (2015) generated multilingual im-
+age descriptions using image features trans-
+ferred from separate non-attentive neural im-
+age description models. Calixto et al. (2017a)
+carried out experiments to incorporate spatial
+visual information into NMT using a separate
+visual attention mechanism. Although these
+approaches have demonstrated the plausibil-
+ity of multilingual natural language processing
+with multiple modalities, they rely exclusively
+on the availability of a large three-way paral-
+lel corpus (bilingual captions corresponding to
+the image) as training data.
+
+Having enough parallel corpora is a big chal-
+lenge in NMT and it is very unlikely to have
+millions of parallel sentences for every lan-
+guage pair. Therefore, quite a few attempts
+have been made to build NMT systems for
+low-resource language pairs (Sennrich et al.,
+2016; Zhang and Zong, 2016) which focused
+on building NMT systems in a low-resource
+scenario. They incorporated huge monolin-
+gual corpus in the source or target side. Gul-
+cehre et al. (2017) proposed two alternative
+methods to integrate monolingual data on tar-
+get side, namely shallow fusion and deep fu-
+sion.
+In shallow fusion, the top K hypothe-
+ses (produced by NMT) at each time step t
+are re-scored using the weighted sum of the
+scores given by the NMT(trained on parallel
+data) and a recurrent neural network based
+language model (RNNLM). Whereas in deep
+fusion, hidden states obtained at each time
+step t of RNNLM and NMT are concatenated
+
+34and output is generated from that concate-
+nated state.
+
+Sennrich et al. (2016) incorporated mono-
+lingual data on the target side to investi-
+gate two methods of filling the source side of
+the monolingual data.
+In the first method,
+they used a dummy source sentence for every
+target sentence, while in the second method
+synthetic source sentences were obtained via
+back-translation. Their results found that the
+second method is more effective.
+In a sim-
+ilar vein, Zhang and Zong (2016) explored
+the effect of incorporating large-scale source-
+side monolingual in NMT in many ways. In
+the first approach, inspired by Sennrich et al.
+(2016), they built a baseline system and then
+obtained parallel synthetic data by translat-
+ing the monolingual data. This parallel data,
+along with the original data, is used again for
+training an attention-based encoder-decoder
+NMT system. Their second method involved
+the multi-task learning framework to gener-
+ate the target translation and the reordered
+source-side sentences at the same time. They
+discovered that the use of source-side mono-
+lingual data in NMT is more effective than in
+SMT.
+
+A few other popular approaches in this area
+involve using a method called transfer learn-
+ing which focuses on sharing parameters, such
+as source side word-embeddings across related
+language pairs. Zoph et al. (2016) focus on
+training a model on high resource language
+pair and then using learned parameters to
+train the low resource language pair. How-
+ever, it requires selecting closely related high
+and low resource language pairs. So this ap-
+proach might not work if the language pairs
+are distant.
+
+Most of the previous related work on this
+problem of low-resource NMT has tried to in-
+corporate monolingual data in source or target
+side. The effect of adding monolingual data in
+NMT is similar to that of building language
+model (LM) on large-scale monolingual data
+in SMT. While in SMT it can make the out-
+put more fluent, adding monolingual data does
+not contribute much in improving adequacy
+for NMT.
+
+3 Methodology Overview
+We formulate the task of augmenting the
+Flickr30k dataset with Hindi descriptions as
+a multimodal NMT task. The task is defined
+as follows.
+
+To produce a target side description of an
+image i in Flickr30k dataset, a MT system
+may use unimodal information such as text
+in the form of description for image i in the
+source language En, as well as multimodal in-
+formation such as text plus visual features em-
+bedded in the image i itself. Our overall ap-
+proach consists of the following steps.
+
+• Due to the unavailability of in-domain
+Hindi-English parallel corpus for our cap-
+tion translation task, we use a general
+domain Hindi-English parallel corpus (re-
+ferred as Hic (cid:0) Enc hereafter) which
+is compiled from a variety of existing
+sources. Details of the dataset are de-
+scribed in Section 4.
+
+• Building a phrase based statistical ma-
+chine translation(PBSMT) system using
+Hic (cid:0) Enc parallel corpus. To create
+a synthetic in-domain Hindi-English par-
+allel corpus for the image descriptions
+translation task, we translate the English
+descriptions of Flickr30k dataset (referred
+to as En (Manl.Trans.)) into Hindi, using
+a PBSMT system. We take motivation
+for using the PBSMT system over NMT
+from the work carried out by Kunchukut-
+tan et al. (2017). For Hi !En transla-
+tion, their system achieves better results
+with PBSMT over NMT when trained on
+the same corpus.
+
+• We divide the En (Manl.Trans.)
+
+(Manl.Dev.Trans.)
+
+into
+training, validation and test set and
+call these as Ent (Manl.Train.Trans.),
+and Enr
+End
+(Manl.Test.Trans.),
+respectively. We
+translate the Ent (Manl.Train.Trans) into
+Hindi using the PBSMT system and call
+these as Hit (Syn.Train.Trans).We manu-
+ally translate End (Manl.Dev.Trans) and
+Enr (Manl.Test.Trans) into Hindi. We re-
+fer to these manually translated English
+descriptions as Hid
+(Manl.Dev.Trans)
+and Hir (Manl.Test.Trans).
+
+35
