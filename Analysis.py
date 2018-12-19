@@ -39,27 +39,28 @@ def extract_email(corpus):
 
 
 # Tests
-# print(ACL_corpus.get_info('W18-4106')['author'])
-# ACL_corpus.concordance('language')
+print(ACL_corpus.get_info('W18-4106')['author'])
+ACL_corpus.concordance('language')
 
 # Generator frequent topic lists from the corpus
-# single_word_list = ACL_corpus.most_frequent_content_words(100)
-# bigram_list = ACL_corpus.most_frequent_bigrams(100)
-# trigram_list = ACL_corpus.most_frequent_trigrams(100)
-# print("Top 100 most frequent words:")
-# print(single_word_list)
-# print()
-# print("Top 100 most frequent phrases: ")
-# print(set(bigram_list),set(trigram_list))
+single_word_list = ACL_corpus.most_frequent_content_words(100)
+bigram_list = ACL_corpus.most_frequent_bigrams(100)
+trigram_list = ACL_corpus.most_frequent_trigrams(100)
+print("Top 100 most frequent words:")
+print(single_word_list)
+print()
+print("Top 200 most frequent phrases: ")
+print(set(bigram_list),set(trigram_list))
 
 # Create word cloud images
-# print("Generating word cloud for most frequent words...")
-# word_cloud(single_word_list)
-# print("Generating word cloud for most frequent bigrams...")
-# word_cloud([(' '.join(i),j) for i,j in bigram_list])
-# print("Generating word cloud for most frequent trigrams...")
-# word_cloud([(' '.join(i),j) for i,j in trigram_list])
+print("Generating word cloud for most frequent words...")
+word_cloud(single_word_list)
+print("Generating word cloud for most frequent bigrams...")
+word_cloud([(' '.join(i),j) for i,j in bigram_list])
+print("Generating word cloud for most frequent trigrams...")
+word_cloud([(' '.join(i),j) for i,j in trigram_list])
 
 # Count number of papers by location
-# print("Number of papers by location: ")
-# geo_distribution(ACL_corpus)
+print("Number of papers by location: ")
+geo_distribution(ACL_corpus)
+
