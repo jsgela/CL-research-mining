@@ -26,11 +26,6 @@ class Corpus(object):
 
     def documents(self):
         """Return a list of all documents in the corpus"""
-<<<<<<< HEAD
-        return sorted([i for i in os.listdir(self.data_root)])
-||||||| merged common ancestors
-	return sorted([i for i in os.listdir(self.data_root)])
-=======
         return sorted([i for i in os.listdir(self.data_root)])
 
     def words_in_file(self, filename):
@@ -48,17 +43,9 @@ class Corpus(object):
         except FileNotFoundError:
             print("The file does not exist.")
         return sent_tokenize(text)
->>>>>>> b146c7362eddfa7e72645b94395ebcd4e91a1341
 
     def tokenized_sentences_in_file(self, filename):
-<<<<<<< HEAD
         """Given a file name, return a list of word tokenized sentences"""
-||||||| merged common ancestors
-	"""Given a file name, return a list of word tokenized sentences"""
-=======
-        """Given a file, return a list of sentences
-         in which each sentence is a list of tokens"""
->>>>>>> b146c7362eddfa7e72645b94395ebcd4e91a1341
         try:
             text = self.data.open(filename).read()
             sent = [word_tokenize(s) for s in sent_tokenize(text)]
@@ -105,11 +92,4 @@ class Corpus(object):
         )
 
     def concordance(self, word):
-<<<<<<< HEAD
         self.text.concordance(word)
-||||||| merged common ancestors
-        self.text.concordance(word)
-=======
-        self.text.concordance(word)
-
->>>>>>> b146c7362eddfa7e72645b94395ebcd4e91a1341
