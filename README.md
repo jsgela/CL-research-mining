@@ -5,3 +5,4 @@ Required packages:
 NLTK
 wordcloud
 json
+bibtexparser
