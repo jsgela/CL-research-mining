@@ -20,8 +20,11 @@ if __name__ == "__main__":
     w_rank_dict = {}
     for i in range(len(mfw_list)):
         w_rank_dict[mfw_list[i][0]] = i
-    w_rank_dict.pop("et")
-    w_rank_dict.pop("al")
+    try:
+        w_rank_dict.pop("et")
+        w_rank_dict.pop("al")
+    except:
+        pass
 
     key_words_1 = []
     key_words_2 = []
