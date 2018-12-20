@@ -1,0 +1,1368 @@
+ 
+
+CRF 
+
+ 
+ Jinwook Choi
+
+1  and
+
+South Korea 
+
+1,2,3
+
+*  
+
+Connecting Distant Entities with Induction through Conditional 
+Random Fields for Named Entity Recognition: Precursor-Induced 
+
+Wangjin Lee
+
+1  Interdisciplinary Program for Bioengineering, Seoul National University, South Korea 
+2  Department of Biomedical Engineering, College of Medicine, Seoul National University, 
+
+3  Institute of Medical and Biological Engineering, Medical Research Center, Seoul National 
+
+University, South Korea 
+
+{jinsamdol,jinchoi}@snu.ac.kr 
+
+ 
+ 
+
+Abstract 
+
+2001; 
+
+. 
+
+as  the  previous  state.  For  example,  a  part-of-
+speech (POS) tag depends on the word itself, as 
+well as the POS tag transitions from the previous 
+word. In the problem, the POS tags are adjacent to 
+each other in a text forming a tag sequence
+fore, the sequence labeling model can fully capture 
+dependencies between labels. 
+
+In contrast, a CRF in named entity recognition 
+
+(NER) cannot fully capture dependencies between 
+named entity (NE) labels. According to Ratinov & 
+Roth (2009), named entities in a text are separated 
+by successive “outside tokens” (i.e., words that are 
+non-named entities syntactically linking two NEs) 
+and considerable number of NEs have a tendency 
+to exist at a distance from each other. Therefore, 
+high-order interdependencies of named entities be-
+tween successive 
+by first-order or second-order transition factors. 
+
+One  major  issue  in  previous  studies  was  con-
+
+cerned with the way in which to explore long-dis-
+tance  dependencies  in  NER.  Only  dependencies 
+between  neighbor  labels  are  generally  used  in 
+practice  because  conventional  high-order  CRFs 
+are  known  to  be  intractable  in  NER  (Ye,  Lee, 
+Chieu,  &  Wu,  2009).  Previous  studies  have 
+demonstrated  that  implementation  of  the  higher-
+order  CRF  exploiting  pre-defined  label  patterns 
+leads  to  slight  performance  improvement  in  the 
+conventional  CRF  in  NER  (Cuong,  Ye,  Lee,  & 
+Chieu,  2014;  Fersini,  Messina,  Felici
+2014; Sarawagi & Cohen, 2005; Ye et al., 2009)
+However, there are certain drawbacks associated 
+with handling named entity transitions within arbi-
+trary length outside tokens. 
+
+In an attempt to utilize long-distance transition 
+
+information of NEs through non-named entity to-
+
+outside
+
+ tokens are not captured 
+
+;  there-
+
+,  &  Roth, 
+
+. 
+
+information 
+
+This paper presents a method of designing 
+specific  high-order  dependency  factor  on 
+the linear chain conditional  random  fields 
+(CRFs) for named entity recognition (NER). 
+Named  entities  tend  to  be  separated  from 
+each other by multiple outside tokens in a 
+text, and thus the first-order CRF, as well as 
+the  second-order  CRF,  may  innately  lose 
+transition 
+between 
+named  entities. The  proposed  design  uses 
+outside label in NER as a transmission me-
+dium of precedent entity information on the 
+CRF.  Then,  empirical  results  apparently 
+demonstrate  that  it  is  possible  to  exploit 
+long-distance label dependency in the orig-
+inal  first-order  linear  chain  CRF  structure 
+upon  NER  while  reducing  computational 
+loss rather than in the second-order CRF. 
+
+distant 
+
+1  Introduction 
+
+(Andrew 
+
+labeling 
+
+sequence 
+
+The concept of conditional random fields (CRFs) 
+(John  Lafferty, Andrew  McCallum,  &  Fernando 
+Pereira,  2001)  has  been  successfully  adapted  in 
+many 
+problems 
+McCallum & Wei Li, 2003; Fei Sha & Fernando 
+Pereira, 
+Lafferty 
+McDonald & Pereira, 2005). Even in deep-learn-
+ing architecture, CRF has been used as a funda-
+mental  element  in  named  entity  recognition 
+(Lample, Ballesteros, Subramanian, Kawakami, & 
+Dyer, 2016; Liu, Tang, Wang, & Chen, 2017)
+
+John 
+
+al., 
+
+et 
+
+2003; 
+
+One of the primary advantages of applying the 
+
+CRF to language processing is that it learns transi-
+tion factors between hidden variables correspond-
+ing to the label of single word. The fundamental 
+assumption of the model is that the current hidden 
+state is conditioned on present observation as well 
+
+ProceedingsoftheSeventhNamedEntitiesWorkshop,pages9–13Melbourne,Australia,July20,2018.c(cid:13)2018AssociationforComputationalLinguistics9kens, this study explores the method which modi-
+fies the first-order linear-chain CRF by using the 
+induction method.
+ 
+
+ 
+
+2  Precursor-induced CRF 
+
+x   is  the  input  (e.g.,  token, 
+
+y is the label sequence of 
+
+ label. By way of illustration, 
+
+outside
+{𝐴, 𝐵, 𝑂} as the hidden state value set; 
+
+𝐴 or  𝐵 to NEs, likewise, assign 
+
+Prior  to  introducing  the  new  model  formulation, 
+the following information presents the general con-
+cept  of  CRF. As  a  sequence  labeling  model,  the 
+conventional CRF models the conditional distribu-
+tion  𝑃(𝒚|𝒙)  in  which 
+word) sequence and 
+hidden state value set consists of target entity labels 
+and a single 
+presume a set 
+assign 
+words. From the hidden state set, a label sequence 
+is formed in a linear chain in NER; for example, a 
+sequence 
+side words are between the two NE words. Because 
+the first-order model assumes that state transition 
+dependencies exist only between proximate two la-
+bels to prevent an increase in computational com-
+plexity,  the  first-order  CRF  learns  bigram  label 
+transitions 
+{(𝐴, 𝑂), (𝑂, 𝑂), (𝑂, 𝐵)}  that  is,
+data learnt from the example sequence. In the ex-
+ample,  dependency 
+model.
+
+subsequence; 
+
+from 
+
+the 
+
+ 
+
+〈𝐴, 𝑂,⋯ 𝑂, 𝐵〉  in  which  successive  out-
+
+(𝐴 ,  𝐵)  is  not  captured  in  the 
+
+x
+
+. A 
+
+𝑂 to outside 
+
+  label 
+
+transition 
+
+The main purpose of the precursor-induced CRF 
+model, introduced in this study, is to capture spe-
+cific high-order named entity dependency that is an 
+outside  word  sequence  between  two  NEs.  The 
+main idea can be explained in the following man-
+ner:
+
+ 
+
+Figure 1: Transformation from conventional 
+CRF to precursor-induced CRF; two entities 
+(polygons) are separated and the only depend-
+
+ency between states are within first-order. 
+
+ 
+
+ 
+
+ 
+
+ It mainly focuses on beneficial use of 
+label as a medium delivering dependency be-
+tween separated NEs.
+
+ 
+
+outside
+
+ 
+
+ Focuses 
+
+on 
+
+label 
+
+subsequence 
+
+hav-
+
+(cid:2878), 𝑒𝑛𝑡𝑖𝑡𝑦〉 pattern. (Fig-
+ing 〈𝑒𝑛𝑡𝑖𝑡𝑦, 𝑜𝑢𝑡𝑠𝑖𝑑𝑒
+ure 1 (a))
+
+ 
+
+ Adds memory element to the hidden varia-
+
+bles for the 
+
+outside
+
+ states (Figure 1(b)). 
+
+  label  in  an  outside  subse-
+
+entity
+
+. If the first 
+
+ The first 
+
+outside
+quence  explicitly  has  a  first-order  depend-
+ency with its adjacent 
+side
+the information possibly flows forward.
+
+ label tosses the information to the next, 
+
+ By induction process, the information of the 
+
+first 
+entity
+labels to the second 
+
+ can flow through multiple 
+
+ 
+
+out-
+
+ 
+
+entity
+
+ state (Figure 1(c)). 
+
+outside
+
+ 
+ 
+
+outside
+
+ state with a 
+
+In the pre-induced CRF, the 
+
+memory  element  behaves  as  if  an  information 
+transmission  medium  is  delivering  information 
+about the presence or absence of the preceding en-
+tity forward. It is required to expand state set. States 
+are  collected  and  only  entity  states  are  selected. 
+Multiplied 
+outside
+cation of entity states and 
+state set is consequently derived as a union of entity 
+states and multiplied 
+
+Turning to the formulation, the conditional prob-
+
+ state set is derived by multipli-
+
+outside 
+
+state. Expanded 
+
+outside
+
+ states.
+
+ 
+
+ability distribution of a label sequence 
+observation 
+
+x  in the CRF has a form as Eq.(1),
+
+y, given an 
+
+ 
+
+ 
+p(𝑦|𝑥)=
+
+(cid:2869)
+
+∙
+(cid:3027)((cid:3051))
+(cid:3012)
+(cid:3038)(cid:2880)(cid:2869)
+
+(cid:3021)
+(cid:3047)(cid:2880)(cid:2869)
+
+k  is generally indicator func-
+
+t  is time step (Sutton & McCallum, 2011). 
+
+k  is an arbitrary feature function having cor-
+
+𝜃(cid:3038), the  𝒵(𝒙) is a partition func-
+
+   
+∏ 𝑒𝑥𝑝(cid:3419)∑ 𝜃(cid:3038)𝑓(cid:3038)(𝑦(cid:3047), 𝑦(cid:3047)(cid:2879)(cid:2869), 𝑥(cid:3047))
+(cid:3423)
+ 
+where f
+responding weight 
+tion, and 
+The feature function f
+tion that has value 1 only if the function is matched 
+to a certain condition, otherwise 0. Transition fac-
+tor  in  CRF  has  a  form  of  function  f
+x)=
+a  function  f
+Eq.(1),  conditional  probability  distribution  of  the 
+precursor-induced  CRF  takes  a  form  as  Eq.(2),
+p(𝑦|𝑥, 𝑎)=
+
+, and observation factor has a form of 
+(y,  y',  x)=
+
+1{y=i}
+
+1{y'=j}
+
+1{y=i}
+
+(cid:2869)
+
+{x=o}
+
+io
+
+1
+
+.  Derived  from 
+
+∙
+(cid:3027)((cid:3051),(cid:3028))
+(cid:3012)
+(cid:3038)(cid:2880)(cid:2869)
+
+(1)
+
+ 
+
+(y,  y', 
+
+ij
+
+ 
+
+ 
+
+(cid:3021)
+(cid:3047)(cid:2880)(cid:2869)
+
+    (2)
+∏ 𝑒𝑥𝑝(cid:3419)∑ 𝜃(cid:3038)𝑓(cid:3038)(𝑦(cid:3047), 𝑦(cid:3047)(cid:2879)(cid:2869), 𝑥(cid:3047), 𝑎(cid:3047), 𝑎(cid:3047)(cid:2879)(cid:2869))
+(cid:3423)
+ 
+where the variable 
+
+a  is to store the induced state 
+
+10 
+
+(Sun, Rumshisky, & Uzuner, 2013), discharge sum-
+maries  of  rheumatism  patients  at  Seoul  National 
+University  Hospital  (SNUH),  and  JNLPBA  2004 
+Bio-Entity  Recognition  shared  task  data  (Kim, 
+Ohta, Tsuruoka, Tateisi, & Collier, 2004). The dis-
+charge  summary  of  rheumatism  patient  corpus  is 
+built for this evaluation. This corpus consists of 200 
+electronic  clinical  documents  where  English  and 
+Korean words are jointly used for recording patient 
+history. We used the division of training and test set 
+provided by the i2b2 2012 and JNLPBA corpus in 
+this  evaluation.  For  the  SNUH  corpus,  10-fold 
+cross validation was used. 
+
+Annotated named entities involved in the clini-
+
+, and 
+
+cal NER evaluation are related to mentions describ-
+ing the patient’s history. In the i2b2 2012 corpus, 
+problem
+,  test
+are used. In the SNUH corpus, 
+nosis
+are used. The named entity classes in the biomedi-
+cal  NER  evaluation  are 
+,  and
+line
+In  the  i2b2  2012  training  data,  9,942  entities 
+
+,  medication
+
+ cell type
+
+treatment
+
+,  and
+
+ procedure-operation 
+
+ named entity classes 
+
+symptom
+
+,  test
+
+,  diag-
+classes 
+
+DNA ,  RNA ,  protein
+
+,   cell 
+
+. 
+
+ state precedence, and approximately 
+
+them 
+
+of 
+, 𝑜𝑢𝑡𝑠𝑖𝑑𝑒(cid:2878), 𝑒𝑛𝑡𝑖𝑡𝑦〉 .  Likewise,  in  SNUH 
+
+pattern 
+
+a 
+
+outside
+
+ prece-
+
+feature setting 1
+
+feature setting 2
+
+ uses the single 
+
+ simultane-
+
+outside
+
+cases 
+
+have 
+63.8% 
+take 
+〈𝑒𝑛𝑡𝑖𝑡𝑦
+corpus, 58.9% cases of NEs having 
+dence have a preceding named entity. Median value 
+of the distance between consecutive entities tend to 
+be within 3-4 in the datasets. The long distance de-
+pendency is restricted within a single instance (i.e., 
+a sentence). 
+
+To perform NER evaluation, two types of feature 
+families are used: (a) token itself and neighbor to-
+kens  in  window  size  3.  In  addition,  morphologi-
+cally normalized tokens are used together. (b) mor-
+phology features such as character prefix and suffix 
+of length 2–4. Our 
+feature family (a) and 
+ously uses both of the feature family (a) and (b). 
+The reason for setting these simple feature config-
+urations is for the purpose of reducing bias that the 
+feature will affect the performance comparison of 
+the models. 
+
+In order to compare the proposed model with the 
+
+conventional CRF, both the first-order and the sec-
+ond-order CRF are used as baseline models. 
+
+〈𝐴, 𝑂,⋯𝑂, 𝐵〉  to  〈𝐴, 𝐴[𝑂](cid:2878),⋯𝐴[𝑂](cid:2878), 𝐵〉 . 
+
+a
+
+t " is activated by 
+
+a
+
+t " is activated, 
+
+y
+
+." 
+
+t
+
+outside
+
+ state
+
+;  for 
+
+{(𝐴[𝑂](cid:2878), 𝐵)} 
+
+𝐴 preceding itself. 
+
+𝑁  new  states.  (if  the 
+
+information, and the value of "
+the value of "
+the "
+
+a
+
+t " eventually transmutes the value of "
+
+This  induction  process  eventually  expands  the 
+
+a
+
+t-1 " and "
+
+y
+
+t " Once the "
+
+states instead of the single 
+
+from the modified example sequence, the 
+
+original label value set. It produces newly induced 
+outside 
+example, the process modifies an original label se-
+quence 
+This transformation helps the CRF learn long-dis-
+tance named entity transitions, even in the first-or-
+der form; 
+model can learn label transition data 
+where entity 
+In terms of the number of newly produced states, 
+when 
+state set consists of NE states and one outside state), 
+this  procedure  introduces 
+IOB2 tagging scheme (Tjong & Sang, 1995) is ap-
+plied,  (𝑁− 1) 2⁄ + 1 new states are introduced). 
+
+=|States| in the original first-order CRF (a 
+
+𝐵 depends on entity 
+
+N
+
+To  train  the  precursor-induced  CRF,  L-BFGS 
+
+l2 -regularization (Ng, 2004) are used as 
+
+optimization method (Fei Sha & Fernando Pereira, 
+2003) and 
+conventional  first-order  CRF  exploits  (Sutton  & 
+McCallum,  2011).  Furthermore,  the Viterbi  algo-
+rithm is used for inference. 
+
+During training and inference, it is also required 
+
+outside
+
+  states  as  a  single 
+
+ label in practice. First, a weight of an ob-
+f
+
+io  depends on the frequency of an 
+
+outside
+
+  state  into  multiple 
+
+outside
+
+ states in training time. To pre-
+
+to  treat  the  fragmented 
+outside
+servation feature 
+observation  as  well  as  co-occurrence  label  data. 
+Fragmenting  a  single 
+states  may  cause  data-sparseness  problems  espe-
+cially for observation features occurring within the 
+fine-grained 
+vent  the  data  sparseness  problem  derived  by  the 
+precursor-induced CRF, observation factor 
+is  customized  as  (
+1{x=o}
+1{y'=1}
+inference time are required to be matched to the la-
+bel  alphabets  of  given  annotation. Therefore,  the 
+fragmented 
+side
+
+ label. 
+
+outside
+
+. Second, the expected label alphabets in 
+
+1{i ∈⌐Outside, 
+
+y=i} 
+
+f
+
+io
++  1{i ∈Outside}
+
+(
+
+y
+
+,
+
+y
+
+',
+
+x
+
+) 
+
+) 
+
+ state reverts to the original 
+
+out-
+
+3  Experiments 
+
+1
+
+. The activity refers to CRF implemented in 
+
+All the experiments were performed by imple-
+menting  both  the  original  and  precursor-induced 
+CRF
+MALLET (Andrew Kachites McCallum, 2002). To 
+compare precursor-induced CRF with the original 
+CRF in NER on the real-world clinical documents 
+and  biomedical  literatures,  three  annotated  NER 
+corpus we
+re used; 
+                                                      
+1  https://github.com/jinsamdol/precursor-induced_CRF 
+
+i2b2 2012 NLP shared task data 
+
+11Model 
+
+i2b2 2012 
+
+P 
+
+77.04 
+
+ 
+
+JNLPBA 2004 
+
+R 
+
+63.88
+
+63.35
+
+F 
+
+69.84
+
+68.56
+
+ 
+
+ 
+
+P 
+ 
+
+ 
+
+66.27
+
+68.03
+
+SNUH 
+
+F 
+
+R 
+
+P 
+
+ 
+
+62.61
+
+ 
+
+  63.53 
+
+64.39
+
+65.70
+
+R 
+
+82.42
+
+83.27
+
+ 
+
+ 
+
+F 
+
+73.81
+
+75.45
+
+ 
+
+ 
+
+ 
+
+ 
+
+77.85
+
+79.14
+
+ 
+
+ 
+
+  65.13  70.25  69.23 
+
+75.73 
+
+  71.15 
+
+62.54
+
+69.43
+
+67.26
+
+  65.71  83.73  75.83  79.57 
+
+ 
+
+ 
+
+68.39
+
+67.19
+
+ 
+
+ 
+
+84.83
+
+84.88
+
+ 
+
+ 
+
+80.30
+
+79.15
+
+ 
+
+ 
+
+82.49
+
+81.90
+
+ 
+
+ 
+
+67.38
+
+67.12
+
+ 
+
+ 
+
+ 
+
+74.72
+
+76.25
+
+74.32
+
+75.41
+
+ 
+
+ 
+
+ 
+
+ 
+
+67.09
+
+65.01
+
+ 
+
+  67.14 
+
+Fea-
+ture set
+
+Set 1 
+(a) 
+
+Set 2 
+(a)+(b)
+
+ 
+
+ 
+
+ 
+
+first-order CRF 
+second-order 
+CRF 
+pre-induced CRF
+
+first-order CRF 
+Second-order 
+CRF 
+pre-induced CRF
+
+Table 1: Overall performance comparison. Shaded cells: baseline models. Bolded values: best per-
+
+formance within the comparison group (P: precision, R: recall, F: F
+
+ 
+
+The performance comparison result is shown in 
+the Table 1. The result shows a tendency that pre-
+cursor-induced (pre-induced) CRF leads to a slight 
+performance  improvement  compared  to  both  the 
+first-order and second-order CRFs in  most cases. 
+However, the overall improvement is small. 
+
+Table 2 compares the elapsed time per iteration 
+in  parameter  training  for  each  model.  The  result 
+shows that the second-order CRF takes quite more 
+time than the first-order CRF to compute one train-
+ing iteration. The pre-induced CRF takes 1.7 times 
+more computation time than the first-order CRF in 
+average. The pre-induced CRF takes significantly 
+less time than the second-order CRF while the pre-
+induced  CRF  exploits  longer  label  transition  de-
+pendency than the second-order CRF. 
+
+These results indicate that the precursor-induced 
+CRF,  where  long-distance  dependency  is  intro-
+duced in CRF by label induction, slightly improves 
+the effectiveness  in  clinical  and  biomedical  NER 
+while  also  significantly  reducing  computational 
+cost  rather  than  building  second-  or  higher-order 
+CRFs. 
+
+i2b2
+
+3.97
+
+ 
+
+30.34
+
+6.55
+
+Table 2: Elapsed training time (s/iteration)
+
+Model 
+first-order 
+second-order
+pre-induced 
+
+ 
+
+ 
+
+4  Conclusion 
+
+The requirement utilizing high-order dependen-
+
+cies  often  holds  in  sequence  labeling  problems
+however, second-order or higher-order models are 
+
+ 
+
+JNLPBA
+
+ 
+ 
+ 
+
+497.15
+
+39.39
+
+69.78
+
+ 
+ 
+ 
+ 
+
+SNUH 
+
+87.49
+
+5.44
+
+9.08
+
+69.35
+
+71.04
+
+ 
+ 
+ 
+ 
+
+; 
+
+  68.86  69.50  69.18  84.95  80.45  82.63 
+
+-score). 
+
+1
+
+out-
+
+outside
+
+ labels by induc-
+
+  labels  as  precedent  NE  infor-
+
+considered  computationally  infeasible. Therefore, 
+this study focuses on beneficial use of single 
+side
+ label as a medium delivering long-distance de-
+pendency.  The  design  of  the  precursor-induced 
+CRF apparently allows precedent named entity in-
+formation to pass through 
+tion, even when the model maintains a first-order 
+template. Although the performance improvement 
+is small in both the clinical and biomedical NER 
+evaluations, this study has shown that the proposed 
+design enables reduced computational cost in uti-
+lizing long-distance label dependency compared to 
+the second-order CRF. 
+
+ Evidence from this study suggests that the utili-
+outside
+
+zation  of 
+mation transmission medium presumably can en-
+hance the expressiveness of the CRF while keeping 
+the first-order template. Considerable work is re-
+quired to validate the model. For example, the val-
+idation of the precursor-induced CRF in deep neu-
+ral architecture for NER, such as the LSTM-CRF 
+neural  architecture (Lample  et  al.,  2016),  will  be 
+worth performing in the future. In addition, valida-
+tion of the model in various problems, such as NER 
+in general domain (Tjong, Sang, & Meulder, 2003) 
+and de-identification problem of personal health in-
+formation  in  clinical  natural  language  processing 
+(Stubbs,  Filannino,  &  Uzuner,  2017;  Stubbs, 
+Kotfila, & Uzuner, 2015), will be performed in the 
+future study. 
+
+Acknowledgements 
+This work was supported by the Basic Science Re-
+search  Program  through  the  National  Research 
+Foundation of Korea (NRF) funded by the Ministry 
+of Education (No. NRF-2015R1D1A1A01058075), 
+
+12 
+
+network  and  conditional  random  field. 
+Biomedical Informatics
+
+McDonald, R., & Pereira, F. (2005). Identifying gene 
+
+and  protein  mentions  in  text  using  conditional 
+random fields. 
+https://doi.org/10.1186/1471-2105-6-S1-S6 
+
+BMC Bioinformatics
+
+Ng,  A.  Y.  (2004).  Feature  selection,  L1  vs.  L2 
+
+regularization,  and  rotational  invariance.  In 
+2004. 
+
+Ratinov, L., & Roth, D. (2009). Design challenges and 
+
+of 
+
+the 
+
+misconceptions  in  named  entity  recognition.  In 
+Proceedings 
+Thirteenth  Conference 
+Computational  Natural  Language  Learning
+147–155). 
+
+on 
+
+Sarawagi, S., & Cohen, W. W. (2005). Semi-Markov 
+Fields 
+
+Random 
+
+Conditional 
+Extraction.  In 
+processing systems
+
+Stubbs, A., Filannino, M., & Uzuner, Ö. (2017). De-
+
+for 
+
+Information 
+
+Advances  in  neural  information 
+
+ (pp. 1185–1192). 
+
+records: 
+
+of 
+
+psychiatric 
+
+identification 
+intake 
+Overview  of  2016  CEGS  N-GRID  shared  tasks 
+Track 1. 
+S18. 
+
+Journal of Biomedical Informatics
+
+.  
+
+Journal  of 
+
+,  6 Suppl 1
+
+, S6. 
+
+ICML 
+
+  (pp. 
+
+,  75, S4–
+
+Stubbs, 
+
+& 
+
+Ö. 
+
+C., 
+
+Uzuner, 
+
+Kotfila, 
+
+A., 
+(2015). 
+Automated  systems  for  the  de-identification  of 
+longitudinal  clinical  narratives:  Overview  of  2014 
+i2b2/UTHealth  shared  task  Track  1. 
+Biomedical Informatics
+
+Journal  of 
+
+,  58, S11–S19.  
+
+Sun,  W.,  Rumshisky,  A.,  &  Uzuner,  O.  (2013). 
+
+Evaluating temporal relations in clinical text: 2012 
+i2b2  Challenge. 
+Informatics Association : JAMIA
+
+Journal  of  the  American  Medical 
+
+Sutton, C., & McCallum, A. (2011). An Introduction to 
+Fields. 
+Machine  Learning
+
+Conditional 
+Random 
+Trends 
+in 
+https://doi.org/10.1561/2200000013 
+
+Tjong,  E.  F.,  &  Sang,  K.  (1995).  Representing  Text 
+
+Chunks, 173–179. 
+
+Tjong,  E.  F.,  Sang,  K.,  &  Meulder,  F.  De.  (2003). 
+
+Introduction  to  the  CoNLL-2003  Shared  Task : 
+Language-Independent Named Entity Recognition. 
+In 
+language learning at HLT-NAACL 2003
+147). 
+
+Proceedings of the seventh conference on Natural 
+
+High-Order 
+
+Ye,  N.,  Lee,  W.  S.,  Chieu,  H.  L.,  &  Wu,  D.  (2009). 
+with 
+
+Random 
+
+Fields 
+
+Conditional 
+Features  for  Sequence  Labeling.  In 
+Neural Information Processing Systems
+2204). 
+
+, 1–8.  
+
+Foundations 
+,  4(4), 
+
+and 
+267–373. 
+
+ (pp. 142–
+
+Advances  in 
+ (pp. 2196–
+
+and also supported by a grant of the Korea Health 
+Technology R&D Project through the Korea Health 
+Industry  Development  Institute  (KHIDI),  funded 
+by the Ministry of Health & Welfare, Republic of 
+Korea (grant number : HI14C1277). Deidentified 
+English clinical records used in this research were 
+provided by the i2b2 National Center for Biomedi-
+cal Computing funded by U54LM008748 and were 
+originally prepared for the Shared Tasks for Chal-
+lenges in NLP for Clinical Data organized by Dr. 
+Ozlem Uzuner, i2b2 and SUNY. 
+
+References  
+Andrew  Kachites  McCallum.  (2002).  MALLET:  A 
+
+Machine Learning for Language Toolkit. Retrieved 
+March 27, 2013, from http://mallet.cs.umass.edu 
+
+Andrew  McCallum,  & Wei Li. (2003). Early Results 
+
+for  Named  Entity  Recognition  with  Conditional 
+Random  Fields  ,  Feature  Induction  and  Web-
+Enhanced Lexicons. In 
+(pp. 188–191). 
+
+Cuong,  N.  V.,  Ye,  N.,  Lee,  W.  S.,  &  Chieu,  H.  L. 
+
+Proceeding of CoNLL 2003
+
+ 
+
+(2014). Conditional Random Field with High-order 
+Dependencies 
+Sequence 
+Segmentation. 
+
+for 
+
+Labeling 
+
+and 
+
+ACM JMLR
+
+,  15, 981–1009. 
+
+Fei Sha, & Fernando Pereira. (2003). Shallow Parsing 
+with Conditional Random Fields. In 
+the 2003 Conference of the North American Chapter 
+of the Association for Computational Linguistics on 
+Human Language Technology
+
+Proceedings of 
+
+ (pp. 134–141). 
+
+Fersini, E., Messina, E., Felici, G., & Roth, D. (2014). 
+for 
+
+inference 
+
+Soft-constrained 
+Recognition. 
+Management
+
+Named 
+
+Entity 
+
+Information 
+,  50(5), 807–819.  
+
+Processing 
+
+and 
+
+John Lafferty, Andrew McCallum, & Fernando Pereira. 
+
+(2001).  Conditional  Random  Fields :  Probabilistic 
+Models  for  Segmenting  and  Labeling  Sequence 
+Data.  In 
+Conference  on  Machine  Learning  2001
+289). 
+
+Proceedings  of  the  18th  International 
+
+Kim,  J.-D.,  Ohta,  T.,  Tsuruoka,  Y.,  Tateisi,  Y.,  & 
+Collier,  N.  (2004).  Introduction  to  the  bio-entity 
+recognition  task  at  JNLPBA. 
+International Joint Workshop on Natural Language 
+Processing  in  Biomedicine  and  Its  Applications  - 
+JNLPBA ’04
+
+, 70. 
+
+  (pp.  282–
+
+Proceedings  of  the 
+
+Lample, 
+
+& 
+
+M., 
+
+Dyer, 
+
+Ballesteros, 
+K., 
+
+Subramanian, 
+C. 
+
+S., 
+G., 
+Kawakami, 
+(2016). 
+Architectures  for  Named  Entity  Recognition.  In 
+Proceedings of NAACL-HLT 2016
+
+Neural 
+
+Liu, Z., Tang, B., Wang, X., & Chen, Q. (2017). De-
+
+identification of clinical  notes via recurrent neural 
+
+ (pp. 260–270). 
+
+ 
+
+13

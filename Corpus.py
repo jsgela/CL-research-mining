@@ -26,19 +26,46 @@ class Corpus(object):
 
     def documents(self):
         """Return a list of all documents in the corpus"""
+<<<<<<< HEAD
+        return sorted([i for i in os.listdir(self.data_root)])
+||||||| merged common ancestors
+	return sorted([i for i in os.listdir(self.data_root)])
+=======
         return sorted([i for i in os.listdir(self.data_root)])
 
-    def tokenized_sentences_in_file(self, filename):
-        """Given a file name, return a list of word tokenized sentences"""
+    def words_in_file(self, filename):
+        """Given a file, return a list of tokenized words"""
         try:
             text = self.data.open(filename).read()
-            sent = []
-            for s in sent_tokenize(text):
-                sent.append(word_tokenize(s))
+        except FileNotFoundError:
+            print("The file does not exist.")
+        return word_tokenize(text)
+
+    def sentences_in_file(self, filename):
+        """Given a file, return a list of sentences"""
+        try:
+            text = self.data.open(filename).read()
+        except FileNotFoundError:
+            print("The file does not exist.")
+        return sent_tokenize(text)
+>>>>>>> b146c7362eddfa7e72645b94395ebcd4e91a1341
+
+    def tokenized_sentences_in_file(self, filename):
+<<<<<<< HEAD
+        """Given a file name, return a list of word tokenized sentences"""
+||||||| merged common ancestors
+	"""Given a file name, return a list of word tokenized sentences"""
+=======
+        """Given a file, return a list of sentences
+         in which each sentence is a list of tokens"""
+>>>>>>> b146c7362eddfa7e72645b94395ebcd4e91a1341
+        try:
+            text = self.data.open(filename).read()
+            sent = [word_tokenize(s) for s in sent_tokenize(text)]
         except FileNotFoundError:
             print("The file does not exist.")
         return sent
-    
+
     def most_frequent_content_words(self, n_words):
         """Return a list with the most frequent content words and their
         frequencies in (word, frequency) pairs ordered by frequency"""
@@ -48,6 +75,9 @@ class Corpus(object):
         return content_words_dict.most_common(n_words)
 
     def most_frequent_bigrams(self, n_bigrams):
+        """Return a list with the most frequent bigrams of content words
+        in the form of pairs where the first element is the bigram and
+        the second is its frequency"""
         bigram_dict = FreqDist([k for k in bigrams(self.words)if k[0].isalpha()
             and k[1].isalpha() and len(k[0])>1 and len(k[1])>1 \
             and k[0] not in self.stop and k[1] not in self.stop])
@@ -75,4 +105,11 @@ class Corpus(object):
         )
 
     def concordance(self, word):
+<<<<<<< HEAD
         self.text.concordance(word)
+||||||| merged common ancestors
+        self.text.concordance(word)
+=======
+        self.text.concordance(word)
+
+>>>>>>> b146c7362eddfa7e72645b94395ebcd4e91a1341

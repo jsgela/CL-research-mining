@@ -1,0 +1,209 @@
+SIGMORPHON2018The15thSIGMORPHONWorkshoponComputationalResearchinPhonetics,Phonology,andMorphologyProceedingsoftheWorkshopOctober31,2018Brussels,Belgiumii
+
+c(cid:13)2018TheAssociationforComputationalLinguisticsOrdercopiesofthisandotherACLproceedingsfrom:AssociationforComputationalLinguistics(ACL)209N.EighthStreetStroudsburg,PA18360USATel:+1-570-476-8006Fax:+1-570-476-0860acl@aclweb.orgISBN978-1-948087-76-6iii
+
+PrefaceWelcometothe15thSIGMORPHONWorkshoponComputationalResearchinPhonetics,Phonology,andMorphology,tobeheldonOctober31,2018inBrussels,Belgium.Theworkshopaimstobringtogetherresearchersinterestedinapplyingcomputationaltechniquestoproblemsinmorphology,phonology,andphonetics.Ourprogramthisyearhighlightstheongoingandimportantinteractionbetweenworkincomputationallinguisticsandworkintheoreticallinguistics.Thisyear,however,anewfocusonlowresourceapproachestomorphologyisemergingasaconsequenceoftheSIGMORPHON2016andCoNLLsharedtasksonmorphologicalreinﬂectionacrossawiderangeoflanguages.Wereceived36submissions,andafteracompetitivereviewingprocess,weaccepted19.Duetotimelimitations,6paperswerechosenfororalpresentations,theremainingpapersarepresentedasposters.TheworkshopalsoincludesajointpostersessionwithCoNLL,ontheCoNLL–SIGMORPHON2018SharedTask:UniversalMorphologicalReinﬂection.Wearegratefultotheprogramcommitteefortheircarefulandthoughtfulreviewsofthepaperssubmittedthisyear.Wearelookingforwardtoaworkshopcoveringawiderangeoftopics,andwehopeforlivelydiscussions.SandraKüblerGarrettNicolaiv
+
+Organizers:SandraKübler,UniversityofIndianaGarrettNicolai,JohnsHopkinsUniversityProgramCommittee:NoorAboMokh,IndianaUniversityAdamAlbright,MITJaneChandlee,HaverfordCollegeÇa˘grıÇöltekin,UniversityofTübingenRyanCotterell,JohnsHopkinsUniversityDanielDakota,IndianaUniversityThierryDeclerck,DFKIEwanDunbar,LaboratoiredeSciencesCognitivesetPsycholinguistique,ParisJasonEisner,JohnsHopkinsUniversityMichaElsner,TheOhioStateUniversitySharonGoldwater,UniversityofEdinburghKyleGorman,GoogleNizarHabash,NYUAbuDhabiMikeHammond,UniversityofArizonaMansHulden,UniversityofColoradoAdamJardine,RutgersUniversityGajaJarosz,UniversityofMassachusettsAmherstChristoKirov,JohnsHopkinsUniversityGregKobele,UniversityofChicagoGrzegorzKondrak,UniversityofAlbertaKimmoKoskenniemi,UniversityofHelsinkiAndrewLamont,UniversityofMassachusettsAmherstKarenLivescu,TTIChicagoAryaMcCarthy,JohnsHopkinsUniversityKevinMcMullin,UniversityofOttawaKemalOﬂazer,CMUQatarJeffParker,BrighamYoungUniversityGeraldPenn,UniversityofTorontoJelenaProkic,Ludwig-Maximilians-UniversityMunichMohamadSalameh,CMU-QatarMiikkaSilfverberg,UniversityofColoradoAndreaSims,TheOhioStateUniversityKairitSirts,MacquarieUniversityRichardSproat,GoogleKennethSteimel,IndianaUniversityReutTsarfaty,TheOpenUniversityofIsraelFrancisTyers,HigherSchoolofEconomicsRichardWicentowski,SwarthmoreUniversityAnssiYli-Jyrä,UniversityofHelsinkiKristineYu,UniversityofMassachusettsAmherstTable of Contents
+
+Efﬁcient Computation of Implicational Universals in Constraint-Based Phonology Through the Hyper-
+plane Separation Theorem
+
+Giorgio Magri . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+
+Lexical Networks in !Xung
+
+Syed-Amad Hussain, Micha Elsner and Amanda Miller. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .11
+
+Acoustic Word Disambiguation with Phonogical Features in Danish ASR
+
+Andreas Søeborg Kirkedal . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+
+Adaptor Grammars for the Linguist: Word Segmentation Experiments for Very Low-Resource Languages
+Pierre Godard, Laurent Besacier, François Yvon, Martine Adda-Decker, Gilles Adda, Hélène May-
+nard and Annie Rialland . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+
+String Transduction with Target Language Models and Insertion Handling
+
+Garrett Nicolai, Saeed Najaﬁ and Grzegorz Kondrak . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+
+Complementary Strategies for Low Resourced Morphological Modeling
+
+Alexander Erdmann and Nizar Habash . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 54
+
+Modeling Reduplication with 2-way Finite-State Transducers
+
+Hossep Dolatian and Jeffrey Heinz . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 66
+
+Automatically Tailoring Unsupervised Morphological Segmentation to the Language
+
+Ramy Eskander, Owen Rambow and Smaranda Muresan . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 78
+
+A Comparison of Entity Matching Methods between English and Japanese Katakana
+
+Michiharu Yamashita, Hideki Awashima and Hidekazu Oiwa. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .84
+
+Seq2Seq Models with Dropout can Learn Generalizable Reduplication
+
+Brandon Prickett, Aaron Traylor and Joe Pater . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 93
+
+A Characterwise Windowed Approach to Hebrew Morphological Segmentation
+
+Amir Zeldes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 101
+
+Phonetic Vector Representations for Sound Sequence Alignment
+
+Pavel Sofroniev and Ça˘grı Çöltekin. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .111
+
+Sounds Wilde. Phonetically Extended Embeddings for Author-Stylized Poetry Generation
+
+Aleksey Tikhonov and Ivan Yamshchikov . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 117
+
+On Hapax Legomena and Morphological Productivity
+
+Janet Pierrehumbert and Ramon Granell . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 125
+
+A Morphological Analyzer for Shipibo-Konibo
+
+Ronald Cardenas and Daniel Zeman . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 131
+
+An Arabic Morphological Analyzer and Generator with Copious Features
+
+Dima Taji, Salam Khalifa, Ossama Obeid, Fadhl Eryani and Nizar Habash . . . . . . . . . . . . . . . . . . 140
+
+Sanskrit n-Retroﬂexion is Input-Output Tier-Based Strictly Local
+
+Thomas Graf and Connor Mayer . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 151
+
+vii
+
+Phonological Features for Morphological Inﬂection
+
+Adam Wiemerslage, Miikka Silfverberg and Mans Hulden . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 161
+
+Extracting Morphophonology from Small Corpora
+
+Marina Ermolaeva . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 167
+
+viii
+
+Conference Program
+
+Wednesday, October 31
+
+08:50–09:00
+
+Session Opening: Opening Session
+
+09:00–10:30
+
+Session 1: Phonology
+
+09:00–09:30
+
+Efﬁcient Computation of Implicational Universals in Constraint-Based Phonology
+Through the Hyperplane Separation Theorem
+Giorgio Magri
+
+09:30–10:00
+
+Lexical Networks in !Xung
+Syed-Amad Hussain, Micha Elsner and Amanda Miller
+
+10:00–10:30
+
+Acoustic Word Disambiguation with Phonogical Features in Danish ASR
+Andreas Søeborg Kirkedal
+
+10:30–11:00 Tea Break 1
+
+11:00–12:30
+
+Session ST: CoNLL – SIGMORPHON 2018 Shared Task: Universal Morpho-
+logical Reinﬂection
+
+12:30–14:00 Lunch
+
+ix
+
+Wednesday, October 31
+
+14:00–15:30
+
+Session 2: Low-Resource Morphology
+
+14:00–14:30
+
+Adaptor Grammars for the Linguist: Word Segmentation Experiments for Very Low-
+Resource Languages
+Pierre Godard, Laurent Besacier, François Yvon, Martine Adda-Decker, Gilles
+Adda, Hélène Maynard and Annie Rialland
+
+14:30–15:00
+
+String Transduction with Target Language Models and Insertion Handling
+Garrett Nicolai, Saeed Najaﬁ and Grzegorz Kondrak
+
+15:00–15:30 Complementary Strategies for Low Resourced Morphological Modeling
+
+Alexander Erdmann and Nizar Habash
+
+15:30–16:00 Tea Break 2
+
+16:00–17:30
+
+Session P: Poster Session
+
+Modeling Reduplication with 2-way Finite-State Transducers
+Hossep Dolatian and Jeffrey Heinz
+
+Automatically Tailoring Unsupervised Morphological Segmentation to the Lan-
+guage
+Ramy Eskander, Owen Rambow and Smaranda Muresan
+
+A Comparison of Entity Matching Methods between English and Japanese
+Katakana
+Michiharu Yamashita, Hideki Awashima and Hidekazu Oiwa
+
+Seq2Seq Models with Dropout can Learn Generalizable Reduplication
+Brandon Prickett, Aaron Traylor and Joe Pater
+
+A Characterwise Windowed Approach to Hebrew Morphological Segmentation
+Amir Zeldes
+
+Phonetic Vector Representations for Sound Sequence Alignment
+Pavel Sofroniev and Ça˘grı Çöltekin
+
+x
+
+Wednesday, October 31 (continued)
+
+Sounds Wilde. Phonetically Extended Embeddings for Author-Stylized Poetry Gen-
+eration
+Aleksey Tikhonov and Ivan Yamshchikov
+
+On Hapax Legomena and Morphological Productivity
+Janet Pierrehumbert and Ramon Granell
+
+A Morphological Analyzer for Shipibo-Konibo
+Ronald Cardenas and Daniel Zeman
+
+An Arabic Morphological Analyzer and Generator with Copious Features
+Dima Taji, Salam Khalifa, Ossama Obeid, Fadhl Eryani and Nizar Habash
+
+Sanskrit n-Retroﬂexion is Input-Output Tier-Based Strictly Local
+Thomas Graf and Connor Mayer
+
+Phonological Features for Morphological Inﬂection
+Adam Wiemerslage, Miikka Silfverberg and Mans Hulden
+
+Extracting Morphophonology from Small Corpora
+Marina Ermolaeva
+
+17:30–17:40
+
+Session Closing: Closing Session
+
+xi
+
+

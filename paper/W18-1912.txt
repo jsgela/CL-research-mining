@@ -1,0 +1,2734 @@
+MT for L10n: 
+How we build and 
+evaluate MT systems 
+at eBay
+March 2017
+
+Jose Luis Bonilla Sánchez - MTLS Manager
+
+Contributors:
+Silvio Picinini (MTLS team)
+Kantan team
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 113n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+Eyebrow Baseline
+
+Headline Baseline
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+MT for L10n: How we build 
+and evaluate MT systems at eBay
+
+Marketplace
+
+Horizontal Center
+
+Agenda
+
+The L10n 
+Roadmap
+
+The Master 
+
+Pilot
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Phase I: 
+Engine 
+
+Building & 
+
+Report-based 
+Evaluation
+
+Phase II: 
+Human
+
+Evaluation
+
+Conclusions
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 114n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+Eyebrow Baseline
+
+Headline Baseline
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Horizontal Center
+
+The eBay L10n Roadmap
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 115n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+
+n
+g
+
+i
+l
+
+A
+
+C
+
+l
+
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+L10n Roadmap: MT for All eBay-created content (Help, UI, CS…)
+
+2017
+
+Vendor Human
+
+Translation
+
+Review by eBay
+
+Linguist
+
+2018
+
+MT
+
+Vendor MAHT
+
+Review by eBay
+
+Linguist
+
+END
+GAME
+
+MT
+
+Review by eBay
+
+Linguist
+
+Our Roadmap’s Keystone: Building a reliable Master Pilot for all future projects
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts.
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 116n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+Eyebrow Baseline
+
+Headline Baseline
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Horizontal Center
+
+The Master Pilot:
+A Multi-Variant, 
+Quality/Productivity Test
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 117n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Master Pilot for MT Evaluation
+
+2017 Q3/4
+
+Build and Tune 
+MT Systems
+
+2017 Q4 /
+2018 Q1
+
+Evaluate Systems
+
+Horizontal Center
+
+Build Stage
+
+- Partnering with our internal 
+client (Customer Support) and 
+external vendors (Kantan)
+
+- Building and tuning SMT 
+and NMT systems
+
+Evaluation Stage
+
+Principles:
+
+Multi-dimensional: 
+- Error Analysis
+- Quality and Productivity 
+- Data Correlation
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+2018 Q1
+
+Pick winner, 
+
+Draw 
+
+Conclusions for 
+
+the Future
+
+Conclusions
+For the pilot: Best engine?
+For future pilots: Best process & KPIs?
+For the industry: 
+- Best evaluation method? (Or 
+
+combination thereof)
+
+For eBay L10n: 
+How to engage linguists and best 
+leverage their skills?
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 118n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Factors that Decided Us for Our Partner - KantanMT
+
+Engine Building & 
+
+Customization
+
+Quality Measurement 
+(BLEU, F-Measure, 
+
+TER, Human 
+Evaluation…)
+
+API Integration
+
+Quick Deployment
+
+Performance 
+Measurement
+
+KantanMT
+
+A one-stop shop
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 119n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+Eyebrow Baseline
+
+Headline Baseline
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Horizontal Center
+
+Phase I: 
+Engine Building 
+& Report-Based Evaluation 
+with Kantan
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 120n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Building & Evaluating Engines – The Workflow
+
+Building 
+Engine
+
+Refining
+Engine
+
+Horizontal Center
+
+Provide 
+Data
+
+Analyze 
+Automated 
+
+Quality 
+Reports
+
+Prune & 
+Fix Data
+
+Baseline 
+Engine
+
+PE/Error 
+Annotation
+
+Fix Issues 
+(Rules, 
+Corpus)
+
+Ready 
+for HE
+
+Re-Train Engine
+
+Re-Train Engine
+
+The MT does not know the proper terminology for a subject.
+
+WE FOLLOWED THIS PROCESS FOR BOTH PHRASE-BASED 
+
+AND NEURAL MT SYSTEMS
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 121n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+Baseline Engine – Evaluation Based on Automated Reports
+Reports produced by:
+- Vetting training corpora 
+- Comparing MT output with the human-translated Reference.
+Goal: Finding and fixing major errors to reach threshold scores for Baseline Engine.
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+10
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 122n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Engine Refinement – Linguistic Quality Review
+
+Building 
+Engine
+
+Refining
+Engine
+
+Horizontal Center
+
+Provide 
+Data
+
+Analyze 
+Automated 
+
+Quality 
+Reports
+
+Prune & 
+Fix Data
+
+Baseline 
+Engine
+
+PE/Error 
+Annotation
+
+Fix Issues 
+(Rules, 
+Corpus)
+
+Ready 
+for HE
+
+Re-Train Engine
+
+Re-Train Engine
+
+The MT does not know the proper terminology for a subject.
+
+NOW WE HAVE A BASELINE ENGINE READY, WE HAVE EXPERT 
+LINGUISTS PERFORM A MORE GRANULAR EVALUATION, IN 2 STAGES.
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 123n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Engine Refinement - Details
+
+First “Real World” MT translation
+
+MT
+
+Translation
+
+Horizontal Center
+
+Post-
+Edited
+Content
+
+Error 
+Analysis
+
+- 3 EVALUATORS: 2 L10N LINGUISTS AND 1 FINAL CLIENT (CS) REPRESENTATIVE
+
+Baseline for Footnotes
+
+- 2 ROUNDS TO REACH ACCEPTABLE OUTPUT FOR BENCHMARKING
+
+12
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 124n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Engine Refinement – An Effective Error Typology
+Error Typology for MT-translated content (DQF-MQM customized subset)
+
+Category
+
+Terminology
+
+Accuracy
+
+Sub-category
+
+Definition
+
+Action
+
+Omission
+
+Do-not-translate
+
+Untranslated
+
+Terminology issues relate to the use of 
+domain- or organization-specific 
+terminology
+
+Add more terms to glossary / add new 
+glossaries
+
+Translation omits source information
+
+Find out why MT omits information
+
+Term that should stay untranslated is 
+translated
+
+Add terms to NTA list /Tag them in pre-
+processing
+
+Term that should be translated stays 
+untranslated
+
+Find out in what areas; we may need 
+additional corpora (what kind?)
+
+Mistranslation
+
+Term incorrectly translated
+
+Find out whether there is a pattern
+
+Fluency
+
+Grammar - word form
+
+Morphological problem - E.g. “has 
+becomed” instead of “became”.
+
+Fix in corpora / with PEX rules
+
+Grammar - word order
+
+Bad word order
+
+Fix in engine / with PEX rules
+
+Locale
+
+Format problems - measurement, currency, 
+date/time, address, telephone...
+
+The text does not adhere to locale-specific 
+mechanical conventions and violates 
+requirements for the presentation of 
+content in the target locale.
+
+Fix with PEX rules
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+13
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 125n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Engine Refinement – An Effective Error Typology
+Error Typology for Source Content (DQF-MQM customized subset)
+
+Category
+Ambiguity
+
+Sub-category Definition
+
+The text is ambiguous in its meaning. 
+
+Grammar
+
+Function words, word-form, word-order. Typos affecting MT 
+translation. 
+
+Action 
+Look for a pattern – always identify the error cause when possible. Examples:
+- Misused punctuation (e.g. “we had problems, coming home” vs “we had 
+problems; coming home”; “high end designer item” vs “high-end designer 
+item”)
+- Overuse of the -ing form (“I will want you to study after watching TV” can 
+mean “after I watch TV” or “after you watch TV”)
+- Wrong capitalization (e.g. with a UI element: “Employment Fraud” vs 
+“employment fraud”. Makes it difficult to recognize if this is a UI element (and 
+should stay in English) or not)
+- Others
+
+Look for a pattern (gender/number disagreements, incorrect word order that 
+may cause MT problems)
+Examples:
+- high end designer item vs high-end designer item
+-> Missing hyphen
+- 3day duration
+->  Missing space grammar error
+
+Terminology
+
+Design - Markup Markup
+
+Inconsistency - multiple words for one concept. Lack of consistency 
+may produce incorrect MT translations, especially in Neural MT.
+
+Provide recommended term.
+
+Issues related to “markup” (codes used to represent structure or 
+formatting of text, also known as “tags”). Wrong markup can cause 
+tags to be exposed for translation, or missing, which causes a loss 
+of meaning. 
+
+Report for content creators to fix. When in doubt as to whether the missing 
+content is a placeholder, use the Ambiguity error type.
+Examples:
+- Full URLs: “ATO 
+%20UK%20Communication%20Preferences%20Change.png" />”
+- Missing placeholders: “Actively selling when   occurs”
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+14
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 126n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Engine Refinement Results – SMT vs NMT Errors
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Total errors
+
+1501
+
+NMT
+
+603
+
+40%
+
+SMT
+
+898
+
+60%
+
+CONCLUSIONS:
+NMT produces considerably less errors than SMT
+NMT matches or beats SMT in all areas except omissions
+NMT performs specially well in grammar (morphology, word order), i.e. Fluency
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 127n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+Eyebrow Baseline
+
+Headline Baseline
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Horizontal Center
+
+Phase II: 
+Human Evaluation:
+Benchmarking 
+SMT vs NMT vs HT
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 128n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Benchmarking Flow – SMT, ΝΜΤ and HT
+
+Sample 
+Data
+
+Quality
+Test
+
+Productivity 
+
+Test
+
+Sanity 
+Check
+
+Features
+
+800 representative 
+
+segments
+
+Data 
+Points
+
+3 segment lengths 
+
+(long, medium,
+
+short)
+
+1-5 Scale
+
+Blind randomized test 
+NMT vs SMT vs HT
+
+Adequacy
+Fluency
+
+Overall Quality
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+A/B Test (Human Translation vs 
+
+PE)
+
+Winner MT vs HT
+
+1-5 Scale 
+
+Linguistic Quality 
+
+Assurance
+
+Time spent - HT
+Time spent - PE
+
+PE ED
+
+Final Quality Score
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 129n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Data for Quality and Productivity: A Representative Sample
+
+Horizontal Center
+
+By Silvio Picinini, eBay BPT MTLS
+
+Our sample mirrors the CS TM length distribution:
+- Short segments (1-4 words): little context
+- Medium segments (6-12 words) simple full 
+sentences
+- Long segments (13-35 words) complex sentences
+
+5 sets of  short-medium-long segments:
+- 2 for post-editing 
+- 1 for human translation (to compare with PE)
+- 1 for human evaluation
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 130f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Benchmarking: Quality
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 131n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Quality Evaluation Stage
+
+Horizontal Center
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+WHERE
+Kantan AB Test Tool: 
+- Simple, easy-to-use ranking and rating 
+
+features
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+20
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 132n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+
+n
+g
+
+i
+l
+
+A
+
+C
+
+l
+
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Baseline for Footnotes
+
+Adequacy Results: Quality per Segment Length
+
+1-100 Scale
+- HT Stable high quality (as expected)
+- On average, NMT 22% better than SMT (79% vs 65%)
+- SMT and NMT adequacy declines with longer segments
+- NMT is (surprisingly) better even in shorter segments
+
+Headline: Arial Bold 30 pts.
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 133n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Baseline for Footnotes
+
+Fluency Results: Quality per Segment Length
+
+1-100 Scale
+HT Stable
+On average, NMT 33% better than SMT (80% vs 60%)
+SMT and NMT adequacy also declines with longer segments (but NMT holds better - expected)
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 134n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Overall HE Ranking
+
+Horizontal Center
+
+SMT Average Ranking NMT Average Ranking HT Average Ranking
+1.49 (50%)
+
+2.13 (71%)
+
+2.83 (94%)
+
+By including HT in test set, we determine ideal baseline is 94% of a perfect score
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 135f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Benchmarking: Productivity
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 136n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Productivity Evaluation Stage
+
+Horizontal Center
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+WHERE
+Kantan LQR: 
+- Simple, provides glossary, no TM
+- Provides context
+- Allows us to track time and edit distance
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+26
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 137n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+NMT vs HT – Time Gains
+
+Horizontal Center
+
+PENMT consistently increases productivity (10-27%)
+
+2 in-house translators (1 in particular) leverage greatest gains 
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 138n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+NMT vs HT – Correlation Time-Edit Distance
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+PER SEGMENT LENGHT
+A uniform ratio between edit distance and time to 
+edit, except for very short segments, that require 
+proportionally more time (likely significant terms, 
+requiring more research)
+
+PER TRANSLATOR
+ED and time are mostly aligned, with one exception.
+one of the linguists’s (vendor) time to edit is an outlier.
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 139n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+NMT vs HT–Correlation Time-Edit Distance vs Adequacy-Fluency
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+Interestingly, the perceived decline in Adequacy and Fluency for long 
+segments is not reflected in a higher ED or longer time to edit.
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 140n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Quality Assessment: The Sanity Check
+
+Horizontal Center
+
+From KantanLQR
+
+A Quality Assessment of post-editors’ final quality
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 141n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Quality Assessment: Results
+
+Horizontal Center
+
+A linguist reviewed a sample of the post-edit work of the evaluators
+Quality was very similar:  4.24 - 4.01 - 4.29
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 142n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+Eyebrow Baseline
+
+Headline Baseline
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Additional Insights
+
+Horizontal Center
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 143n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Correlation 1: Outliers in Quality – Edit Distance – Time
+
+Horizontal Center
+
+Similar quality, similar edit distance, one outlier in time spent: 
+Further training on post-editing may be useful
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 144n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Correlation 2: HE shows BLEU bias against NMT
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+NMT SMT
+41% 55%
+71% 50%
+
+BLEU
+HE
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 145n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Feedback from Participating Linguists
+We surveyed all 4 linguists 
+involved in the pilot:
+
+Lessons learned:
+
+- Ensure good communication: 
+
+-
+
+Initial presentation with high-level 
+goals
+
+- For every stage, clear statement of 
+
+goals and expectations
+
+- Clearly defined key terms (BLEU, 
+
+Eyebrow Baseline
+
+Headline Baseline
+
+Horizontal Center
+
+ranking, rating, A/B test…)
+
+- Provide sufficient context for HT/PE 
+
+(no random strings, enough strings before 
+and after)
+
+Very high (~5% standard deviation)
+Likely thanks to ranking scale choice (1-3)
+
+Use simple tools and basic resources 
+(drop TM, use basic instructions)
+
+- Minimize the number of variables: 
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 146n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+Eyebrow Baseline
+
+Headline Baseline
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Horizontal Center
+
+Conclusions
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 147n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+Eyebrow Baseline
+
+Headline Baseline
+
+What We Found:
+
+PILOT GOAL
+Which is the best engine?
+
+- For the final user: NMT
+
+For the post-editor/vendor: NMT
+
+Horizontal Center
+
+RESEARCH GOALS
+- Is BLEU equally reliable for SMT and NMT? NO
+
+- Is there a difference between perceived quality and PE 
+effort? YES
+- Segment length – HE quality:
+
+Does length affect adequacy/fluency YES
+Does NMT and SMT quality vary per segment 
+length YES
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+ORGANIZATIONAL GOALS
+- Which are the best roles for each of the stakeholders?
+
+- MT Vendor: Engine background support
+- eBay MTLS: engine creation, data curation, 
+supporting/training LS for these roles
+- eBay regular LS (for now): quality evaluation 
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+37
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 148n
+o
+C
+
+ 
+:
+t
+f
+e
+L
+
+Eyebrow Baseline
+
+Headline Baseline
+
+f
+e
+L
+ 
+n
+g
+
+i
+l
+
+A
+
+C
+
+ 
+l
+a
+c
+i
+t
+r
+e
+V
+
+o
+C
+
+ 
+:
+t
+h
+g
+R
+
+i
+
+Horizontal Center
+
+Questions?
+
+Baseline for Footnotes
+
+Headline: Arial Bold 30 pts. 
+
+Proceedings of AMTA 2018, vol. 2: MT Users' TrackBoston, March 17 - 21, 2018   |   Page 149

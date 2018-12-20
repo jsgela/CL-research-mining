@@ -1,0 +1,515 @@
+WASSA2018The9thWorkshoponComputationalApproachestoSubjectivity,SentimentandSocialMediaAnalysisProceedingsoftheWorkshopOctober31,2018Brussels,Belgiumii
+
+c(cid:13)2018TheAssociationforComputationalLinguisticsOrdercopiesofthisandotherACLproceedingsfrom:AssociationforComputationalLinguistics(ACL)209N.EighthStreetStroudsburg,PA18360USATel:+1-570-476-8006Fax:+1-570-476-0860acl@aclweb.orgISBN978-1-948087-80-3iii
+
+IntroductionResearchinautomaticSubjectivityandSentimentAnalysis(SSA),assubtasksofAffectiveComputingandNaturalLanguageProcessing(NLP),hasﬂourishedinthepastyears.ThegrowthininterestinthesetaskswasmotivatedbythebirthandrapidexpansionoftheSocialWebthatmadeitpossibleforpeopleallovertheworldtoshare,commentorconsultcontentonanygiventopic.Inthiscontext,opinions,sentimentsandemotionsexpressedinSocialMediatextshavebeenshowntohaveahighinﬂuenceonthesocialandeconomicbehaviourworldwide.SSAsystemsarehighlyrelevanttomanyreal-worldapplications(e.g.marketing,eGovernance,businessintelligence,socialanalysis)andalsotomanytasksinNaturalLanguageProcessing(NLP)-informationextraction,questionanswering,textualentailment,tonamejustafew.Theimportanceofthisﬁeldhasbeenprovenbythehighnumberofapproachesproposedinresearchinthepastdecade,aswellasbytheinterestthatitraisedfromotherdisciplines(Economics,Sociology,Psychology,Marketing,CrisisManagementdisciplines(Economics,Sociology,Psychology,Marketing,CrisisManagement,andBehavioralStudies,DigitalHumanities)andtheapplicationsthatwerecreatedusingitstechnology.Nexttothegrowthinthediversityofapplications,taskdeﬁnitionschangetowardsmorecomplexchallenges:Subjectivity,polarityrecognitionandopinionmininghasbeenenrichedwithﬁne-grainedaspectandtargetlevelpredictions.Polarityasaconceptiscomplementedbyemotionmodelsasdeﬁnedfrompsychologicalresearch.Inspiteofthegrowingbodyofresearchintheareainthepastyears,dealingwithaffectivephenomenaintexthasproventobeacomplex,interdisciplinaryproblemthatremainsfarfrombeingsolved.Itschallengesincludetheneedtoaddresstheissuefromdifferentperspectivesandatdifferentlevels,dependingonthecharacteristicsofthetextualgenre,thelanguage(s)treatedandtheﬁnalapplicationforwhichtheanalysisisdone.Theaimofthe9thWorkshoponComputationalApproachestoSubjectivity,SentimentandSocialMediaAnalysis(WASSA2018)wastocontinuethelineofthepreviouseditions,bringingtogetherresearchersinComputationalLinguisticsworkingonSubjectivityandSentimentAnalysisandresearchersworkingoninterdisciplinaryaspectsofaffectcomputationfromtext.Thisyear,wealsoorganizedatrackonimplicitemotionrecognition:http://implicitemotions.wassa2018.com/Participantsweregivenatweetfromwhichacertainemotionwordisremoved.Thatwordisoneofthefollowing:"sad","happy","disgusted","surprised","angry","afraid"orasynonymofoneofthem.Thetaskwastopredicttheemotiontheexcludedwordexpresses:Sadness,Joy,Disgust,Surprise,Anger,orFear.Withthisformulationofthetask,weprovideddatainstanceswhicharelikelytoexpressanemotion.However,theemotionneedstobeinferredfromthecausaldescription,whichistypicallymoreimplicitthananemotionword.Forthemainworkshop,weaccepted15/60papersaslong(25%)andanother17asshort,givingatotalof32/60papersaccepted-53%.FortheImplicitEmotionsSharedTask,wegot19systemdescriptionpapersubmissions,outofwhichweaccept17.49papersintotalwillbepresentedattheworkshop,togetherwiththeadditionalcontributionfromtheinvitedspeaker,Dr.EllenRiloff.Acceptedpapersdealwithovercomingissueslikelanguageanddomaindependenceofsentimentanalysis,ironyandsarcasmandadaptationofsentimentandemotiondetectionsystemstoworkinreal-lifescenarios.iv
+
+WewouldliketothanktheEMNLP2018OrganizersandWorkshopChairsforthehelpandsupportatthedifferentstagesoftheworkshoporganizationprocess.WearealsoespeciallygratefultotheProgramCommitteemembersandtheexternalreviewersforthetimeandeffortspentassessingthepapers.Wewouldliketoextendourthankstoourinvitedspeaker–Dr.EllenRiloff-foracceptingtodeliverthekeynotetalks,openingnewhorizonsforresearchandapplicationsofsentimentandemotiondetectionfromtext.AlexandraBalahur,SaifMohammad,VeroniqueHoste,RomanKlingerWASSA2018Chairsv
+
+Organizers:AlexandraBalahur-EuropeanCommissionJointResearchCentreSaifM.Mohammad-NationalResearchCouncilCanadaVeroniqueHoste-UniversityofGhent,BelgiumRomanKlinger-UniversityofStuttgart,GermanyProgramCommittee:MuhammadAbdul-Mageed-UniversityofBritishColumbia,CanadaHassanAlhuzali-UniversityofBritishColumbia,CanadaJorgeBalazs-UniversityofTokyo,JapanJeremyBarnes-UniversityPompeuFabra,SpainSabineBergler-ConcordiaUniversity,CanadaCristinaBosco-UniversityofTorino,ItalyFelipeBravo-Marquez-UniversityofWaikato,NewZealandNicolettaCalzolari-CNRPisa,ItalyErikCambria-NanyangTechnologicalUniversity,SingaporeAlexandraChronopoulou,UniversityofIllinoisatUrbanaChampaign,U.S.A.MontseCuadros-Vicomtech,SpainLingjiaDeng-UniversityofPittsburg,U.S.A.YunxiaDing-YunnanUniversity,ChinaDanielFleischer-AmobeeInc.,TelAviv,IsraelLorenzoGatti-UniversityofTwente,TheNetherlandsvi
+
+VachaganGratian-UniversityofStuttgart,GermanyCarlosIglesias-UniversidadPolitecnicadeMadrid,SpainAdityaJoshi-CSIROData61ManfredKlenner-UniversityofZuerich,SwitzerlandIsaMaks-VrijeUniversiteitAmsterdam,TheNetherlandsEdisonMarrese-Taylor-UniversityofTokyo,JapanJiˇríMartínek-UniversityofWestBohemia,CzechRepublicMaiteMartinValdivia–UniversityofJaen,SpainDianaMaynard-UniversityofShefﬁed,U.K.KaroMoilanen-UniversityofOxford,U.K.BehzadNaderalvojoud-HacettepeUniversity,TurkeyGünterNeumann-DFKI,GermanyMalvinaNissim-UniversityofGroningen,TheNetherlandsConstantinOrasan-UniversityofWolverhampton,U.K.GustavoPaetzhold-UniversidadeTecnológicaFederaldoParana,BrazilSamuelPecar-SlovakUniversityofTechnologyinBratislava,SlovakiaViktorPekar-UniversityofWolverhampton,U.K.FlorMiriamPlazadelArco-UniversityofJaén,SpainDanielPreotiuc-Pietro-UniversityofPennsylvania,U.S.A.ThomasProisl-Friedrich-Alexander-UniversitätErlangen-Nürnberg,GermanyPavelPˇribáˇn-UniversityofWestBohemia,CzechRepublicPrabodRathnayaka-UniversityofMoratuwa,SriLankavii
+
+EstebanRissola-USI,SwitzerlandMikeThelwall-UniversityofWolverhampton,U.KLyleUngar-UniversityofPennsylvania,U.S.A.AlfonsoUreña-UniversityofJaén,SpainPiekVossen-VrijeUniversiteitAmsterdam,TheNetherlandsBinWang-YunnanUniversity,ChinaWenTingWang-AlibabaGroup,HangzhouCity,ChinaMichaelWiegand-SaarlandUniversity,GermanyWojciechWiton-DisneyResearchLosAngeles,U.S.A.TarasZagibalov-Brantwatch,U.K.AdditionalReviewers:LunaDeBruyne;OrphéeDeClercq;BartDesmet;MichalFarkas;AitorGarciaPablos;SaludmariaJímenez-Zafra;ZoharKelrich;SergeiKulikov;ElsLefever;CuiLeyang;EugenioMartínezCámara;AlonRozental;TohZhiqiangInvitedSpeaker:EllenRiloff,UniversityofUtah,U.S.A.Table of Contents
+
+Identifying Affective Events and the Reasons for their Polarity
+
+Ellen Riloff . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+
+Deep contextualized word representations for detecting sarcasm and irony
+
+Suzana Ili´c, Edison Marrese-Taylor, Jorge Balazs and Yutaka Matsuo . . . . . . . . . . . . . . . . . . . . . . . . . 2
+
+Implicit Subjective and Sentimental Usages in Multi-sense Word Embeddings
+
+Yuqi Sun, Haoyue Shi and Junfeng Hu . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+
+Language Independent Sentiment Analysis with Sentiment-Speciﬁc Word Embeddings
+
+Carl Sarouﬁm, Akram Almatarky and Mohammad AbdelHady . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+
+Creating a Dataset for Multilingual Fine-grained Emotion-detection Using Gamiﬁcation-based Annota-
+tion
+
+Emily Öhman, Kaisla Kajava, Jörg Tiedemann and Timo Honkela . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+
+IEST: WASSA-2018 Implicit Emotions Shared Task
+
+Roman Klinger, Orphee De Clercq, Saif Mohammad and Alexandra Balahur . . . . . . . . . . . . . . . . . 31
+
+Amobee at IEST 2018: Transfer Learning from Language Models
+
+Alon Rozental, Daniel Fleischer and Zohar Kelrich. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .43
+
+IIIDYT at IEST 2018: Implicit Emotion Classiﬁcation With Deep Contextualized Word Representations
+Jorge Balazs, Edison Marrese-Taylor and Yutaka Matsuo . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 50
+
+NTUA-SLP at IEST 2018: Ensemble of Neural Transfer Methods for Implicit Emotion Classiﬁcation
+
+Alexandra Chronopoulou, Aikaterini Margatina, Christos Baziotis and Alexandros Potamianos . 57
+
+Sentiment analysis under temporal shift
+
+Jan Lukeš and Anders Søgaard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 65
+
+Not Just Depressed: Bipolar Disorder Prediction on Reddit
+
+Ivan Sekulic, Matej Gjurkovi´c and Jan Šnajder. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .72
+
+Topic-Speciﬁc Sentiment Analysis Can Help Identify Political Ideology
+
+Sumit Bhatia and Deepak P . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 79
+
+Saying no but meaning yes: negation and sentiment analysis in Basque
+
+Jon Alkorta, Koldo Gojenola and Mikel Iruskieta . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 85
+
+Leveraging Writing Systems Change for Deep Learning Based Chinese Emotion Analysis
+
+Rong Xiang, Yunfei Long, Qin Lu, Dan Xiong and I-Hsuan Chen . . . . . . . . . . . . . . . . . . . . . . . . . . . 91
+
+Ternary Twitter Sentiment Classiﬁcation with Distant Supervision and Sentiment-Speciﬁc Word Embed-
+dings
+
+Mats Byrkjeland, Frederik Gørvell de Lichtenberg and Björn Gambäck . . . . . . . . . . . . . . . . . . . . . . 97
+
+Linking News Sentiment to Microblogs: A Distributional Semantics Approach to Enhance Microblog
+Sentiment Classiﬁcation
+
+Tobias Daudert and Paul Buitelaar . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 107
+
+Aspect Based Sentiment Analysis into the Wild
+
+Caroline Brun and Vassilina Nikoulina . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 116
+
+ix
+
+The Role of Emotions in Native Language Identiﬁcation
+
+Ilia Markov, Vivi Nastase, Carlo Strapparava and Grigori Sidorov . . . . . . . . . . . . . . . . . . . . . . . . . . 123
+
+Self-Attention: A Better Building Block for Sentiment Analysis Neural Network Classiﬁers
+
+Artaches Ambartsoumian and Fred Popowich . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 130
+
+Dual Memory Network Model for Biased Product Review Classiﬁcation
+
+Yunfei Long, Mingyu Ma, Qin Lu, Rong Xiang and Chu-Ren Huang . . . . . . . . . . . . . . . . . . . . . . . 140
+
+Measuring Issue Ownership using Word Embeddings
+
+Amaru Cuba Gyllensten and Magnus Sahlgren . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 149
+
+Sentiment Expression Boundaries in Sentiment Polarity Classiﬁcation
+
+Rasoul Kaljahi and Jennifer Foster . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 156
+
+Exploring and Learning Suicidal Ideation Connotations on Social Media with Deep Learning
+
+Ramit Sawhney, Prachi Manchanda, Puneet Mathur, Rajiv Shah and Raj Singh . . . . . . . . . . . . . . 167
+
+UTFPR at IEST 2018: Exploring Character-to-Word Composition for Emotion Analysis
+
+Gustavo Paetzold . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 176
+
+HUMIR at IEST-2018: Lexicon-Sensitive and Left-Right Context-Sensitive BiLSTM for Implicit Emotion
+Recognition
+
+Behzad Naderalvojoud, Alaettin Ucan and Ebru Akcapinar Sezer . . . . . . . . . . . . . . . . . . . . . . . . . . . 182
+
+NLP at IEST 2018: BiLSTM-Attention and LSTM-Attention via Soft Voting in Emotion Classiﬁcation
+
+Qimin Zhou and Hao Wu . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 189
+
+SINAI at IEST 2018: Neural Encoding of Emotional External Knowledge for Emotion Classiﬁcation
+
+Flor Miriam Plaza del Arco, Eugenio Martínez-Cámara, Maite Martin and L. Alfonso Urena Lopez
+
+195
+
+EmoNLP at IEST 2018: An Ensemble of Deep Learning Models and Gradient Boosting Regression Tree
+for Implicit Emotion Prediction in Tweets
+
+Man Liu . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 201
+
+HGSGNLP at IEST 2018: An Ensemble of Machine Learning and Deep Neural Architectures for Implicit
+Emotion Classiﬁcation in Tweets
+
+wenting wang . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 205
+
+DataSEARCH at IEST 2018: Multiple Word Embedding based Models for Implicit Emotion Classiﬁca-
+tion of Tweets with Deep Learning
+
+Yasas Senarath and Uthayasanker Thayasivam . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 211
+
+NL-FIIT at IEST-2018: Emotion Recognition utilizing Neural Networks and Multi-level Preprocessing
+
+Samuel Pecar, Michal Farkaš, Marian Simko, Peter Lacko and Maria Bielikova . . . . . . . . . . . . . . 217
+
+UWB at IEST 2018: Emotion Prediction in Tweets with Bidirectional Long Short-Term Memory Neural
+Network
+
+Pavel Pˇribáˇn and Jiˇrí Martínek . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 224
+
+USI-IR at IEST 2018: Sequence Modeling and Pseudo-Relevance Feedback for Implicit Emotion Detec-
+tion
+
+Esteban Rissola, Anastasia Giachanou and Fabio Crestani . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 231
+
+x
+
+EmotiKLUE at IEST 2018: Topic-Informed Classiﬁcation of Implicit Emotions
+
+Thomas Proisl, Philipp Heinrich, Besim Kabashi and Stefan Evert . . . . . . . . . . . . . . . . . . . . . . . . . . 235
+
+BrainT at IEST 2018: Fine-tuning Multiclass Perceptron For Implicit Emotion Classiﬁcation
+
+Vachagan Gratian and Marina Haid . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 243
+
+Disney at IEST 2018: Predicting Emotions using an Ensemble
+
+Wojciech Witon, Pierre Colombo, Ashutosh Modi and Mubbasir Kapadia . . . . . . . . . . . . . . . . . . . 248
+
+Sentylic at IEST 2018: Gated Recurrent Neural Network and Capsule Network Based Approach for
+Implicit Emotion Detection
+
+Prabod Rathnayaka, Supun Abeysinghe, Chamod Samarajeewa, Isura Manchanayake and Malaka
+Walpola . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 254
+
+Fast Approach to Build an Automatic Sentiment Annotator for Legal Domain using Transfer Learning
+
+Viraj Salaka, Menuka Warushavithana, Nisansa de Silva, Amal Shehan Perera, Gathika Ratnayaka
+and Thejan Rupasinghe . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 260
+
+What Makes You Stressed? Finding Reasons From Tweets
+
+Reshmi Gopalakrishna Pillai, Mike Thelwall and Constantin Orasan . . . . . . . . . . . . . . . . . . . . . . . . 266
+
+EmojiGAN: learning emojis distributions with a generative model
+
+Bogdan Mazoure, Thang DOAN and Saibal Ray . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 273
+
+Identifying Opinion-Topics and Polarity of Parliamentary Debate Motions
+
+Gavin Abercrombie and Riza Theresa Batista-Navarro . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 280
+
+Homonym Detection For Humor Recognition In Short Text
+
+Sven van den Beukel and Lora Aroyo . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 286
+
+Emo2Vec: Learning Generalized Emotion Representation by Multi-task Training
+
+Peng Xu, Andrea Madotto, Chien-Sheng Wu, Ji Ho Park and Pascale Fung . . . . . . . . . . . . . . . . . . 292
+
+Learning representations for sentiment classiﬁcation using Multi-task framework
+
+Hardik Meisheri and Harshad Khadilkar . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 299
+
+Super Characters: A Conversion from Sentiment Classiﬁcation to Image Classiﬁcation
+
+Baohua Sun, Lin Yang, Patrick Dong, Wenhan Zhang, Jason Dong and Charles Young. . . . . . . .309
+
+Learning Comment Controversy Prediction in Web Discussions Using Incidentally Supervised Multi-
+Task CNNs
+
+Nils Rethmeier, Marc Hübner and Leonhard Hennig . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 316
+
+Words Worth: Verbal Content and Hirability Impressions in YouTube Video Resumes
+
+Skanda Muralidhar, Laurent Nguyen and Daniel Gatica-Perez . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 322
+
+Predicting Adolescents’ Educational Track from Chat Messages on Dutch Social Media
+
+Lisa Hilte, Walter Daelemans and Reinhild Vandekerckhove . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 328
+
+Arabizi sentiment analysis based on transliteration and automatic corpus annotation
+
+Imane GUELLIL, Ahsan Adeel, Faical AZOUAOU, fodil benali, Ala-eddine Hachani and Amir
+Hussain . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 335
+
+UBC-NLP at IEST 2018: Learning Implicit Emotion With an Ensemble of Language Models
+
+Hassan Alhuzali, Mohamed Elaraby and Muhammad Abdul-Mageed . . . . . . . . . . . . . . . . . . . . . . . 342
+
+xi
+
+Workshop Program
+
+Wednesday, October 31, 2018
+
+08:30–08:45 Opening Remarks
+
+08:45–09:20
+
+Invited talk
+
+08:45–09:20
+
+Identifying Affective Events and the Reasons for their Polarity
+Ellen Riloff
+
+09:20–10:35
+
+Session 1: Resources and representations for affect detection from text
+
+09:20–09:40 Deep contextualized word representations for detecting sarcasm and irony
+
+Suzana Ili´c, Edison Marrese-Taylor, Jorge Balazs and Yutaka Matsuo
+
+09:40–10:00
+
+Implicit Subjective and Sentimental Usages in Multi-sense Word Embeddings
+Yuqi Sun, Haoyue Shi and Junfeng Hu
+
+10:00–10:20
+
+Language Independent Sentiment Analysis with Sentiment-Speciﬁc Word Embed-
+dings
+Carl Sarouﬁm, Akram Almatarky and Mohammad AbdelHady
+
+10:20–10:35 Creating a Dataset
+
+for Multilingual Fine-grained Emotion-detection Using
+
+Gamiﬁcation-based Annotation
+Emily Öhman, Kaisla Kajava, Jörg Tiedemann and Timo Honkela
+
+10:35–11:00 Tea/Coffee Break
+
+xiii
+
+Wednesday, October 31, 2018 (continued)
+
+11:00–12:30
+
+Session 2: The WASSA Shared Task on Emotion Intensity
+
+11:00–11:25
+
+IEST: WASSA-2018 Implicit Emotions Shared Task
+Roman Klinger, Orphee De Clercq, Saif Mohammad and Alexandra Balahur
+
+11:25–11:50
+
+Amobee at IEST 2018: Transfer Learning from Language Models
+Alon Rozental, Daniel Fleischer and Zohar Kelrich
+
+11:50–12:10
+
+IIIDYT at IEST 2018: Implicit Emotion Classiﬁcation With Deep Contextualized
+Word Representations
+Jorge Balazs, Edison Marrese-Taylor and Yutaka Matsuo
+
+12:10–12:30 NTUA-SLP at IEST 2018: Ensemble of Neural Transfer Methods for Implicit Emo-
+
+tion Classiﬁcation
+Alexandra Chronopoulou, Aikaterini Margatina, Christos Baziotis and Alexandros
+Potamianos
+
+12:30–14:00 Lunch Break
+
+14:00–15:30
+
+Session 3: Affect detection: issues and applications (I)
+
+14:00–14:20
+
+Sentiment analysis under temporal shift
+Jan Lukeš and Anders Søgaard
+
+14:20–14:40 Not Just Depressed: Bipolar Disorder Prediction on Reddit
+
+Ivan Sekulic, Matej Gjurkovi´c and Jan Šnajder
+
+14:40–15:00
+
+Topic-Speciﬁc Sentiment Analysis Can Help Identify Political Ideology
+Sumit Bhatia and Deepak P
+
+15:00–15:15
+
+Saying no but meaning yes: negation and sentiment analysis in Basque
+Jon Alkorta, Koldo Gojenola and Mikel Iruskieta
+
+15:15–15:30
+
+Leveraging Writing Systems Change for Deep Learning Based Chinese Emotion
+Analysis
+Rong Xiang, Yunfei Long, Qin Lu, Dan Xiong and I-Hsuan Chen
+
+xiv
+
+Wednesday, October 31, 2018 (continued)
+
+15:30–16:00 Tea/Coffee Break
+
+16:00–17:15
+
+Session 4: Affect detection: issues and applications (II)
+
+16:00–16:20
+
+Ternary Twitter Sentiment Classiﬁcation with Distant Supervision and Sentiment-
+Speciﬁc Word Embeddings
+Mats Byrkjeland, Frederik Gørvell de Lichtenberg and Björn Gambäck
+
+16:20–16:40
+
+Linking News Sentiment to Microblogs: A Distributional Semantics Approach to
+Enhance Microblog Sentiment Classiﬁcation
+Tobias Daudert and Paul Buitelaar
+
+16:40–17:00
+
+Aspect Based Sentiment Analysis into the Wild
+Caroline Brun and Vassilina Nikoulina
+
+17:00–17:15
+
+The Role of Emotions in Native Language Identiﬁcation
+Ilia Markov, Vivi Nastase, Carlo Strapparava and Grigori Sidorov
+
+17:15–17:20 Break
+
+17:20–18:30
+
+Session 5: Posters
+
+Self-Attention: A Better Building Block for Sentiment Analysis Neural Network
+Classiﬁers
+Artaches Ambartsoumian and Fred Popowich
+
+Dual Memory Network Model for Biased Product Review Classiﬁcation
+Yunfei Long, Mingyu Ma, Qin Lu, Rong Xiang and Chu-Ren Huang
+
+Measuring Issue Ownership using Word Embeddings
+Amaru Cuba Gyllensten and Magnus Sahlgren
+
+Sentiment Expression Boundaries in Sentiment Polarity Classiﬁcation
+Rasoul Kaljahi and Jennifer Foster
+
+xv
+
+Wednesday, October 31, 2018 (continued)
+
+Exploring and Learning Suicidal Ideation Connotations on Social Media with Deep
+Learning
+Ramit Sawhney, Prachi Manchanda, Puneet Mathur, Rajiv Shah and Raj Singh
+
+UTFPR at IEST 2018: Exploring Character-to-Word Composition for Emotion
+Analysis
+Gustavo Paetzold
+
+HUMIR at IEST-2018: Lexicon-Sensitive and Left-Right Context-Sensitive BiLSTM
+for Implicit Emotion Recognition
+Behzad Naderalvojoud, Alaettin Ucan and Ebru Akcapinar Sezer
+
+NLP at IEST 2018: BiLSTM-Attention and LSTM-Attention via Soft Voting in Emo-
+tion Classiﬁcation
+Qimin Zhou and Hao Wu
+
+SINAI at IEST 2018: Neural Encoding of Emotional External Knowledge for Emo-
+tion Classiﬁcation
+Flor Miriam Plaza del Arco, Eugenio Martínez-Cámara, Maite Martin and L. Al-
+fonso Urena Lopez
+
+EmoNLP at IEST 2018: An Ensemble of Deep Learning Models and Gradient
+Boosting Regression Tree for Implicit Emotion Prediction in Tweets
+Man Liu
+
+HGSGNLP at IEST 2018: An Ensemble of Machine Learning and Deep Neural
+Architectures for Implicit Emotion Classiﬁcation in Tweets
+wenting wang
+
+DataSEARCH at IEST 2018: Multiple Word Embedding based Models for Implicit
+Emotion Classiﬁcation of Tweets with Deep Learning
+Yasas Senarath and Uthayasanker Thayasivam
+
+NL-FIIT at IEST-2018: Emotion Recognition utilizing Neural Networks and Multi-
+level Preprocessing
+Samuel Pecar, Michal Farkaš, Marian Simko, Peter Lacko and Maria Bielikova
+
+UWB at IEST 2018: Emotion Prediction in Tweets with Bidirectional Long Short-
+Term Memory Neural Network
+Pavel Pˇribáˇn and Jiˇrí Martínek
+
+USI-IR at IEST 2018: Sequence Modeling and Pseudo-Relevance Feedback for Im-
+plicit Emotion Detection
+Esteban Rissola, Anastasia Giachanou and Fabio Crestani
+
+EmotiKLUE at IEST 2018: Topic-Informed Classiﬁcation of Implicit Emotions
+Thomas Proisl, Philipp Heinrich, Besim Kabashi and Stefan Evert
+
+xvi
+
+Wednesday, October 31, 2018 (continued)
+
+BrainT at IEST 2018: Fine-tuning Multiclass Perceptron For Implicit Emotion Clas-
+siﬁcation
+Vachagan Gratian and Marina Haid
+
+Disney at IEST 2018: Predicting Emotions using an Ensemble
+Wojciech Witon, Pierre Colombo, Ashutosh Modi and Mubbasir Kapadia
+
+Sentylic at IEST 2018: Gated Recurrent Neural Network and Capsule Network
+Based Approach for Implicit Emotion Detection
+Prabod Rathnayaka, Supun Abeysinghe, Chamod Samarajeewa,
+chanayake and Malaka Walpola
+
+Isura Man-
+
+Fast Approach to Build an Automatic Sentiment Annotator for Legal Domain using
+Transfer Learning
+Viraj Salaka, Menuka Warushavithana, Nisansa de Silva, Amal Shehan Perera,
+Gathika Ratnayaka and Thejan Rupasinghe
+
+What Makes You Stressed? Finding Reasons From Tweets
+Reshmi Gopalakrishna Pillai, Mike Thelwall and Constantin Orasan
+
+EmojiGAN: learning emojis distributions with a generative model
+Bogdan Mazoure, Thang DOAN and Saibal Ray
+
+Identifying Opinion-Topics and Polarity of Parliamentary Debate Motions
+Gavin Abercrombie and Riza Theresa Batista-Navarro
+
+Homonym Detection For Humor Recognition In Short Text
+Sven van den Beukel and Lora Aroyo
+
+Emo2Vec: Learning Generalized Emotion Representation by Multi-task Training
+Peng Xu, Andrea Madotto, Chien-Sheng Wu, Ji Ho Park and Pascale Fung
+
+Learning representations for sentiment classiﬁcation using Multi-task framework
+Hardik Meisheri and Harshad Khadilkar
+
+Super Characters: A Conversion from Sentiment Classiﬁcation to Image Classiﬁca-
+tion
+Baohua Sun, Lin Yang, Patrick Dong, Wenhan Zhang, Jason Dong and Charles
+Young
+
+Learning Comment Controversy Prediction in Web Discussions Using Incidentally
+Supervised Multi-Task CNNs
+Nils Rethmeier, Marc Hübner and Leonhard Hennig
+
+xvii
+
+Wednesday, October 31, 2018 (continued)
+
+Words Worth: Verbal Content and Hirability Impressions in YouTube Video Resumes
+Skanda Muralidhar, Laurent Nguyen and Daniel Gatica-Perez
+
+Predicting Adolescents’ Educational Track from Chat Messages on Dutch Social
+Media
+Lisa Hilte, Walter Daelemans and Reinhild Vandekerckhove
+
+Arabizi sentiment analysis based on transliteration and automatic corpus annota-
+tion
+Imane GUELLIL, Ahsan Adeel, Faical AZOUAOU, fodil benali, Ala-eddine
+Hachani and Amir Hussain
+
+UBC-NLP at IEST 2018: Learning Implicit Emotion With an Ensemble of Language
+Models
+Hassan Alhuzali, Mohamed Elaraby and Muhammad Abdul-Mageed
+
+xviii
+
+

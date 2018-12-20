@@ -1,0 +1,232 @@
+An OpenNMT Model to Arabic Broken Plurals 
+
+Elsayed Issa 
+
+University of Arizona, 845 N Park Ave, Tucson, AZ 85719, USA 
+
+elsayedissa@email.arizona.edu 
+
+Abstract 
+
+The  Arabic  Language  creates  a  dichotomy  in  its  pluralization  system;  therefore, 
+Arabic plurals are either sound or broken. The broken plurals create an interesting 
+morphological  phenomenon  as  they  are  inflected  from  their  singulars  following 
+certain  templates.  Although  broken  plurals have  triggered  the  interest  of  several 
+scholars, this paper uses Neural Networks in the form of OpenNMT to detect and 
+investigate the behavior of broken plurals. The findings show that the model is able 
+to predict the Arabic templates with some limitations regarding the prediction of 
+consonants. The model seems to get the basic shape of the plural, but it misses the 
+lexical identity.  
+
+1  Introduction 
+
+The Arabic pluralization system creates an interesting phenomenon. The Arabic Language pluralizes 
+its nouns and adjectives throughout morphologically linear as well as non-linear processes. While linear 
+processes involve suffixation, the non-linear means involve infixation, that is, a change in the pattern 
+of consonants and vowels inside the singular form. This phenomenon is distinguished by grammarians 
+as broken plurals, and it is known for several Semitic languages including Arabic, Hebrew, and other 
+Afroasiatic  languages.  Although  several  studies  have  examined  Arabic  broken  plurals,  this  paper 
+examines  Arabic  broken  plurals  using  neural  networks.  The  present  paper  attempts  to  build  an 
+OpenNMT neural network for training, testing and predicting broken plurals. It uses a large corpus of 
+2561 Arabic tokens. This attempt is twofold. It can help us approach this linguistic phenomenon using 
+other methods, and it can explain or interpret the behavior of Arabic broken plurals templates. The 
+importance of the present paper lies in detecting the behavior of not only broken plurals but also the 
+behavior of sequences of consonant and vowels that make up these plurals. For instance, if the neural 
+network can learn the singular pattern mafʕal and the plural one mafaaʕil, but it predicts the words 
+mænðạr (view) and manaaðịr (views) correctly while it fails to predict markaz (center) and maraakiz 
+(center), which both have the same patterns, then other factors are to be examined to better understand 
+the behavior of broken plurals. Additionally, this paper addresses the L2 acquisition benefits from the 
+technology of neural networks in predicting the behaviors of L2 learners in their acquisition of Arabic 
+broken plurals.  
+
+The  paper  is  organized  as  follows.  The  introduction  (section  1)  introduces  the  research  questions, 
+describes the motivation behind the paper and establishes the argument. Section 2 lays out the concrete 
+and necessary facts about the broken plurals and their patterns. Section 3 introduces the corpus of the 
+study. Section 4 describes the methods used such as the OpenNMT as a general-purpose and attention- 
+based seq2seq system. Section 5 reports the general performance of the experiment. Section 6 discusses 
+and analyses the general performance of the experiment, presents the results, and discusses the impacts 
+of new technologies – i.e. the OpenNMT – on second language acquisition. Finally, section 7, or the 
+conclusion briefly summarizes the results.  
+
+ 
+
+This  work  is  licensed  under  a  Creative  Commons  Attribution  4.0  International  License.  License  details: 
+
+http://creativecommons.org/licenses/by/4.0/. 
+
+ProceedingsoftheFirstInternationalWorkshoponLanguageCognitionandComputationalModels,pages22–30SantaFe,NewMexico,UnitedStates,August20,2018.https://doi.org/10.18653/v1/P17222  Arabic Broken Plurals 
+
+Two  types  of  noun  and  adjective  plural  forms  are  present  in  the  morphological  system  of  Semitic 
+languages. They are the sound (regular) plurals and the broken (irregular) plurals. Sound plurals, on the 
+one hand, are formed by a linear process that involves adding the suffixes -uun/-iin in case of masculine 
+nouns/adjectives, or -aat in case of feminine nouns/adjectives.  
+
+(1) Arabic Pluralization System  
+
+Sing.  
+
+ 
+(a)  muhandis 
+ṭaliba    
+ 
+mænðạr  
+
+(b)  qalb  
+
+ 
+
+ 
+
+ 
+
+ 
+
+Pl. 
+muhandisuun (nom.)/-iin (acc./gen.) 
+ṭalibaat  
+quluub   
+manaaðịr 
+
+ 
+ 
+ 
+
+ 
+ 
+ 
+
+ 
+ 
+ 
+
+Gloss 
+  
+(engineer) 
+(female student) 
+(heart) 
+(view) 
+
+In (1.a), the masculine singular noun muhandis (engineer) is pluralized as muhandisuun (engineers) in 
+the nominative case or as muhandisiin (engineers) as in the accusative/genitive cases. The feminine 
+singular noun ṭaliba (female student) is pluralized as ṭalibaat (female students). On the other hand, 
+broken plurals are formed non-linearly by means of infixation or morphological transformations that 
+involve internal consonant and vowel changes. In (1.b), the singular noun qalb (heart) is pluralized as 
+quluub (hearts), a plural that involves a change in the pattern of the singular from faʕl (CVCC) to fuʕuul 
+(CVCVVC). Similarly, the singular mænðạr (view) is pluralized as manaaðịr, and therefore, mapped 
+on the pattern mafaaʕil. Ratcliffe (1990) concludes that there are 27 broken plurals patterns applicable 
+to Modern Standard Arabic (MSA).  
+
+Therefore,  Arabic  broken  plurals  have  stimulated  the  interest  of  several  scholars.  The  non-linear 
+treatment of template morphology of Semitic languages dates to McCarthy (1979, 1981, 1982 ...) and 
+much more subsequent work. Hammond’s (1988) contributes to the description of root-and-template 
+morphology through the study of Arabic broken plurals. Moreover, in their in-depth paper, McCarthy 
+and  Prince  (1990)  have  developed  their  theory  of  Prosodic  Domain  Circumscription  where  “rules 
+sensitive to the morphological domain may be restricted to a prosodically characterized (sub-) domain 
+in a word or stem.” In the same vein, Ratcliffe’s (1990) article aims at providing a framework for the 
+analysis  of  Arabic  morphology  that  involves  the  relationship  between  concatenative  and  non-
+concatenative morphology.  
+
+As  far  as  the  computation  of  broken  plurals  is  concerned,  Plunkett  and  Nakisa  (1997)  provide  a 
+connectionist model to the pluralization system of Arabic. They provide an analysis of the phonological 
+similarity structure of the Arabic Plural system. In other words, they “examine whether the distribution 
+of Arabic nouns is suited to supporting a distributional default in a neural network, by calculating a 
+variety of similarity metrics that identify: (1) the clustering of different classes of Arabic plurals in 
+phonological space; (2) the relative coherence of individual plural classes; and (3) the extent to which 
+membership in a plural class can be predicted by the nearest neighbor in phonological space” (Plunkett 
+and Nakisa, 1997). Their analyses show that the phonological form of the singular determines its sound 
+plural. In their model, the distribution of Arabic singulars does not support a distributional default; 
+however, their network performed well in (1) predicting plural class using the phonological form of the 
+singular, (2) infecting singular to plural forms, (3) and generalizing the plural class prediction task to 
+unseen words. 
+
+3  Corpus 
+
+The  data  consists  of  2562  tokens  extracted  from  a  large  contemporary  corpus,  provided  with 
+morphological patterns for both the singular forms and the plural forms. The data is organized into five 
+columns as follows: lemma ID, singular form, singular pattern, broken plural form and broken plural 
+patterns  (Attia  et  al.,  2011).  The two  columns  of  the singular  form  and  the broken  plural  form  are 
+
+23extracted from the data, and then, they were prepared for the experiment using the R statistical language. 
+The experiment is run for several times employing three different number of epochs; 10, 20 and 30 
+epochs.  
+
+4  Methods 
+
+Neural Machine Translation (NMT) has become a new evolving technology in the past few years. One 
+of these NMTs is the OpenNMT (Open-Source Neural Machine Translation) which is a methodology 
+for machine translation that has been “developed using pure sequence-to-sequence models” (Klein et 
+al., 2017). This technology has become an effective approach in other NLP fields such as dialogue, 
+parsing, and summarization. Also, Klein et al., (2017) maintain that OpenNMT was designed with three 
+aims: (a) prioritize first training and test efficiency, (b) maintain model modularity and readability, (c) 
+support significant research extensibility. In OpenNMT, four areas improve the effectiveness of the 
+model. These four areas are gated RNNs such as LSTMs, large stacked RNNs, input feeding and test-
+time  decoding  (Klein  et  al.,  2017).  Although  OpenNMT  is  built  to  handle  sequence-to-sequence 
+instances where it requires corpora of bilingual data to work, it can be used in other linguistic domains 
+such as phonology and morphology. 
+
+As long as OpenNMT-py runs a neural machine translation that uses sequence-to-sequence long short-
+term memory (LSTM) to render a sequence of words into another sequence of words, this model uses 
+OpenNMT as a tool that takes a sequence of broken plural letters and predicts them from a sequence of 
+singular letters. The model deals with the non-linear morphological phenomenon of broken plurals as a 
+machine translation problem where the input is the singular form, and the output is the plural form. The 
+R code is used to vectorize singulars (as the input) and plurals (as the output); divide the data into one-
+third for validation, two-thirds for training, and 100 items for testing; and create log files for the three 
+processes of OpenNMT; training, validation, and testing. 
+
+5  Results 
+
+Due to the small set of data, the model is run employing two stages. The first stage involves running 
+the model for 10, 20 and 30 epochs without randomizing the data while the second stage covers the 
+same number of epochs involving data randomization. The rationale behind this is training and testing 
+the model for optimal results.  
+
+ 
+
+Prediction Average 
+
+Score 
+
+Validation 
+Accuracy 
+
+Without Randomization 
+
+With Randomization 
+
+10 epochs 20 epochs 30 epochs  10 epochs  20 epochs  30 epochs 
+
+-0.9190 
+
+-1.0311 
+
+-1.0610 
+
+-0.9733 
+
+-1.036 
+
+-1.0598 
+
+55.9242 
+
+50.6183 
+
+51.4165 
+
+62.3264 
+
+  62.3264 
+
+58.3398 
+
+Table (1) shows that the best results that characterize the performance of the model are at epochs 10 
+and 20 with a randomized data as well as 10 epochs without data randomization in case of the best 
+prediction average score. The decline in the validation accuracy and the training accuracy can be due 
+to: (1) the small amount of data in the corpus, (2) the small number of templates that the model learns. 
+In addition, one assumption that validation accuracy is lower than training accuracy is the overfitting, 
+meaning that the model learned particulars that help a better performance in the training data that cannot 
+be applied in a large data. This, in fact, results in poor performance. Therefore, the model is run using 
+a different number of epochs with randomization and without randomization to try to overcome the 
+problem of overfitting.  
+
+24

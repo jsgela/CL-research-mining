@@ -1,0 +1,1701 @@
+Feature Optimization for Predicting Readability of Arabic L1 and L2
+
+Hind Saddiki,†‡ Nizar Habash,† Violetta Cavalli-Sforza,(cid:63) and Muhamed Al Khalil†
+
+†New York University Abu Dhabi
+
+‡Mohammed V University in Rabat
+
+(cid:63)Al Akhawayn University in Ifrane
+
+{hind.saddiki,nizar.habash,muhamed.alkhalil}@nyu.edu, v.cavallisforza@aui.ma
+
+Abstract
+
+Advances in automatic readability assess-
+ment can impact the way people consume
+information in a number of domains. Ara-
+bic, being a low-resource and morphologi-
+cally complex language, presents numer-
+ous challenges to the task of automatic
+readability assessment. In this paper, we
+present the largest and most in-depth com-
+putational readability study for Arabic to
+date. We study a large set of features
+with varying depths, from shallow words
+to syntactic trees, for both L1 and L2 read-
+ability tasks. Our best L1 readability ac-
+curacy result is 94.8% (75% error reduc-
+tion from a commonly used baseline). The
+comparable results for L2 are 72.4% (45%
+error reduction). We also demonstrate the
+added value of leveraging L1 features for
+L2 readability prediction.
+
+Introduction
+
+1
+The purpose of studies in readability is to develop
+and evaluate measures of how well a reader can
+understand a given text. Computational readabil-
+ity measures, historically shallow and formulaic,
+are now leveraging machine learning (ML) mod-
+els and natural language processing (NLP) fea-
+tures for automated, in-depth readability assess-
+ment systems. Advances in readability assessment
+can impact the way people consume information
+in a number of domains. Prime among them is
+education, where matching reading material to a
+learner’s level can serve instructors, book publish-
+ers, and learners themselves looking for suitable
+reading material. Content for the general public,
+such as media and news articles, administrative,
+legal or healthcare documents, governmental web-
+sites and so on, needs to be written at a level ac-
+
+cessible to different educational backgrounds. Ef-
+forts in building computational readability mod-
+els and integrating them in various applications
+continue to grow, especially for more resource-
+rich languages (Dell’Orletta et al., 2014a; Collins-
+Thompson, 2014).
+
+In this paper, we present a large-scale and in-
+depth computational readability study for Arabic.
+Arabic, being a relatively low-resource and mor-
+phologically complex language, presents numer-
+ous challenges to the task of automatic readabil-
+ity assessment. Compared to work done for En-
+glish and other European languages, efforts for
+Arabic have only picked up in recent years, as
+better NLP tools and resources became available
+(Habash, 2010). We evaluate data from both Ara-
+bic as a First Language (L1) and Arabic as a Sec-
+ond or Foreign Language (L2) within the same ex-
+perimental setting, to classify text documents into
+one of four levels of readability in increasing order
+of difﬁculty (level 1: easiest; level 4: most difﬁ-
+cult). This is a departure from all previously pub-
+lished results on Arabic readability, which have
+only focused on either L1 or L2. We examine
+a larger array of predictive features combining
+language modeling (LM) and shallow extraction
+techniques for lexical, morphological and syntac-
+tic features. Our best L1 Readability accuracy re-
+sult is 94.8%, a 75% error reduction from a base-
+line feature set of raw and shallow text attributes
+commonly used in traditional readability formu-
+las and simpler computational models (Collins-
+Thompson, 2014). The comparable results for L2
+are 72.4%, a 45% error reduction from the corre-
+sponding baseline performance in L2. We lever-
+age our rich Arabic L1 resources to support Ara-
+bic L2 readability. We increase the L2 accuracy to
+74.1%, an additional 6% error reduction, by aug-
+menting the L2 feature set with features based on
+L1-generated language models (LM).
+
+Proceedingsofthe5thWorkshoponNaturalLanguageProcessingTechniquesforEducationalApplications,pages20–29Melbourne,Australia,July19,2018.c(cid:13)2018AssociationforComputationalLinguistics20Depth of Features
+Raw Morph
+Syn
+D
+
+LM
+
+Features
+
+D
+
+Al-Khalifa and Al-Ajlan (2010)
+Al Tamimi et al. (2014)
+Cavalli-Sforza et al. (2014)
+Forsyth (2014)
+Saddiki et al. (2015)
+El-Haj and Rayson (2016)
+Nassiri et al. (2017)
+
+Our Work
+
+Corpus
+
+Size (tokens)
+
+L1 L2
+D
+1,196 docs (432,250) D
+
+150 docs (57,089)
+
+114 docs (49,666)
+179 docs (74,776)
+251 docs (88,023)
+73,000 lines ( 1,8M)
+230 docs ( 60,000)
+
+D
+
+D
+
+D
+
+D
+
+D
+
+L1: 27,688 docs ( 6.9M)
+L2: 576 docs (186,125)
+
+D D
+
+D
+
+D
+
+D
+
+D
+
+D
+
+D
+
+D
+
+D
+
+D
+
+D
+
+D
+
+D
+
+D
+
+Results
+Reported
+
+Accuracy: 77.8%
+Accuracy: 83.2%
+Accuracy: 91.3%
+F-Score: 71.9%
+F-Score: 73.4%
+Spearman R: .329
+F-Score: 90.5%
+
+D
+
+D
+
+L1 Accuracy: 94.8%
+L2 Accuracy: 72.4%
+
+Table 1: Comparative summary of recent work and our current study on computational readability for
+Arabic in terms of corpus size, focus on L1 or L2, use of shallow vs. deep features requiring heavier
+processing for extraction from the text, use of language models in generating features. Results reported
+are presented for reference rather than direct comparison.
+
+2 Background and Related Work
+
+Computational readability assessment presents a
+growing body of work leveraging NLP to extract
+complex textual features, and ML to build read-
+ability models from corpora, rather than relying on
+human expertise or intuition (Collins-Thompson,
+2014). Approaches vary depending on the purpose
+of the readability prediction model, e.g., mea-
+suring readability for text simpliﬁcation (Aluisio
+et al., 2010; Dell’Orletta et al., 2014a; Al Khalil
+et al., 2017), selecting more cognitively-predictive
+features for readers with disabilities (Feng et al.,
+2009) or for self-directed language learning (Bein-
+born et al., 2012). Features used in predicting
+readability range from surface features extracted
+from raw text (e.g. average word count per line),
+to more complex ones requiring heavier text pro-
+cessing such as syntactic parsing features (Heil-
+man et al., 2007, 2008; Beinborn et al., 2012;
+Hancke et al., 2012). The use of language models
+is increasingly favored in the literature over simple
+frequency counts, ratios and averages commonly
+used to quantify features in traditional readabil-
+ity formulas (Collins-Thompson and Callan, 2005;
+Beinborn et al., 2012; François and Miltsakaki,
+2012). We evaluate features extracted using both
+methods in this study.
+
+There is a modest body of work on readability
+prediction for Arabic with marked differences in
+modeling approaches pursued, feature complexity,
+dataset size and type (L1 vs. L2), and choice of
+evaluation metrics. We build our feature set with
+predictors frequently used for Arabic readability
+studies in the literature, and augment it with fea-
+tures from work carried out on other languages.
+
+We do organize our feature set on two dimensions:
+(a) the way features are quantiﬁed: basic statistics
+for frequencies and averages, or language model-
+ing perplexity scores; (b) the depth of processing
+required to obtain said features: directly from raw
+text, morphological analysis, or syntactic parsing.
+In Table 1, using these two dimensions, we situate
+ours and previous work and establish a common
+baseline of raw base features (i.e. traditional mea-
+sures (DuBay, 2004)) to compare to.
+
+Use of Language Modeling Features such as
+frequency counts, averages and other ratios seem
+to dominate the literature for Arabic readability.
+These are usually referred to as traditional, shal-
+low, basic or base features in the literature for their
+simplicity.
+In contrast, Al-Khalifa and Al-Ajlan
+(2010) add word bi-gram perplexity scores to their
+feature set, a popular readability predictor in En-
+glish and other languages.
+
+Depth of Features The set of features used in
+previous readability studies exhibit a range of
+complexity in terms of depth of processing needed
+to obtain them. While some studies have relied on
+raw text features requiring shallow computations
+(Al-Khalifa and Al-Ajlan, 2010; Al Tamimi et al.,
+2014; El-Haj and Rayson, 2016), most augment
+their feature set with lexical and morphological in-
+formation by processing the text further and ex-
+tracting features such as lemmas, morphemes, and
+part-of-speech tags (Cavalli-Sforza et al., 2014;
+Forsyth, 2014; Saddiki et al., 2015; Nassiri et al.,
+2017). We add another level of feature complexity
+by extracting features from syntactic parsing, used
+in readability assessment for other languages but
+so far untried for Arabic (Table 1).
+
+213 Features for Readability Prediction
+
+Textual features associated with degree of read-
+ability range from surface attributes such as text
+length or average word length,
+to more com-
+plex ones quantifying cohesion or higher-level text
+pragmatics. Naturally, the shallower attributes are
+also the easiest and least costly to extract from a
+text, as opposed to the deeper and more computa-
+tionally challenging features.
+
+Notation We deﬁne the notation used in the re-
+mainder of this paper to describe features, ranges
+of features and classiﬁcation feature sets:
+
+• An individual feature is expressed as F[i], i ∈
+[1, 146] is a number assigned to the feature as
+deﬁned in Table 2; e.g., F[1] for number of
+characters per document
+
+• A feature range is expressed as F[i-j], 1 ≤
+i ≤ j ≤ 146 and indicates a group of fea-
+tures similar in nature with numbers assigned
+to them as deﬁned in Table 2
+
+.
+
+Subscript
+
+• A classiﬁcation feature set or subset is ex-
+pressed as FEAT Superscript
+The super-
+script indicates whether the set contains fea-
+tures that are {Raw, Morph, Syn or all three
+Raw.Morph.Syn}. The subscript indicates
+whether the features are computed as {Base,
+LM, or both Base.LM} quantities.
+
+The feature list we have compiled (Table 2) is
+inspired by previous work for Arabic and other
+languages, and is organized by category as dis-
+cussed in the previous section.
+
+Base features FEAT Base range from shallow
+estimates, like word count or average sentence
+length, to others requiring more advanced process-
+ing, e.g. average parse tree depth for sentences in
+a document. LM-based features FEAT LM are a
+range of 12 perplexity scores obtained on n-gram
+models (uni-, bi- and tri-grams) built per level of
+readability. For instance, the ﬁrst 3 features in the
+range F[51-62] are the following: F[51] Level 1
+character unigrams, F[52] Level 1 character bi-
+grams, F[53] Level 1 character trigrams.
+
+We also distinguish three category labels for the
+depth of NLP-based processing required to extract
+the different features:
+
+• FEAT Raw : raw text extraction with mini-
+mal processing: Several formulas making use
+of raw text features have been successfully
+
+8 FEAT Raw
+
+Base *
+
+F[1] Characters
+F[2] Tokens
+F[3] Characters/Tokens
+F[4] Sentences
+
+F[5] T okens
+Sentences
+F[6] Al-Heeti Formula
+F[7] ARI Formula
+F[8] AARI Formula
+
+20 FEAT M orph
+
+Base *
+
+F[19] V erbs
+F[9] Morphemes
+T okens
+F[20] P ronouns
+F[10] Lemma Types
+T okens
+F[11] LemmaT ypes
+F[21] Psv. Verbs
+T okens
+F[12] M orphemes
+F[22] P svV erbs
+T okens
+Sentences
+F[13] Open-class Tokens
+F[23] Perf. Verbs
+F[14] Closed-class Tokens F[24] P erf V erbs
+F[15] Nouns
+F[16] Verbs
+F[17] Pronouns
+F[18] N ouns
+T okens
+
+F[25] Imperf. Verbs
+F[26] Imperf V erbs
+F[27] Cmd Verbs
+F[28] CmdV erbs
+T okens
+
+T okens
+
+T okens
+
+10 FEAT Syn
+Base
+
+F[29-36] CATiB dependency
+F[37] Average parse tree breadth
+F[38] Average parse tree depth
+
+24 FEAT Raw
+LM
+
+F[39-50] LM perplexity of Characters
+F[51-62] LM perplexity of Words *
+
+48 FEAT M orph
+
+LM
+
+F[63-74] LM perplexity of morphemes
+F[75-86] LM perplexity of lemmas
+F[87-98] LM perplexity of POS
+F[99-110] LM perplexity of lemma-POS mix
+
+36 FEAT Syn
+LM
+
+F[111-122] LM perplexity of CATiB POS
+F[123-134] LM perplexity of CATiBx POS
+F[135-146] LM perplexity of CATiB dependency
+
+Table 2: Our feature set organized by category. All
+features are calculated per document, and sentence
+level features are averaged per document. Feature
+sets or features marked by an * are inspired by pre-
+vious work on Arabic readability.
+
+adopted and adapted in English and other lan-
+guages, their appeal largely due to them be-
+ing easy to understand and compute.
+
+• FEAT M orph : morphological analysis pro-
+viding lexical and morpho-syntactic infor-
+mation: Readability is heavily inﬂuenced
+by vocabulary and word-level information
+(DuBay, 2007). Having word-level lexical
+and morpho-syntactic information can better
+inform the predictions.
+
+• FEAT Syn : syntactic parsing providing parse
+tree information and dependencies: Syntac-
+tic features have shown promise in improving
+readability prediction, especially for L2 read-
+ing.
+(Hancke et al., 2012) (Heilman et al.,
+
+22VRB
+
+ ;
+(cid:174)  yqdm
+
+‘offers’
+
+SBJ
+
+NOM
+
+J 2)
+(cid:203)( AltAryx
+
+‘History’
+
+MOD
+
+PRT l
+
+‘to’
+
+OBJ
+
+NOM)	+ +nA
+
+‘us’
+
+MOD
+
+PNX .
+
+‘.’
+
+OBJ
+
+NOM
+(3 (cid:187) kθyrA
+‘plenty’
+
+MOD
+
+PRT	 mn
+
+‘from’
+
+OBJ
+
+NOM
+
+P 2;(cid:203)( Aldrws
+
+‘lessons’
+
+MOD
+
+PRT
++  w+
+‘and’
+
+OBJ
+
+NOM
+
+
+0) 	(cid:170)(cid:203)( Alς ˇDAt
+‘sermons’
+
+1 AltAryx
+
+Morph
+
+Word
+Lemma Morph POS
+Al+tAriyx+u
+DET+NOUN
++CASEDEF.N OM
+yu+qad∼im+u
+
+yqdm
+qad∼am IV3MS+IV
+
+tAriyx
+
+2
+
+4
+
+3
+
+lnA
+li
+
+kθyrA
+kaθiyr
+
++IVSUFFM OOD:I
+la+nA
+PREP
++PRON1P
+kaθiyr+Aã
+ADJ
++CASEIN DEF.ACC
+min
+PREP
+Al+duruws+i
+DET+ NOUN
++CASEDEF.GEN
+7 wAlς ˇDAt wa+Al+ςi ˇD+At+i
+
+5 mn
+min
+
+6 Aldrws
+
+dars
+
+ςi ˇDa¯h
+
+English
+
+POS6
+POS34
+NOM history
+noun
+
+VRB
+verb
+
+PRT
+prep
+
+offers
+
+to, for
+us
+
+NOM plenty,
+many
+adj
+
+from, of
+
+PRT
+prep
+NOM lessons
+noun
+
+NOM sermons
+
+CONJ+DET+NOUN noun
++NSUFFF EM.P L
++CASEDEF.GEN
+
+8
+
+.
+.
+
+.
+PUNC
+
+PNX
+punc
+
+.
+
+FEAT Raw
+
+F[1] Characters
+F[2] Tokens
+F[3] Characters
+F[4] Sentences
+
+Base Features computed for the example sentence
+F[5] T okens
+F[6] Al-Heeti Formula F [3] × 4.414 − 13.468
+Sentences
+F[7] ARI Formula F [3] × 4.71 + F [5] × 0.5 − 21.43
+F[8] AARI Formula F [1]×3.28+F [3]×1.43+F [5]×1.24+472.42
+Figure 1: TOP: Example of linguistic annotations for the sentence  
+0) 	(cid:170)(cid:203)(  P 2;(cid:203)(
+‘History offers us plenty of lessons and sermons.’; BOTTOM: Table of FEAT Raw
+puted for the example sentence given.
+
+35
+8
+4.4
+1
+
+T okens
+
+1046.3
+
+8.0
+5.8
+3.2
+0.6
+
+	 (3 (cid:187) )	(cid:203)  ;
+(cid:174)  J 2)
+(cid:203)(
+Base feature values com-
+
+2007)
+
+In Table 2, most base features are computed
+simply by counting occurrences within the doc-
+ument. Ratios are expressed as mathematical
+fractions, such as F[3], F[5], F[11] and so on.
+LM perplexity is computed per readability level(1,
+2, 3, and 4) on (uni-, bi- and tri-)grams lan-
+guage models, generating 4 level scores per n-
+gram and a total of 12 perplexity scores per fea-
+ture. Figure 1 gives an idea of the linguistic an-
+notation extracted for an example sentence and il-
+lustrates how feature values are computed for the
+FEAT Raw
+Base subset. The annotation was generated
+using the CamelParser. POS tagsets used are POS6
+(Habash and Roth, 2009) and a higher granularity
+POS34 (Habash et al., 2012). We refer the user to
+Shahrour et al. (2016) for further details.
+
+We elaborate next on the feature names in Ta-
+
+ble 2:
+
+• F[6] Al-Heeti readability formula for Ara-
+bic as presented by Al-Khalifa and Al-Ajlan
+
+(2010) and other subsequent work.
+
+• F[7], F[8] represent the Automated Readabil-
+ity Index (ARI) readability formula for En-
+glish, and the Arabic ARI (AARI) readability
+formula for Arabic, both discussed at length
+by Al Tamimi et al. (2014).
+
+• F[9] Morphemes - approximated by counting
+proclitics + enclitics + stem for any given
+token, ﬁrst explored by Cavalli-Sforza et al.
+(2014) and Forsyth (2014), further tested by
+Saddiki et al. (2015) and Nassiri et al. (2017).
+Base.LM follow the
+MADAMIRA POS34 tag set (Pasha et al.,
+2014).
+
+• All features in FEAT M orph
+
+• F[13], F[14] Open and closed class tokens are
+
+determined by POS34 tag
+
+• F[21], F[22] Marking passive voice as one
+of the few cases where diacritic marks are
+typically provided for disambiguation in oth-
+erwise undiacritized text intended for adult
+
+23readers of Arabic. It is also a frequently used
+indicator of difﬁcult or poor readability in
+other languages (DuBay, 2007; Aluisio et al.,
+2010).
+
+• F[23-28] Marking verb aspect (perfective,
+imperfective,
+imperative) as an indicator
+used with some success in other languages
+(Dell’Orletta et al., 2014a).
+
+• F[29-36]
+
+Columbia Arabic
+
+Treebank
+
+(CATiB) tagset (Habash and Roth, 2009).
+
+• F[63-74] A morpheme language model is
+generated with the higher granularity Morph-
+POS tagset (illustrated in Figure 1) based on
+(Buckwalter, 2002).
+
+• F[99-110] A lemma-POS mixed language
+model is generated with the lemma of open-
+class tokens and the POS34 (Habash et al.,
+2012) for closed-class tokens.
+
+• F[111-122] A POS-based language model
+is generated with the CATiB POS tagset
+(Habash and Roth, 2009).
+
+• F[123-134] A POS-based language model
+is generated with the extended CATiB POS
+tagset presented in (Marton et al., 2013).
+
+• F[135-146] A dependency language model is
+generated on the CATiB dependency tags in
+F[29-36] to get different levels of dependency
+context information, the most salient one be-
+ing dependency information for parent-child
+nodes in the parse tree.
+
+4 Modeling Readability
+
+We evaluate readability prediction as a classiﬁca-
+tion problem on a large feature set for documents
+in two text corpora designed for L1 and L2 read-
+ing, and labelled with readability levels 1, 2, 3 and
+4 in increasing difﬁculty.
+
+4.1 L1 and L2 Data
+We leverage the L1 leveled reading corpus built
+by Khalil et al. (2018) based on grades 1 through
+12 of an Arabic school curriculum and a collec-
+tion of adult-level ﬁction. The corpus was split
+across 4 levels of readability in increasing order of
+difﬁculty: level 1 (905 documents), level 2 (1,192
+documents), level 3 (2,054 documents) and level
+4 (18,089 documents). The ﬁrst three levels are
+sourced from curricular texts, grades 1-4, 5-8 and
+
+9-12. The fourth considerably larger level contains
+novels suitable for post-secondary readers.
+
+For L2, we work with an augmented version of
+the corpus used by Forsyth (2014), Saddiki et al.
+(2015) and Nassiri et al. (2017). It is comprised
+of 576 documents, leveled according to the Intera-
+gency Language Roundtable (ILR) scale for for-
+eign language proﬁciency.1 With documents in
+the L2 corpus averaging 250 words, the L1 cor-
+pus was split accordingly for better comparability
+in our experiments.
+
+Both the L1 and L2 datasets underwent an 80-
+10-10 random stratiﬁed split over the four levels
+for training (80%), development (10%) and testing
+(10%). The L1 corpus, partially sourced from text-
+book material from three different subjects, was
+also split across the three subjects to ensure a bal-
+anced sample of all three: Arabic, Social Studies,
+Islamic Studies.
+
+4.2 Feature Extraction
+The datasets are ﬁrst enriched with several layers
+of linguistic annotation (e.g. Fig. 1) in prepara-
+tion for feature extraction. Then, both raw text
+and annotations from the training set are used to
+build LMs for each of the 4 levels of readability
+(Table 3) with the SRILM toolkit (Stolcke et al.,
+2002). At this point, we begin extracting features
+from the various conﬁgurations of annotation and
+language models we generated:
+
+• FEAT Raw
+
+Base.LM features are extracted directly
+from the raw text, e.g. total number of char-
+acters in a document.
+
+• FEAT M orph
+
+Base.LM text is annotated with morpho-
+logical, lexical and morpho-syntactic infor-
+mation using the MADAMIRA tool (Pasha
+et al., 2014) for morphological disambigua-
+tion.
+
+• FEAT Syn
+
+Base.LM text is annotated with syn-
+tactic parsing information using the Camel-
+Parser tool (Shahrour et al., 2016).
+
+Base
+
+All FEAT Raw.M orph.Syn
+features are obtained
+from computing occurrences, averages and other
+ratios over:
+lemmatiza-
+tion, tokenization and morpho-syntanctic annota-
+tion (FEAT M orph
+Base ); syntactic parsing annotation
+(FEAT Syn
+features
+
+Base). All FEAT Raw.M orph.Syn
+
+raw text (FEAT Raw
+
+Base);
+
+LM
+
+1The scale goes from 0 (no proﬁciency) to 5 (native
+or bilingual proﬁciency) with + designation for interme-
+diate levels, for further details http://www.govtilr.org/skills
+/ILRscale1.htm
+
+24L1 Corpus
+
+Level
+
+Source
+
+1
+2
+3
+4
+
+K12 grades 1-4 (textbooks)
+K12 grades 5-8 (textbooks)
+K12 grades 9-12 (textbooks)
+Original literary texts (novels)
+
+Docs
+1,230
+1,683
+2,553
+22,222
+27,688
+
+Tokens
+297,772
+412,942
+628,978
+5,594,310
+6,934,002
+
+L2 Corpus
+
+Level
+
+1
+2
+3
+4
+
+Source
+0 or 0+ (No proﬁciency)
+1 or 1+ (Elementary proﬁciency)
+2 or 2+ (Limited working proﬁciency)
+3 or 3+ (Professional working proﬁciency)
+
+Docs
+31
+177
+290
+78
+576
+
+Tokens
+2,462
+40,816
+105,277
+37,570
+186,125
+
+Table 3: Descriptive corpus statistics for our L1 and L2 data.
+
+are obtained from computing perplexity scores per
+document over the LMs generated using either raw
+text or text annotation (lemmas, POS, etc).
+
+In total, there were 146 features extracted for
+each document. We perform three main experi-
+ments, described next, to determine their efﬁcacy
+in the classiﬁcation task for L1 and L2.
+
+Base.LM
+
+4.3 Experiment Setup
+First, we build classiﬁers on the full feature set
+FEAT Raw.M orph.Syn
+to determine best perfor-
+mance for L1 and L2. All classiﬁcation exper-
+iments are carried out within the WEKA envi-
+ronment (Hall et al., 2009). We test classiﬁca-
+tion algorithms used with some success in previ-
+ous work (D.Tree decision tree, Rnd.F random for-
+est, kNN k-nearest-neighbour, SVM support vector
+machine). We include two baseline classiﬁers for
+reference: zeroR (a simple classiﬁer predicting the
+majority class for all instances) and oneR (a 1-rule
+classiﬁer using the feature with least error to pre-
+dict the correct class).
+
+Then, we test the performance of the feature
+subsets to assess the predictive power of different
+feature conﬁgurations for L1 and L2. We perform
+feature selection in two ways:
+
+• Manually, following the categorization we
+deﬁned in Table 2 and resulting in 12 com-
+binations of feature sets to be tested: feature
+subsets (i, j) with i in {Raw, Morph, Syn} and
+j in {Base, LM} with FEAT Raw
+Base as the per-
+formance baseline for evaluating all feature
+subsets; composite subsets (i) with i in {Raw,
+Morph, Syn} or (j) in {Base, LM}; and ﬁ-
+nally the full feature set FEAT Raw.M orph.Syn
+.
+using
+correlation-based feature selection (CFS)
+FEAT Correl
+Base.LM implemented as CfsSubsetE-
+val in WEKA with a BestFirst backward
+search through the feature space (Hall,
+1999).
+
+• Automatic
+
+selection
+
+feature
+
+Base.LM
+
+Finally, we experiment with the potential of us-
+to improve L2 read-
+
+ing L1 FEAT Raw.M orph.Syn
+
+LM
+
+ability predictions. First, we calculate perplexity
+scores for L2 documents using L1 LMs. We add
+these perplexity scores as features to the original
+L2 feature set, bringing the total set size to 254
+features. Then, using this FEAT Raw.M orph.Syn
+Base.LM.LML1
+feature set, we:
+(1) rerun the classiﬁer perfor-
+mance experiment to see if any overall perfor-
+mance improvement is achieved; (2) run CFS fea-
+ture selection on the L1-based LM subset to ex-
+amine which features correlate the most with L2
+readability classes. All experiments are reported
+in terms of F-score in addition to % Accuracy and
+F-score to give a better sense of prediction perfor-
+mance while accounting for class imbalance in the
+corpus.
+
+5 Results and Discussion
+In this section we present and discuss the results of
+experiments previously described in Section 5.3,
+which we organize as follows: results to optimize
+for classiﬁer choice, results to optimize for fea-
+tures choice, and ﬁnally results on leveraging L1-
+based features for L2 readability prediction.
+
+5.1 Classiﬁer Choice Optimization
+The classiﬁcation results in Table 4 show that
+SVM performs best on overall accuracy for both
+L1 and L2 predictions. For L1, SVM achieves er-
+ror reduction of 76% to the zeroR baseline, 64 %
+to the oneR baseline, while outperforming other
+classiﬁers from the literature by varying degrees.
+Performance over the 4 levels of readability, mea-
+sured in precision, recall and F-score, is as fol-
+lows:
+
+• Precision: Level 1 (78.3%), Level 2 (81.8%),
+
+Level 3 (89.4%) and Level 4 (97.5%)
+
+• Recall: Level 1 (78.8%), Level 2 (68.9%),
+
+Level 3 (81.7%) and Level 4 (100%)
+
+• F-score: Level 1 (78.5%), Level 2 (74.8%),
+
+Level 3 (85.4%) and Level 4 (98.7%)
+
+Taking a closer look at misclassiﬁed documents,
+mostly from Levels 1, 2 and 3, we ﬁnd the ma-
+
+25L1 FEAT Raw.M orph.Syn
+Accuracy Average F1
+
+Base.LM
+
+L2 FEAT Raw.M orph.Syn
+Accuracy Average F1
+
+Base.LM
+
+ZeroR
+OneR
+D.Tree (C=0.25, M=12)
+Rndm Frst (I=500)
+kNN (k=9)
+SVM (C=5.0, rbfKernel)
+
+77.9
+85.4
+72.2
+94.6
+93.8
+94.8
+
+21.9
+52.1
+50.4
+83.6
+80.4
+84.4
+
+ZeroR
+OneR
+D.Tree (C=0.25, M=2)
+Rndm Frst (I=100)
+kNN (k=2)
+SVM (C=1.0, rbfKernel)
+
+50.0
+34.5
+31.0
+50.0
+67.2
+72.4
+
+16.7
+24.4
+21.7
+55.0
+61.1
+60.5
+
+Table 4: Comparison of different classiﬁers using the full feature set FEAT Raw.M orph.Syn
+for L1 (left)
+and L2 (right). Baseline performance is that of classiﬁers ZeroR and OneR. Performance is reported in
+terms of Accuracy (%) and F1-score (%) averaged over the 4 classiﬁcation levels.
+
+Base.LM
+
+L1 SVM Classiﬁer
+
+Accuracy Average F1
+
+L2 SVM Classiﬁer
+
+Accuracy Average F1
+
+LM
+
+Base.LM
+
+Base.LM
+
+Base.LM
+
+Feature Subset
+FEAT Raw.M orph.Syn
+FEAT Raw.M orph.Syn
+FEAT M orph
+FEAT M orph
+LM
+FEAT Raw
+FEAT Raw
+LM
+FEAT Correl
+FEAT Raw.M orph.Syn
+Base
+FEAT Syn
+FEAT Syn
+LM
+FEAT M orph
+Base
+FEAT Raw
+Base
+FEAT Syn
+Base
+
+Base.LM
+
+Base.LM
+
+94.8
+94.3
+94.3
+93.8
+88.6
+87.2
+85.3
+83.4
+82.7
+82.0
+81.8
+79.3
+78.0
+
+84.4
+83.3
+83.1
+81.6
+61.4
+50.5
+42.6
+40.7
+39.7
+37.3
+33.7
+28.1
+22.5
+
+LM
+
+Base
+
+Base.LM
+
+Base.LM
+
+Base.LM
+
+Feature Subset
+FEAT Raw.M orph.Syn
+FEAT Raw.M orph.Syn
+FEAT Raw.M orph.Syn
+FEAT Correl
+FEAT M orph
+FEAT Syn
+FEAT Raw
+FEAT M orph
+LM
+FEAT Raw
+LM
+FEAT M orph
+Base
+FEAT Syn
+LM
+FEAT Raw
+Base
+FEAT Syn
+Base
+
+Base.LM
+
+Base.LM
+
+72.4
+70.7
+67.2
+67.2
+67.2
+67.2
+63.8
+63.8
+60.3
+51.7
+50.0
+50.0
+50.0
+
+60.5
+38.6
+53.7
+37.3
+36.4
+35.7
+35.1
+34.6
+33.2
+19.6
+16.9
+16.7
+16.7
+
+Table 5: Comparison of different feature subsets
+using SVM Classiﬁer for L1 (based on best per-
+formance results from Table 4). Baseline perfor-
+mance is that of subset FEAT Raw
+Base. Performance
+is reported in terms of Accuracy (%) and F1-score
+(%) averaged over the 4 classiﬁcation levels.
+
+Table 6: Comparison of different feature subsets
+using SVM Classiﬁer for L2 (based on best per-
+formance results from Table 4). Baseline perfor-
+mance is that of subset FEAT Raw
+Base. Performance
+is reported in terms of Accuracy (%) and F1-score
+(%) averaged over the 4 classiﬁcation levels.
+
+jority mostly off by no more than 1 level. For
+intance, the bulk of misclassiﬁed documents for
+Level 1 are labeled as Level 2. This can be in
+part due to the high similarity between the high-
+est grade in Level 1 (Grade 4) and the lowest
+grade in Level 2 (Grade 5), considering that Level
+2 contains both Primary and Preparatory grades.
+Another typically misclassiﬁed document type is
+one containing mainly instructional text and in-
+tended learning outcomes for the lessons. This
+is a language and style of writing that is particu-
+lar to textbooks and repeated throughout the cur-
+riculum. Level 2 shows more dispersion in the
+misclassiﬁcations across other levels. Considering
+that Level 2 combines a portion of upper Primary
+and lower Preparatory grades, we expect some in-
+terference from the proximity in style and content
+in Grade4-Grade5 and Grade8-Grade9. The inclu-
+
+sion of more excerpts of original literary texts, es-
+pecially in the Preparatory grades, could help ex-
+plain why Level 4 predictions were obtained for
+some documents. Level 3 classiﬁcation errs pre-
+dominantly towards Level 4, this is also a plausible
+outcome considering that Arabic textbooks delve
+further into literature and include much longer ex-
+cerpts of original ﬁction, and keeping in mind that
+some works of ﬁction are plausibly accessible to
+readers nearing the end of their K12 education.
+
+Results for L2 remain consistent with 45% and
+58% error reduction to the zeroR and oneR base-
+lines, respectively.
+
+We ﬁnd that all misclassiﬁed documents are
+only off by 1 level and often due to the interme-
+diate proﬁciency levels marked by a ’+’ being too
+close in difﬁculty to the next level up (e.g. a ’1+’
+proﬁciency document misclassiﬁed as ’2’ accord-
+
+26L2 FEAT Raw.M orph.Syn
+Accuracy Average F1
+
+Base.LM
+
+L2 FEAT Raw.M orph.Syn
+Base.LM.LML1
+Accuracy Average F1
+
+ZeroR
+OneR
+D.Tree
+R.Forest
+kNN
+SVM
+
+50.0
+34.5
+31.0
+50.0
+67.2
+72.4
+
+16.7
+24.4
+21.7
+55.0
+61.1
+60.5
+
+50.0
+34.5
+31.0
+72.4
+74.1
+72.4
+
+16.7
+24.4
+21.7
+67.9
+66.2
+60.5
+
+Table 7: L2 results with different classiﬁers
+on FEAT Raw.M orph.Syn
+. Comparison of differ-
+Base.LM.LML1
+ent classiﬁers using the augmented feature set
+FEAT Raw.M orph.Syn
+for L2 (L2 features + L1 LM
+Base.LM.LML1
+features). Baseline performance is that of classi-
+ﬁers ZeroR and OneR. Performance is reported in
+terms of Accuracy (%) and F1-score averaged over
+the 4 classiﬁcation levels.
+
+ing to the scale in 3). Evaluating L2 readability is
+a worthwile experiment which is hindered mostly
+by data sparsness.
+
+5.2 Feature Optimization
+Feature optimization experiments are carried out
+with SVM classiﬁcation using the best perform-
+ing parameter conﬁgurations for L1 and L2. Ta-
+bles 5 and 6 show performance results of various
+feature subsets in comparison with the baseline
+FEAT Raw
+Base. We make the following noteworthy
+observations:
+
+• A combination of LM-based, NLP-based and
+traditional features FEAT Raw.M orph.Syn
+per-
+forms best in readability prediction: 75% and
+45% error reduction on FEAT Raw
+Base for L1 and
+L2 respectively
+
+Base.LM
+
+• LM Features FEAT Raw.M orph.Syn
+
+are better
+predictors than base features: performance is
+second-best for L1 and third-best for L2
+
+Base.LM , FEAT Syn
+
+• NLP-based features (FEAT Raw.M orph.Syn
+,
+FEAT M orph
+Base.LM ) are bet-
+ter predictors than raw shallow features
+FEAT Raw
+Base: this is true overall, with heavier
+inﬂuence in L2 prediction
+
+LM
+
+LM
+
+• Features
+
+on
+
+based
+
+syntactic
+
+parsing
+FEAT Syn
+Base.LM inform readability pre-
+dictions, more so for L2 than for L1: 16%
+Base for
+and 34% error reduction on FEAT Raw
+L1 and L2 respectively
+
+FEAT Correl
+
+Base.LM for L1 is a subset of 10 features2
+achieving 29% error reduction on the FEAT Raw
+Base
+
+2L1 CFS-based subset of 10 features: F[41, 56, 58, 61,
+
+62, 68, 71, 86, 123, 141], numbered according to Table 2
+
+baseline. All features are LM-based, with 50%
+of them extracted from raw text, ideal for low-
+cost performance with minimal NLP effort. This
+can be useful in lightweight web-based readabil-
+ity tools. We also noted with interest an 80%-
+20% split into vocabulary-based and syntax-based
+features, suggesting that vocabulary plays a more
+dominant role in readability than grammar.
+
+FEAT Correl
+
+Base.LM for L2 achieves 34% error reduc-
+Base baseline with 29 features,3
+tion on the FEAT Raw
+dominated largely by LM-based attributes. Some
+interesting predictive features from FEAT M orph
+are lemma type count per document indicating lex-
+ical richness, Verb-to-Token ratio and Pronoun-
+to-Token ratio. Mixed LMs built with lemmas
+of open-class tokens and the POS of closed-class
+tokens for readability levels 2, 3 and 4 correlate
+highly with L2 predictions but did not ﬁgure in
+L1 FEAT Correl
+Base.LM which relied more on raw word
+LMs.
+
+Base
+
+5.3 L1-based Features for L2 Readability
+Table 7 presents the results of augmenting L2 with
+L1 LM-based features. Adding L1 features to the
+L2 feature set did not degrade performance for any
+of the classiﬁers. While D.Tree and SVM classiﬁ-
+cation did not show any signiﬁcant improvement,
+the L1 features drastically improved prediction ac-
+curacy and F-score for Random Forest (Accuracy:
+45% error reduction, F-score: 28.6% error reduc-
+tion) and kNN (Accuracy: 21% error reduction,
+F-score: 13% error reduction) classiﬁcation.
+
+Looking into LM-based L1 features4 that cor-
+relate the most with L2 readability levels, we
+ﬁnd that the most predictive of these features are
+mostly based on L1 readability levels 1 and 4, and
+distributed among raw character features, word
+features (raw and lemma), POS features, and pars-
+ing dependency features. Results from L2 using
+L1 encourage further exploration of L1 feature use
+in L2 readability prediction.
+It is worthwhile to
+explore the performance of classifying L1 docu-
+ments on an L2 scale validated by expert judg-
+ment. Given the considerably smaller size of L2
+resources in comparison with L1 texts, we can po-
+tentially mine L1 for L2-suitable material, thereby
+increasing the pool of texts available to L2 readers.
+
+3L2 CFS-based subset of 29 features: F[10, 19, 20, 26,
+37, 41, 47, 50, 55, 56, 58, 59, 62, 65, 67, 68, 73, 74, 82, 83,
+86, 97, 103, 107, 109, 113, 124, 134, 137].
+
+4L2 subset of L1-based features: F[46-50, 53, 55, 76, 85,
+
+87, 92, 112, 120, 122-124, 126, 132, 141, 144-146].
+
+276 Conclusion and Future Work
+
+We have presented the largest and most in-depth
+computational readability study for Arabic to date.
+We studied a wide set of features with varying
+depths from shallow words to syntactic trees for
+both L1 and L2 readability tasks. Our best L1
+Readability accuracy result is 94.8% (75% error
+reduction from a commonly used baseline). The
+comparable results for L2 are 72.4% (45% error
+reduction). We demonstrated the added value of
+using L1 features for L2 readability prediction by
+increasing the L2 accuracy to 74.1% (an additional
+6% error reduction).
+
+The next step in improving model robustness
+and performance would be to address the dataset
+imbalance among the four levels for both L1 and
+L2 by adjusting sampling (He and Garcia, 2009).
+We are also considering a cost-sensitive prediction
+model: for instance, by assigning different costs
+to misclassiﬁcation scenarios, we can penalize the
+model more heavily for errors in sparser levels.
+
+In the future, we plan to employ our best results
+in the development of online tools to support an
+effort for text simpliﬁcation for pedagogical pur-
+poses. Going forward in this direction, we expect
+to widen our range to include different levels of
+document granularity: 500-word to 1K-word size
+documents, as well as sentence-level readability
+(Dell’Orletta et al., 2014b).
+
+References
+Hend S Al-Khalifa and Amani A Al-Ajlan. 2010. Au-
+tomatic readability measurements of the Arabic text:
+An exploratory study. Arabian Journal for Science
+and Engineering, 35(2 C):103–124.
+
+Muhamed Al Khalil, Nizar Habash, and Hind Saddiki.
+2017. Simpliﬁcation of Arabic masterpieces for ex-
+tensive reading: A project overview. Procedia Com-
+puter Science, 117:192–198.
+
+Abdel Karim Al Tamimi, Manar Jaradat, Nuha Al-
+Jarrah, and Sahar Ghanem. 2014. AARI: automatic
+Arabic readability index. Int. Arab J. Inf. Technol.,
+11(4):370–378.
+
+Sandra Aluisio, Lucia Specia, Caroline Gasperin, and
+Carolina Scarton. 2010. Readability assessment for
+In Proceedings of the NAACL
+text simpliﬁcation.
+HLT 2010 Fifth Workshop on Innovative Use of NLP
+for Building Educational Applications, pages 1–9.
+Association for Computational Linguistics.
+
+Lisa Beinborn, Torsten Zesch, and Iryna Gurevych.
+2012. Towards ﬁne-grained readability measures for
+In Proceedings of
+self-directed language learning.
+the SLTC 2012 workshop on NLP for CALL; Lund;
+
+25th October; 2012, 080, pages 11–19. Linköping
+University Electronic Press.
+
+Tim Buckwalter. 2002. Buckwalter Arabic Morpho-
+logical Analyzer Version 1.0. Linguistic Data Con-
+sortium, University of Pennsylvania, 2002. LDC
+Catalog No.: LDC2002L49.
+
+Violetta Cavalli-Sforza, Mariam El Mezouar, and Hind
+Saddiki. 2014. Matching an Arabic text to a learn-
+In Proc. 5th Int. Conf. on Arabic
+ers’ curriculum.
+Language Processing (CITALA), Oujda, Morocco,
+pages 79–88.
+
+Kevyn Collins-Thompson. 2014. Computational as-
+sessment of text readability: A survey of current and
+ITL-International Journal of Ap-
+future research.
+plied Linguistics, 165(2):97–135.
+
+Kevyn Collins-Thompson and Jamie Callan. 2005.
+Predicting reading difﬁculty with statistical
+lan-
+guage models. Journal of the Association for Infor-
+mation Science and Technology, 56(13):1448–1462.
+Felice Dell’Orletta, Simonetta Montemagni, and Giulia
+Venturi. 2014a. Assessing document and sentence
+readability in less resourced languages and across
+textual genres. ITL-International Journal of Applied
+Linguistics, 165(2):163–193.
+
+Felice Dell’Orletta, Martijn Wieling, Giulia Venturi,
+Andrea Cimino, and Simonetta Montemagni. 2014b.
+Assessing the readability of sentences: Which cor-
+pora and features? In BEA@ ACL, pages 163–173.
+William H DuBay. 2004. The Principles of Readabil-
+
+ity. Impact Information.
+
+William H DuBay. 2007. Unlocking Language. Impact
+
+Information.
+
+Mahmoud El-Haj and Paul Rayson. 2016. Osman:
+In Proceed-
+A novel Arabic readability metric.
+ings of the Tenth International Conference on Lan-
+guage Resources and Evaluation (LREC 2016),
+Paris, France. European Language Resources Asso-
+ciation (ELRA).
+
+Lijun Feng, Noémie Elhadad, and Matt Huenerfauth.
+2009. Cognitively motivated features for readability
+assessment. In Proceedings of the 12th Conference
+of the European Chapter of the Association for Com-
+putational Linguistics, pages 229–237. Association
+for Computational Linguistics.
+
+Jonathan Forsyth. 2014. Automatic readability predic-
+In Proceedings
+tion for modern standard Arabic.
+of the First Workshop on Free/Open-Source Ara-
+bic Corpora and Corpora Processing Tools (LREC
+2014), Reykjavik, Iceland.
+
+Thomas François and Eleni Miltsakaki. 2012. Do nlp
+and machine learning improve traditional readabil-
+In Proceedings of the First Work-
+ity formulas?
+shop on Predicting and Improving Text Readability
+for target reader populations, pages 49–57. Associ-
+ation for Computational Linguistics.
+
+N. Habash, O. Rambow, and R. Roth. 2012. MADA+
+TOKAN Manual. Technical report, Technical Re-
+port CCLS-12-01, Columbia University.
+
+28Hind Saddiki, Karim Bouzoubaa, and Violetta Cavalli-
+Sforza. 2015. Text readability for Arabic as a for-
+In Proceedings of the IEEE/ACS
+eign language.
+12th International Conference of Computer Systems
+and Applications (AICCSA), Marrakech, Morocco,
+pages 1–8. IEEE.
+
+Anas Shahrour, Salam Khalifa, Dima Taji, and Nizar
+Habash. 2016. Camelparser: A system for arabic
+syntactic analysis and morphological disambigua-
+tion. In Proceedings of COLING 2016, the 26th In-
+ternational Conference on Computational Linguis-
+tics: System Demonstrations, pages 228–232.
+
+Andreas Stolcke et al. 2002. Srilm-an extensible lan-
+In Interspeech, volume
+
+guage modeling toolkit.
+2002, page 2002.
+
+Nizar Habash and Ryan M Roth. 2009. CATiB: The
+Columbia Arabic Treebank. In Proceedings of the
+ACL-IJCNLP 2009 Conference Short Papers, pages
+221–224. Association for Computational Linguis-
+tics.
+
+Nizar Y Habash. 2010. Introduction to Arabic natural
+language processing, volume 3. Morgan & Clay-
+pool Publishers.
+
+Mark Hall, Eibe Frank, Geoffrey Holmes, Bernhard
+Pfahringer, Peter Reutemann, and Ian H Witten.
+2009. The weka data mining software: an update.
+ACM SIGKDD explorations newsletter, 11(1):10–
+18.
+
+Mark Andrew Hall. 1999. Correlation-based feature
+selection for machine learning. Ph.D. thesis, Uni-
+versity of Waikato Hamilton.
+
+Julia Hancke, Sowmya Vajjala, and Detmar Meurers.
+2012. Readability classiﬁcation for german using
+lexical, syntactic, and morphological features.
+In
+COLING, pages 1063–1080.
+
+Haibo He and Edwardo A Garcia. 2009. Learning from
+imbalanced data. IEEE Transactions on knowledge
+and data engineering, 21(9):1263–1284.
+
+Michael Heilman, Kevyn Collins-Thompson, Jamie
+Callan, and Maxine Eskenazi. 2007. Combining
+lexical and grammatical features to improve read-
+ability measures for ﬁrst and second language texts.
+In Human Language Technologies 2007: The Con-
+ference of the North American Chapter of the Asso-
+ciation for Computational Linguistics; Proceedings
+of the Main Conference, pages 460–467.
+
+Michael Heilman, Kevyn Collins-Thompson, and
+Maxine Eskenazi. 2008. An analysis of statistical
+models and features for reading difﬁculty prediction.
+In Proceedings of the Third Workshop on Innova-
+tive Use of NLP for Building Educational Applica-
+tions, pages 71–79. Association for Computational
+Linguistics.
+
+Muhamed Al Khalil, Hind Saddiki, Nizar Habash, and
+Latifa Alfalasi. 2018. A Leveled Reading Corpus of
+Modern Standard Arabic. In Proceedings of the In-
+ternational Conference on Language Resources and
+Evaluation (LREC 2018).
+
+Yuval Marton, Nizar Habash, and Owen Rambow.
+2013. Dependency parsing of modern standard Ara-
+bic with lexical and inﬂectional features. Computa-
+tional Linguistics, 39(1):161–194.
+
+Naoual Nassiri, Abdelhak Lakhouaja, and Violetta
+Cavalli-Sforza. 2017. Modern standard Arabic
+readability prediction. In International Conference
+on Arabic Language Processing, pages 120–133.
+Springer.
+
+Arfath Pasha, Mohamed Al-Badrashiny, Mona Diab,
+Ahmed El Kholy, Ramy Eskander, Nizar Habash,
+Manoj Pooleery, Owen Rambow, and Ryan M Roth.
+2014. MADAMIRA: A Fast, Comprehensive Tool
+for Morphological Analysis and Disambiguation of
+Arabic. In Proceedings of the Language Resources
+and Evaluation Conference (LREC), Reykjavik, Ice-
+land.
+
+29

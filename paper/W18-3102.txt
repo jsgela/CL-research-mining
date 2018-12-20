@@ -1,0 +1,1146 @@
+Causality Analysis of Twitter Sentiments and Stock Market Returns
+
+Narges Tabari
+
+nseyedit@uncc.edu
+
+UNC Charlotte
+
+Armin Seyeditabari
+sseyedi1@uncc.edu
+
+UNC Charlotte
+
+Abstract
+
+Bhanu Praneeth
+bsirukur@uncc.edu
+
+UNC Charlotte
+
+Mirsad Hadzikadic
+Mirsad@uncc.edu
+
+UNC Charlotte
+
+Piyusha Biswas
+
+pbiswas1@uncc.edu
+
+UNC Charlotte
+
+Wlodek Zadrozny
+wzadrozn@uncc.edu
+
+UNC Charlotte
+
+Sentiment analysis is the process of iden-
+tifying the opinion expressed in text. Re-
+cently, it has been used to study behav-
+ioral ﬁnance, and in particular the effect
+of opinions and emotions on economic or
+ﬁnancial decisions. In this paper, we use
+a public dataset of labeled tweets that has
+been labeled by Amazon Mechanical Turk
+and then we propose a baseline classiﬁ-
+cation model. Then, by using Granger
+causality of both sentiment datasets with
+the different stocks, we shows that there is
+causality between social media and stock
+market returns (in both directions) for
+many stocks. Finally, We evaluate this
+causality analysis by showing that in the
+event of a speciﬁc news on certain dates,
+there are evidences of trending the same
+news on Twitter for that stock.
+
+1
+
+Introduction
+
+Sentiment analysis of Twitter messages has been
+used to study behavioral ﬁnance, speciﬁcally, the
+effect of sentiments driven from social media on
+ﬁnancial and economical decisions. For example,
+Bollen and Pepe 2011 used social-media senti-
+ment analysis to predict the size of markets, while
+Antenucci et al. 2014 used it to predict unem-
+ployment rates over time. Twitter sentiment anal-
+ysis in particular, is a challenging task because
+its text contains many misspelled words, abbre-
+viation, grammatical errors, and made up words.
+Therefore, it contains limited contextual informa-
+tion.
+
+In previous research, it was implied that if it is
+properly modeled, Twitter can be used to forecast
+useful information about the market. Tharsis et al.
+
+used a Twitter sentiment analysis from (Kolchyna
+et al., 2015) which was SVM approach, then com-
+pared them to different industries and showed that
+by adding the sentiments to their predictive mod-
+els, the error rate reduced between 1 to 3 percent,
+in predicting the Expected Returns of different in-
+dustries (Souza et al., 2015). Alanyali et al. found
+a positive correlation between the number of men-
+tions of a company in the Financial Times and the
+volume of its stock (Alanyali et al., 2013). There
+has been many related research in this area, but
+there are shortcomings that needs to be speciﬁed.
+First, datasets used for sentiment analysis, is not
+speciﬁcally in context of ﬁnance (Bollen and Pepe,
+2011; Souza et al., 2015). Secondly, the classiﬁ-
+cation models mostly have low accuracy (Bollen
+and Pepe, 2011; Loughran and Mcdonald, 2010;
+Ranco et al., 2015; Lillo et al., 2012).
+
+In our research on investigation on impacts of
+social media and stock market, we pulled a dataset
+of tweet in duration of three months that was la-
+beled by both Amazon mechanical Turk, and then
+again we designed a classiﬁcation model using
+SVM, with 79.9% of accuracy. Then, Granger
+Causality analysis of these two tweet datasets with
+various stock returns has shown that for many
+companies theres a statistical signiﬁcant causal-
+ity between stock and the sentiments driven from
+tweets in different lags. When evaluating this rela-
+tion, we realized that on speciﬁc dates that jumps
+in stock market return occur, there are many evi-
+dence of mentions of the same news in our Twitter
+dataset which caused the change in stock market
+return
+
+In Section 2, we will describe the dataset that
+was pulled from Twitter, pre-processing tech-
+niques, labels by Amazon Mechanical Turk, and
+the machine learning classiﬁer. This section has
+been also used in another analysis which is cur-
+
+ProceedingsoftheFirstWorkshoponEconomicsandNaturalLanguageProcessing,pages11–19Melbourne,Australia,July20,2018.c(cid:13)2018AssociationforComputationalLinguistics11rently under review to ECML-PKDD 2018.
+In
+section three, we explain the causality models, and
+results. And ﬁnally, in section ﬁve, we describe
+the evaluation process. We conclude our ﬁndings
+in section six.
+
+2 Data
+
+Tweets were pulled from Twitter using Twitter
+API between 1/1/2017 and 3/31/2017. In our ﬁl-
+ters, we only pulled tweets that are tweeted from a
+”Veriﬁed” account. A veriﬁed account on Twitter
+suggests that the account is a public interest and
+that it is authentic. An account gets veriﬁed by
+Twitter if the used is a distinguished person in dif-
+ferent key interest areas, such as politics, journal-
+ism, government, music, business, and others. A
+Tweet were considered stock related if it contains
+at least one of the stock symbols of the ﬁrst 100
+most frequent stock symbols that were included in
+SemEval dataset form (Cortis et al., 2017). We
+were able to pull 20,013 tweets in that interval us-
+ing mentioned ﬁlters.
+
+2.1 Labeling using Amazon Mechanical Turk
+The data was submitted to Amazon Mechanical
+Turk, was asked to be labeled by 4 different work-
+ers. Snow et al. 2008 suggested that 4 work-
+ers is enough to make sure that enough people
+have submitted their opinion on each tweet and so
+the results would be reliable. We assigned only
+AMT masters as our workers, meaning they have
+the highest performance in performing wide range
+of HITs (Human Intelligence Tasks). We also
+asked the workers to assign sentiments based on
+the question: ”Is the tweet beneﬁcial to the stock
+mentioned in tweet or not?”. It was important that
+tweet is not labeled based on perspective of how
+beneﬁcial it would be for the investor; rather how
+beneﬁcial it would be to the company itself. Each
+worker assigned numbers from -2 (very negative)
+to +2 (very positive) to each tweet. Table 1 shows
+the inter-rater percentage agreement between sen-
+timents assigned to each tweets by the four dif-
+ferent workers. We considered labels ’very pos-
+itive’ and ’positive’ as positive when calculating
+the inter-agreement percentage.
+
+At the end, the average of the four sentiment
+was assigned to each tweet as the ﬁnal sentiment.
+Out of 20013 tweet records submitted to AMT, we
+assigned neutral sentiment to a tweet if it had aver-
+age score between [-0.5, +0.5]. We picked the sen-
+
+Table 1: Percentage agreement between four
+workers.
+
+Workers Agreement
+(1, 2)
+(1, 3)
+(1, 4)
+(2, 3)
+(2, 4)
+(3, 4)
+
+82.3%
+84.5%
+82.2%
+84.3%
+81.9%
+82.1%
+
+Table 2: Summary of tweets labeled by Amazon
+Mechanical Turk.
+
+Label assigned to tweets Count
+Range
+2082
+[-2, -0.5]
+Negative
+[-0.5, 0.5] Neutral
+9008
+8386
+Positive
+[0.5, 2]
+
+timent positive/negative if at least half of workers
+labeled them positive/negative. Table 2 is a sum-
+mary of the number of tweets in each category of
+sentiment.
+
+2.2 Classiﬁcation Model
+We used Amazon Mechanical Turk to manually
+label our stock market tweets. In order to create
+a classiﬁcation model, so it can be used to pre-
+dict more tweets in the future analysis, we applied
+the same preprocessing technique and classiﬁca-
+tion models explained in detail by Tabari et. al
+Tabari et al. (2017). In preprocessing phase, af-
+ter tokenization, all numbers were substituted with
+<num> tag. Also, some characters were removed
+from the text, such as ’-’ and ’.’. Then, to create
+our feature set, We modiﬁed Loughran’s lexicon
+of positive and negative words (Loughran and Mc-
+donald, 2010) to be suited for stock market context
+and used it to calculate number of positive or neg-
+ative words in each tweet as feature. For exam-
+ple, ’sell’ has a negative sentiment in stock market
+context, that has been added to Loughran’s lexi-
+con. We ultimately added around 120 new words
+to their list which is added in Appendix A. Also, as
+another feature, we replaced couple of words that
+come together in a tweet, but has different senti-
+ment in stock market context, with one speciﬁc
+word. For example, ’Go down’ and ’Pull back’
+both contain negative sentiment in stock’s percep-
+tive. Around 90 word-couples was deﬁned specif-
+ically for this content and are mentioned in Ap-
+
+12pendix B. Table 3, shows the result for different
+machine learning classiﬁers.
+
+3 Causality Models
+
+3.1 Granger Causality
+
+Granger Causality (GC) is a probabilistic ap-
+proach for determining if information about past
+of one variable can explain another and it is based
+on aversion of the probabilistic theory of causal-
+ity (Hitchcock, 2016). According to Suppes (Sup-
+pes, 1970), an event A causes prima facie an event
+B if the conditional probability of B given A is
+greater than the probability of B alone, and A oc-
+curs before B. which is a very common approach
+in econometrics. Clive Granger has expanded on
+this in what is now known as Granger Causality
+(Granger and Aug, 1969).
+
+Granger Causality: a variable A causes B if
+the probability of B conditional on its own past
+history and the past history of A does not equal
+the probability of B conditional on its past history
+alone. Advantage of this model is that it is op-
+erational and easy to implement. Although, the
+deﬁnition is not really one of causality but of in-
+creased predictability which is not really the same
+thing. There are plenty of people who criticize
+this deﬁnition and point out that A can Granger
+Cause B but controlling A might not imply that
+we can directly inﬂuence B or that we even know
+the magnitude of what will happen to B. Granger
+Causality is mainly important for causal notions
+for policy control, explanation and understanding
+of time-series, and in some cases for prediction.
+
+Correlation is not causation It is important to
+understand that correlation is different than causa-
+tion. Correlation means that there is relationship
+between two sets of variables, where change in
+one, causes change in the other variable. Whereas
+we describe causation in way that previous infor-
+mation about one time-series can help explain-
+ing the other variable. Two time-series can have
+causality but not any correlation between them
+and vice versa. Correlation is a symmetric rela-
+tion a measure of statistical linear dependence-
+but causality is an asymmetric relation.
+
+Deﬁnition of Granger Causality: A time-series
+Y can be written as an autoregressive process in
+which the past values of Y are able to explain (in
+
+part) the current value of Y:
+
+k(cid:88)
+
+yt = α +
+
+βjYt−i + t.
+
+(1)
+
+i=1
+
+Granger deﬁned causality in the following way:
+Consider an other variable X which has past values
+as well. If the past values of X help improve the
+prediction of current values of Y beyond what we
+get with past values of Y alone, then X is said to
+Granger Cause Y . The test is under taken as:
+
+k(cid:88)
+
+i=1
+
+βjYt−i +
+
+k(cid:88)
+
+j
+
+yt = α +
+
+λjXt−j + t.
+
+(2)
+
+The test is an F-test on all being jointly equal to
+zero for all values of J. If you reject the null hy-
+pothesis then X is said to Granger Cause Y. Note
+that it is entirely possible, and appropriate, to test
+whether Y can be said to Granger Cause X. It is
+possible for X to GC Y, Y to GC X, or for nei-
+ther to inﬂuence the other. Granger causality tests
+should only be undertaken on I(0) variables, that
+is variables with a time-invariant mean and vari-
+ance and that can be adequately represented by a
+linear AR(p) process, i.e. the time series must be
+stationary.
+
+3.2 Stock market returns
+For each 100 stock ticker symbol mentioned in the
+tweet dataset, the stock closing price were down-
+loaded.1 After that, for each company we calcu-
+lated the relative daily return. Using return in-
+stead of closing price, creates a stationary time-
+series which is essential for most time-series anal-
+ysis and speciﬁcally for Granger Causality. Rel-
+ative return is the return an asset achieves over a
+2 A
+period of time compared to a benchmark.
+relative return is a means to measure the perfor-
+mance of an active portfolio, compared to other
+investments.
+
+1Out of 100 companies, we eliminated the stock sym-
+bols that were bought by other companies and instead used
+the current companys stock symbol. We eliminated $LNKD
+(LinkdIn) due to the fact that it was bought by $MSFT (Mi-
+crosoft) and used Microsoft for both companies. Similarly,
+$SCTY (Solar City) was eliminated and $TSLA has taken
+into account for both companies. We also excluded the fol-
+lowing companies from the list of 100 companies (VXX,
+GLD, SPY, GDX , SPX , WFM , EMC, APP, BRCM, and
+GMCR). These were either not currently trading or we could
+not ﬁnd their trading data, or they were a speciﬁc index.
+
+2https://www.investopedia.com
+
+13Classiﬁer
+Random Forest
+Random Forest
+Random Forest
+SVM
+SVM
+SVM
+
+Table 3: Classiﬁcation results.
+Feature Set
+[TF-IDF]
+[TF-IDF, pos/neg count]
+[TF-IDF, pos/neg count, Word-couple]
+[TF-IDF]
+[TF-IDF, pos/neg count]
+[TF-IDF, pos/neg count, Word-couple]
+
+Accuracy
+78.6%
+78.9%
+79.4%
+77.9%
+79.9%
+79.5%
+
+Relative stock return was calculate based on the
+
+following formula:
+
+Stockreturn = (p1−p0)
+p0 = Initialstockprice
+p1 = Endingstockprice
+
+p0
+
+(3)
+
+3.3 Comparison of social media sentiment
+
+analysis and stock market returns:
+Results
+
+In order to use GC, we will ﬁrst need to start with
+KPSS 3 test which is hypothesis testing for a time-
+series to be stationary. A stationary time series is
+where statistical properties such as mean and vari-
+ance are constant over time. The null-hypothesis
+for the test is that the data is stationary; with an
+alternative that the data is not stationary. We ap-
+plied this test for all three datasets, the two daily
+sentiment and the stock return. And then for each
+non-stationary dataset, we calculated the differ-
+ence that would create a stationary time-series us-
+ing the appropriate lag number. After KPSS test-
+ing, in the case that the p-value was greater than
+0.05, the null hypothesis for data being station-
+ary were not rejected. After making sure all three
+datasets are stationary, the following GC models
+were applied on both the sentiments predicted by
+our classiﬁer in part 2.2 and labeled by AMT.
+
+Model (1):
+RV ∼ Lags(RV, LAG) + Lags(SSC, LAG)
+(4)
+
+Model (2):
+SSC ∼ Lags(SSC, LAG) + Lags(RV, LAG)
+(5)
+Model one, is investigating if the stock returns
+cause sentiment scores and model 2 in the causal
+3Kwiatkowski-Phillips-Schmidt-Shin: https://en.
+
+wikipedia.org/wiki/KPSS_test
+
+impact of sentiment score on stock return. RV
+(Return Value) is the calculated daily return for 83
+different stocks. We considered SSC (Sentiment
+Score) once for the sentiments predicted in part 2.2
+and again for the one labeled by AMT. We used
+LAGs between 1 to 10 in our model. The goal was
+twofold, ﬁrst to ﬁnd out if the causal relationship is
+happening two way? Secondly, we wanted to de-
+termine the lag number that would explain causal-
+ity for each model. The P-value, and F-value of
+all granger causality modes that at least was statis-
+tically signiﬁcant in one direction is mentioned in
+Appendix C.
+
+Figure 1: Daily comparison of stock returns and
+sentiment scores on $APPL. Sentiments are la-
+beled by AMT. This shows that there is a general
+trend between stock return and the sentiments la-
+beled by AMT.
+
+Figure 1 is comparing the daily sentiments cal-
+culated by AMT and stock return and Figure
+2 shows the same information with sentiments
+predicted using machine learning classiﬁcation.
+These two ﬁgure are a good visualization proof
+that there is a trend between how stock market
+moves and sentiment score changes. Comparing
+these two shows two important points: ﬁrst, the
+overall trend of the stock returns and sentiment for
+both, follow each other. Secondly, comparing two
+
+14Figure 2: Daily comparison of stock returns and
+sentiment scores on $APPL. Sentiments are pre-
+dicted by ML model. This shows that there is a
+general trend between stock return and the senti-
+ments labeled by our machine learning model. Al-
+though the trend is not as obvious as the one with
+AMT, but it still exists. This is a visual represen-
+tation of that 20% error rate is damaging the trend
+to some extend.
+
+sentiment scores show that AMT has done a better
+job with the sentiments to our machine learning
+model. Therefore, decreasing the 20% error rate
+and improving the accuracy of the machine learn-
+ing model is actually important and necessary.
+
+Figure 3: Lag number for GC for various stocks
+in model two. Lag is the number of days before
+current day that sentiment score had causal effect
+on stock market return.
+
+Figure 3 is the plot of the lag number in which
+the Granger Causality model was statistically sig-
+niﬁcant for different stocks in model two (Impact
+of sentiment results on stock market). Lag num-
+ber is the number of the days before the current
+day, that had sentiment scores had causal effect
+on stock market return. The stocks with just one
+bar indicate that the causality model for the other
+sentiment dataset was not signiﬁcant in any lags,
+meaning there was no causality between the senti-
+
+Figure 4: Lag number for GC for various stocks in
+model one.Lag is the number of days before cur-
+rent day that stock market return had causal effect
+on sentiment scores.
+
+ment scores and the stock return in any lags.
+
+Figure 4 is the plot of the lag number in which
+the Granger Causality model was statistically sig-
+niﬁcant for different stocks in model one (impact
+of stock market return on sentiment results). The
+stocks with just one bar indicate that the causality
+model for the other sentiment dataset was not sig-
+niﬁcant in any lags, meaning there was no causal-
+ity between the sentiment dataset and the stock re-
+turn in any lags. Although out of all the stocks, this
+model showed statistically signiﬁcance for more
+companies, but there is less consistency shown be-
+tween two sentiment dataset.
+
+4 Evaluation
+Although as long as the f-test in Granger causality
+is statistically signiﬁcant, then the causality test is
+proven and done, but in order to understand this
+causality relationship better, we attempted to in-
+vestigate certain dates in different stocks and un-
+derstand the news that affected company stock on
+certain dates and how did it affected the Twitter
+which created our causality results.
+In the next
+parts, for different stocks that actually showed
+causality with presented analysis, we focus on spe-
+ciﬁc dates. While focusing on the news that actu-
+ally affected the stock, we show that there was a
+signiﬁcant trend of that news on Twitter specially
+focusing the news.
+
+4.1 Apple Inc.
+According to our Granger causality model, Apple
+shows a lag of two days on impact of social me-
+dia on stock market return. On February ﬁrst, Ap-
+ple Inc ($APPL) released 4 its proﬁtable ﬁrst quar-
+ter report which was above expectations and the
+
+4 www.marketwatch.com
+
+15Figure 5: This shows normalized tweeter senti-
+ments calculated by Amazon Mechanical Turk and
+the Apple stock returns.
+
+Figure 6: This shows normalized tweeter senti-
+ments calculated by Amazon Mechanical Turk and
+the FaceBook stock returns.
+
+02/01/2017
+
+Tweet
+02/01/2017
+
+Table 4: Example of Tweets targeting APPL
+Date
+’stockalert stocks watch today
+wallstreet aapl ua’
+’rt
+igtv chinas growing faster
+aapl results rise copper prices
+theres turn around sentiment’
+’apple iphone sales road record
+quarter aapl’
+’apple report ﬁrst numbers slew
+new products selling including
+new macbook pro iphone 7 aapl’
+rt optionsaction 3 stocks could
+account 60 billion market cap
+swing week aapl fb amzn’
+
+02/01/2017
+
+1/31/2017
+
+1/31/2017
+
+stock went up by $4. On January 31st, Apple also
+reported record holiday quarter, stating iPhone7
+sales boosted earnings after 3 consecutive quarters
+of low sales.
+
+As it is shown in ﬁgure 5, we see a similar
+growth trend for the sentiment score value and the
+return value from January 30th to February 1st.
+On January 31st, Apple was set to post its num-
+bers after the stock market closes, which created
+a trend of tweets regarding people suggesting to
+buy Apple stock on that day. There was a total of
+354 tweets were sent by veriﬁed accounts on this
+topic, in these two dates. Table 4 shows a sample
+of tweets were mentioned in that two day period
+regarding APPL.
+
+Table 5: Example of Tweets targeting FB
+
+Date
+’facebook earnings bell wow
+like apple also much trump bad
+tech check aapl fb amzn nﬂx
+amp nasdaq ytd’
+’facebook rallying close hope
+big number think probably see
+good number fb earnings’
+’facebook deliver another record
+set numbers fb’
+’fb winning option trading face-
+book take via cnnmoney’ ’
+
+Tweet
+02/01/2017
+
+02/01/2017
+
+1/31/2017
+
+1/31/2017
+
+4.2 Facebook Inc.
+Similar to Apple, the Granger causality model,
+shows a lag of two days on impact of social media
+on Facebook stock market return on ﬁgure 6. On
+February ﬁrst, Facebook Inc ($FB) reaches record
+territory after earnings show huge growth. 5 There
+was a total of 200 tweets were sent by veriﬁed ac-
+counts on this topic, in these two days. Table 5
+shows a sample of tweets were mentioned in that
+two day period regarding FB.
+
+5 Conclusion
+In our research, on investigation on impacts of so-
+cial media and stock market, we classiﬁed stock
+market related tweets in two different ways; us-
+ing Amazon Mechanical Turk, and a classiﬁca-
+tion model with accuracy of 79.9%. We then used
+
+5 www.marketwatch.com
+
+16these two sentiment scores and stock market re-
+turns to understand the causality between datasets.
+Granger Causality analysis of these two tweet
+datasets with various stock returns has shown that
+for many companies there is a statistical signiﬁ-
+cant causality between stock and the sentiments
+driven from tweets. At the end, investigating on
+the tweets sent by veriﬁed accounts in speciﬁc
+dates, show that when stock return has a jump
+due to news regarding the stock, the amount of
+tweets sent on Twitter jumps in the same direction,
+adding value to the granger causality analysis.
+
+References
+
+Gabriele Ranco, Darko Aleksovski, Guido Caldarelli,
+Miha Grˇcar, and Igor Mozetiˇc. 2015. The effects of
+twitter sentiment on stock price returns. PLoS ONE,
+10(9):1–21.
+
+Rion Snow, Brendan O Connor, Daniel Jurafsky, An-
+drew Y Ng, Dolores Labs, and Capp St. 2008.
+Cheap and Fast But is it Good ? Evaluating Non-
+Expert Annotations for Natural Language Tasks.
+(October):254–263.
+
+Th´arsis Tuani Pinto Souza, Olga Kolchyna, and
+Tomaso Aste. 2015. Twitter Sentiment Analysis Ap-
+plied to Finance: A Case Study in the Retail Indus-
+try. (i):19.
+
+Patrick Suppes. 1970. A probabilistic theory of causal-
+ity. Amsterdam : North-Holland Pub. Co. Bibliog-
+raphy: p. [121]-124.
+
+Merve Alanyali, Helen Susannah Moat, and Tobias
+Preis. 2013. Quantifying the relationship between
+ﬁnancial news and the stock market. Scientiﬁc re-
+ports, 3:3578.
+
+Narges Tabari, Armin Seyeditabari, and Wlodek
+Zadrozny. 2017. SentiHeros at SemEval-2017 Task
+5 : An application of Sentiment Analysis on Finan-
+cial Tweets. pages 857–860.
+
+Dolan Antenucci, Michael Cafarella, Margaret C. Lev-
+enstein, Christopher R´e, and Matthew D. Shapiro.
+2014. Using Social Media to Measure Labor Mar-
+ket Flows. Nber.
+
+Johan Bollen and Alberto Pepe. 2011. Modeling Public
+Mood and Emotion : Twitter Sentiment and Socio-
+Economic Phenomena. pages 450–453.
+
+Keith Cortis, Andr´e Freitas, Tobias Daudert, Manuela
+Huerlimann, Manel Zarrouk, Siegfried Handschuh,
+and Brian Davis. 2017.
+SemEval-2017 Task 5:
+Fine-Grained Sentiment Analysis on Financial Mi-
+the 11th
+croblogs and News.
+International Workshop on Semantic Evaluation
+(SemEval-2017), pages 519–535.
+
+Proceedings of
+
+C W J Granger and No Aug. 1969.
+
+Investigating
+Causal Relations by Econometric Models and Cross-
+spectral Methods. 37(3):424–438.
+
+Christopher Hitchcock. 2016. Probabilistic causation.
+In Edward N. Zalta, editor, The Stanford Encyclope-
+dia of Philosophy, winter 2016 edition. Metaphysics
+Research Lab, Stanford University.
+
+Olga Kolchyna, Tharsis T. P. Souza, Philip Treleaven,
+and Tomaso Aste. 2015. Twitter Sentiment Anal-
+ysis: Lexicon Method, Machine Learning Method
+and Their Combination. page 32.
+
+F Lillo, S Miccich`e, M Tumminello, and J Piilo. . . .
+2012. How news affect the trading behavior of dif-
+ferent categories of investors in a ﬁnancial market.
+Papers.Ssrn.Com, (April):30.
+
+T I M Loughran and Bill Mcdonald. 2010. When is a
+Liability not a Liability ? Textual Analysis , Dictio-
+naries , and 10-Ks Journal of Finance , forthcoming.
+
+A Additional Positive/Negative words
+A.1 Positive words added to Loughran’s list
+”cover, cool, top, yes, smart, smartly, epic, highs,
+recover, proﬁt, proﬁts, long, upside, love, inter-
+esting, loved, dip, dipping, secure, longs, longput,
+rise, able, okay, buy, buying”
+
+little,
+
+A.2 Negative words added to Loughran’s list
+”avoid, notokay,
+less, cray, no, crash,
+crashes, leaves, terrible, struggles, struggled, stall,
+stalls, stalled, lows, fakenews, mess, exit, not,
+cheaper, cheap, slaughter, slaughtered, slaughter-
+ing, disgusting, cult, brutal, fucked, suck, de-
+cay, bubble, bounce, bounced, low, lower, selloff,
+disgust, meltdown, downtrend, downtrends, cen-
+sored, toppy, scam, censor, garbage, risk, steal,
+retreat, retreats, sad, dirt, ﬂush, dump, plunge,
+plunged, crush, crushed, crying, unhappy, drop,
+dropping, drops, cry, dumped,
+torture, short,
+shorts, shorting, fall, falling, sell, selling, sells,
+bearish, slipping, slip, sink, sinked, sinking, pain,
+shortput, bullshit, shit, nervous, damn, broke,
+breakup, overbought”
+B List of Word-Couples
+B.1 Negative Word-Couples replaced by
+
+”notokay”
+
+(no, long), (pay, well), (no, higher), (lower, high),
+(terrible, market), (lose, momentum), (lost, mo-
+mentum), (loses, momentum), (not, enjoy), (not,
+good), (lower, proﬁt), (fall, short), (dont, trust),
+
+17(poor, sales), (not, working), (cut, pay), (cuts,
+pay), (fake, news), (wasnt, great), (lost, proﬁt),
+(losses, proﬁt), (lose, proﬁt), (new, low), (cant,
+growth), (cant, proﬁtable), (terrible, idea), (short,
+sellers), (raises, concern), (raise, concern), (not,
+recommend), (not, recommended), (not, much),
+(big, debt), (high, down), (lipstick, pig), (doesnt,
+well), (bounce, buy), (isnt, cheap), (fear, sell),
+(cant, down), (not, good), (wont, buy), (dont,
+trade), (buy, back), (didnt,
+like), (proﬁt, exit),
+(go, down), (not , guaranteed), (not, proﬁtable),
+(doesn’t, upward), (not, dip), (pull, back), (not,
+optimistic), (go, up, okay), (not, affected, okay),
+(not, concerned, okay), (short, trap, okay), (exit,
+short, okay), (sell, exhaust, okay), (didnt, stop,
+okay), (short, cover, okay), (close, short, okay),
+(short, break, okay), (cant, risk, okay), (not, sell,
+okay), (dont, fall, okay), (sold, call, okay), (dont,
+short, okay), (exit, bancruptsy, okay), (not, bad,
+okay), (short, nervous, okay), (dont, underesti-
+mate, okay), (not, slowdown, okay), (aint, bad,
+okay), (ﬁrst, second, replacement)
+
+B.2 Positive Word-Couples replaced by
+
+”okay”
+
+(go, up), (not, affected), (not, concerned), (short,
+trap), (exit, short), (sell, exhaust), (didnt, stop),
+(short, cover), (close, short), (short, break), (cant,
+risk), (not, sell), (dont, fall), (sold, call), (dont,
+short), (exit, bancruptsy), (not, bad), (short, ner-
+vous),
+(not, slowdown),
+(aint, bad)
+
+(dont, understimate),
+
+C Results of Granger Causality
+C.1 F-test and P-value for Model 1
+
+182.17
+
+3.99
+4.23
+3.85
+
+0.024
+0.01
+0.027
+
+2.76
+4.2
+5.68
+2.87
+2.86
+
+0.023
+0.02
+0.002
+0.02
+0.016
+
+Stock Symbol AMT Lag number F-value P-value ML Lag number F-value P-value
+AABA
+AAL
+AAPL
+AVGO
+BABA
+BAC
+CREE
+CSCO
+CSX
+EA
+EBAY
+ENDP
+FAST
+FB
+FDX
+GALE
+ISRG
+KNDI
+LUV
+MAR
+MNKD
+MSFT
+NFLX
+NXPI
+QCOM
+SBUX
+ULTA
+
+Not Signiﬁcant
+2
+3
+2
+Not Signiﬁcant
+2
+4
+9
+9
+4
+6
+5
+10
+4
+2
+9
+3
+2
+2
+2
+2
+2
+2
+5
+7
+4
+Not Signiﬁcant
+
+6
+2
+3
+6
+7
+Not Signiﬁcant
+Not Signiﬁcant
+Not Signiﬁcant
+Not Signiﬁcant
+Not Signiﬁcant
+6
+5
+Not Signiﬁcant
+Not Signiﬁcant
+Not Signiﬁcant
+Not Signiﬁcant
+3
+2
+2
+Not Signiﬁcant
+2
+4
+2
+5
+9
+5
+9
+
+0.039
+0.024
+0.024
+0.028
+0.023
+0.045
+0.042
+0.039
+0.034
+0.04
+0.028
+0.001
+0.031
+0.025
+0.038
+0.03
+0.029
+0.014
+0.005
+0.027
+0.042
+
+3.44
+3.11
+2.55
+2.47
+3.13
+2.39
+2.53
+2.28
+2.84
+3.41
+2.47
+6.31
+3.71
+3.93
+3.49
+3.75
+3.8
+4.64
+3.93
+2.6
+2.7
+
+0.035
+0.03
+0.021
+0.017
+0.038
+0.048
+0.046
+
+3.57
+2.94
+4.16
+3.12
+2.31
+2.35
+2.22
+
+0.012
+0.028
+0.117
+
+4.01
+3.81
+2.23
+
+0.05
+0.032
+
+2.33
+2.7
+
+0.049
+
+C.2 F-test and P-value for Model 2
+
+3.98
+3.10
+3.01
+
+0.024
+0.024
+0.038
+
+5.86
+2.65
+2.93
+2.61
+2.57
+4.16
+
+0.005
+0.045
+0.042
+0.03
+0.022
+0.021
+
+Stock Symbol AMT Lag number F-value P-value ML Lag number F-value P-value
+AAPL
+AGN
+AMZN
+BABA
+CELG
+COST
+CSCO
+FB
+FFIV
+GALE
+GILD
+MSFT
+PLUG
+REGN
+SINA
+STX
+TWTR
+YELP
+ZNGA
+
+2
+4
+3
+6
+10
+2
+Not signiﬁcant
+2
+Not signiﬁcant
+4
+6
+5
+10
+7
+5
+Not signiﬁcant
+5
+2
+Not signiﬁcant
+
+2
+4
+3
+Not signiﬁcant
+10
+2
+2
+2
+3
+4
+6
+5
+10
+6
+Not signiﬁcant
+3
+5
+6
+6
+
+0.022
+0.026
+0.034
+0.018
+0.041
+0.006
+0.035
+0.044
+0.047
+0.046
+
+2.58
+3.89
+3.59
+4.31
+2.95
+4.14
+2.54
+2.50
+2.19
+2.38
+
+0.011
+0.025
+0.018
+0.033
+0.035
+0.044
+
+3.65
+2.72
+3.06
+2.37
+2.45
+2.5
+
+0.040
+0.001
+0.014
+0.035
+
+2.98
+4.89
+3.07
+2.53
+
+0.006
+0.043
+
+3.81
+3.34
+
+0.028
+
+3.83
+
+19

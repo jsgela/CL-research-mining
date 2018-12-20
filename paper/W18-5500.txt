@@ -1,0 +1,310 @@
+EMNLP2018FactExtractionandVERiﬁcationProceedingsoftheFirstWorkshopNovember1,2018Brussels,Belgiumii
+
+WethankoursponsorAmazonResearchinCambridgefortheirgeneroussupport.c(cid:13)2018TheAssociationforComputationalLinguisticsOrdercopiesofthisandotherACLproceedingsfrom:AssociationforComputationalLinguistics(ACL)209N.EighthStreetStroudsburg,PA18360USATel:+1-570-476-8006Fax:+1-570-476-0860acl@aclweb.orgISBN978-1-948087-73-5iii
+
+IntroductionWithbillionsofindividualpagesonthewebprovidinginformationonalmosteveryconceivabletopic,weshouldhavetheabilitytocollectfactsthatansweralmosteveryconceivablequestion.However,onlyasmallfractionofthisinformationiscontainedinstructuredsources(Wikidata,Freebase,etc.)–wearethereforelimitedbyourabilitytotransformfree-formtexttostructuredknowledge.Thereis,however,anotherproblemthathasbecomethefocusofalotofrecentresearchandmediacoverage:falseinformationcomingfromunreliablesources.Inanefforttojointlyaddressbothproblems,hereinweproposedthisworkshoptopromoteresearchinjointFactExtractionandVERiﬁcation(FEVER).WeaimforFEVERtobealong-termvenueforworkinveriﬁableknowledgeextraction.Tostimulateprogressinthisdirection,wealsohostedtheFEVERChallenge,aninformationveriﬁcationsharedtaskonapurposely-constructeddataset.Wereceivedentriesfrom23competingteams,19ofwhichscoredhigherthanthepreviouslypublishedbaseline.Weinviteddescriptionsoftheparticipatingsystemsandwereceived15systemdescriptions,allofwhichareincludedintheseproceedings.Weofferedthetop4systemsoralpresentations.Forthemainworkshop,wereceived23submissions,outofwhichweaccepted14(3oralpresentationsand11posters).v
+
+Organizers:JamesThorne(UniversityofShefﬁeld)AndreasVlachos(UniversityofShefﬁeld)OanaCocarascu(ImperialCollegeLondon)ChristosChristodoulopoulos(Amazon)ArpitMittal(Amazon)ProgramCommittee:NikolaosAletras(UniversityofShefﬁeld),FernandoAlva-Manchego(UniversityofShefﬁeld),IsabelleAugenstein(UniversityofCopenhagen),EsmaBalkir(UniversityofEdinburgh),DanieleBonadiman(UniversityofTrento),MatkoBošnjak(UniversityCollegeLondon),KrisCao(Uni-versityofCambridge),TuhinChakrabarty(ColumbiaUniversity),WeiweiCheng(Amazon),Bich-NgocDo(HeidelbergUniversity),MichaElsner(TheOhioStateUniversity),DiegoEsteves(Uni-versitätBonn),FrédericGodin(ELIS-IDLab,GhentUniversity),IvanHabernal(UKPLab,Tech-nischeUniversitätDarmstadt),AndreasHanselowski(UKPlab,TechnischeUniversitätDarm-stadt),ChristopherHidey(ColumbiaUniversity),JuliaHockenmaier(UniversityofIllinoisUrbana-Champaign),AlexandreKlementiev(AmazonDevelopmentCenterGermany),JanKowollik(Uni-versityofDuisburg-Essen),AnjishnuKumar(Amazon),NayeonLee(HongKongUniversityofScienceandTechnology),PranavaSwaroopMadhyastha(UniversityofShefﬁeld),Christo-pherMalon(NECLaboratoriesAmerica),Marie-CatherinedeMarneffe(TheOhioStateUniver-sity),StephenMayhew(UniversityofPennsylvania),Marie-FrancineMoens(KULeuven),JasonNaradowsky(UniversityCollegeLondon),YixinNie(UNC),FarhadNooralahzadeh(UniversityofOslo),WolfgangOtto(GESIS–Leibniz-InstitutefortheSocialSciencesinCologne),AnkurPadia(UniversityofMaryland,BaltimoreCounty),MithunPaul(UniversityOfArizona),TamaraPolajnar(UniversityofCambridge),HoifungPoon(MicrosoftResearch),PreethiRaghavan(IBMResearchTJWatson),MarekRei(UniversityofCambridge),LauraRimell(DeepMind),TimRocktäschel(UniversityCollegeLondonandFacebookAIResearch),JodiSchneider(UIUC),ClaudiaSchulz(UKPLab,TechnischeUniversitätDarmstadt),DiarmuidÓSéaghdha(Apple),SameerSingh(UniversityofCalifornia,Irvine),KevinSmall(Amazon),ChristianStab(UKPLab,TechnischeUniversitätDarmstadt),MotokiTaniguchi(FujiXerox),PaoloTorroni(AlmaMater-UniversitàdiBologna),SerenaVillata(UniversitéCôted’Azur,CNRS,Inria,I3S),ZeerakWaseem(UniversityofShefﬁeld),NoahWeber(StonyBrookUniversity),JohannesWelbl(Uni-versityCollegeLondon),MenglinXia(UniversityofCambridge),TakumaYoneda(ToyotaTech-nologicalInstitute)InvitedSpeakers:LunaDong(Amazon)Marie-FrancineMoens(KULeuven)DelipRao(JoostwareAIResearch,JohnsHopkinsUniversity)TimRocktäschel(FacebookAIResearch,UniversityCollegeLondon)Table of Contents
+
+The Fact Extraction and VERiﬁcation (FEVER) Shared Task
+
+James Thorne, Andreas Vlachos, Oana Cocarascu, Christos Christodoulopoulos and Arpit Mittal 1
+
+The Data Challenge in Misinformation Detection: Source Reputation vs. Content Veracity
+
+Fatemeh Torabi Asr and Maite Taboada . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+Crowdsourcing Semantic Label Propagation in Relation Classiﬁcation
+
+Anca Dumitrache, Lora Aroyo and Chris Welty . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+
+Retrieve and Re-rank: A Simple and Effective IR Approach to Simple Question Answering over Knowl-
+edge Graphs
+
+Vishal Gupta, Manoj Chinnakotla and Manish Shrivastava . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+
+Information Nutrition Labels: A Plugin for Online News Evaluation
+
+Vincentius Kevin, Birte Högden, Claudia Schwenger, Ali Sahan, Neelu Madan, Piush Aggarwal,
+Anusha Bangaru, Farid Muradov and Ahmet Aker . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+
+Joint Modeling for Query Expansion and Information Extraction with Reinforcement Learning
+
+Motoki Taniguchi, Yasuhide Miura and Tomoko Ohkuma . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+
+Towards Automatic Fake News Detection: Cross-Level Stance Detection in News Articles
+
+Costanza Conforti, Mohammad Taher Pilehvar and Nigel Collier . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+
+Belittling the Source: Trustworthiness Indicators to Obfuscate Fake News on the Web
+
+Diego Esteves, Aniketh Janardhan Reddy, Piyush Chawla and Jens Lehmann . . . . . . . . . . . . . . . . . 50
+
+Automated Fact-Checking of Claims in Argumentative Parliamentary Debates
+
+Nona Naderi and Graeme Hirst. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .60
+
+Stance Detection in Fake News A Combined Feature Representation
+
+Bilal Ghanem, Paolo Rosso and Francisco Rangel . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 66
+
+Zero-shot Relation Classiﬁcation as Textual Entailment
+
+Abiola Obamuyide and Andreas Vlachos . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 72
+
+Teaching Syntax by Adversarial Distraction
+
+Juho Kim, Christopher Malon and Asim Kadav . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 79
+
+Where is Your Evidence: Improving Fact-checking by Justiﬁcation Modeling
+
+Tariq Alhindi, Savvas Petridis and Smaranda Muresan . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 85
+
+Affordance Extraction and Inference based on Semantic Role Labeling
+
+Daniel Loureiro and Alípio Jorge . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 91
+
+UCL Machine Reading Group: Four Factor Framework For Fact Finding (HexaF)
+
+Takuma Yoneda, Jeff Mitchell, Johannes Welbl, Pontus Stenetorp and Sebastian Riedel . . . . . . . . 97
+
+Multi-Sentence Textual Entailment for Claim Veriﬁcation
+
+Andreas Hanselowski, Hao Zhang, Zile Li, Daniil Sorokin, Benjamin Schiller, Claudia Schulz and
+Iryna Gurevych . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 103
+
+Team Papelo: Transformer Networks at FEVER
+
+Christopher Malon . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 109
+
+vii
+
+Uni-DUE Student Team: Tackling fact checking through decomposable attention neural network
+
+Jan Kowollik and Ahmet Aker . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 114
+
+SIRIUS-LTG: An Entity Linking Approach to Fact Extraction and Veriﬁcation
+
+Farhad Nooralahzadeh and Lilja Øvrelid . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 119
+
+Integrating Entity Linking and Evidence Ranking for Fact Extraction and Veriﬁcation
+
+Motoki Taniguchi, Tomoki Taniguchi, Takumi Takahashi, Yasuhide Miura and Tomoko Ohkuma
+
+124
+
+Robust Document Retrieval and Individual Evidence Modeling for Fact Extraction and Veriﬁcation.
+
+Tuhin Chakrabarty, Tariq Alhindi and Smaranda Muresan . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 127
+
+DeFactoNLP: Fact Veriﬁcation using Entity Recognition, TFIDF Vector Comparison and Decomposable
+Attention
+
+Aniketh Janardhan Reddy, Gil Rocha and Diego Esteves . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 132
+
+An End-to-End Multi-task Learning Model for Fact Checking
+
+sizhen li, Shuai Zhao, Bo Cheng and Hao Yang . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 138
+
+Team GESIS Cologne: An all in all sentence-based approach for FEVER
+
+Wolfgang Otto . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 145
+
+Team SWEEPer: Joint Sentence Extraction and Fact Checking with Pointer Networks
+
+Christopher Hidey and Mona Diab . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 150
+
+QED: A fact veriﬁcation system for the FEVER shared task
+
+Jackson Luken, Nanjiang Jiang and Marie-Catherine de Marneffe . . . . . . . . . . . . . . . . . . . . . . . . . . 156
+
+Team UMBC-FEVER : Claim veriﬁcation using Semantic Lexical Resources
+
+Ankur Padia, Francis Ferraro and Tim Finin . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 161
+
+A mostly unlexicalized model for recognizing textual entailment
+
+Mithun Paul, Rebecca Sharp and Mihai Surdeanu . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 166
+
+viii
+
+Conference Program
+
+Thursday, November 1, 2018
+
+09:00–09:15 Welcome Talk
+
+Organizers
+
+09:15–10:00
+
+Invited Talk: Learning with Explanations
+Tim Rocktäschel
+
+10:00–10:30 Research Talks 1
+
+10:00–10:15
+
+The Data Challenge in Misinformation Detection: Source Reputation vs. Content
+Veracity
+Fatemeh Torabi Asr and Maite Taboada
+
+10:15–10:30
+
+Towards Automated Factchecking: Developing an Annotation Schema and Bench-
+mark for Consistent Automated Claim Detection
+Lev Konstantinovskiy, Oliver Price, Mevan Babakar and Arkaitz Zubiaga
+
+10:30–11:30 Research Posters
+
+Crowdsourcing Semantic Label Propagation in Relation Classiﬁcation
+Anca Dumitrache, Lora Aroyo and Chris Welty
+
+Retrieve and Re-rank: A Simple and Effective IR Approach to Simple Question An-
+swering over Knowledge Graphs
+Vishal Gupta, Manoj Chinnakotla and Manish Shrivastava
+
+Information Nutrition Labels: A Plugin for Online News Evaluation
+Vincentius Kevin, Birte Högden, Claudia Schwenger, Ali Sahan, Neelu Madan,
+Piush Aggarwal, Anusha Bangaru, Farid Muradov and Ahmet Aker
+
+Joint Modeling for Query Expansion and Information Extraction with Reinforce-
+ment Learning
+Motoki Taniguchi, Yasuhide Miura and Tomoko Ohkuma
+
+Towards Automatic Fake News Detection: Cross-Level Stance Detection in News
+Articles
+Costanza Conforti, Mohammad Taher Pilehvar and Nigel Collier
+
+Belittling the Source: Trustworthiness Indicators to Obfuscate Fake News on the
+Web
+Diego Esteves, Aniketh Janardhan Reddy, Piyush Chawla and Jens Lehmann
+
+ix
+
+Thursday, November 1, 2018 (continued)
+
+Automated Fact-Checking of Claims in Argumentative Parliamentary Debates
+Nona Naderi and Graeme Hirst
+
+Stance Detection in Fake News A Combined Feature Representation
+Bilal Ghanem, Paolo Rosso and Francisco Rangel
+
+Zero-shot Relation Classiﬁcation as Textual Entailment
+Abiola Obamuyide and Andreas Vlachos
+
+Teaching Syntax by Adversarial Distraction
+Juho Kim, Christopher Malon and Asim Kadav
+
+Where is Your Evidence: Improving Fact-checking by Justiﬁcation Modeling
+Tariq Alhindi, Savvas Petridis and Smaranda Muresan
+
+11:30–12:15
+
+Invited Talk: Argumentation Mining and Generation Supporting the Veriﬁcation of
+Content
+Marie-Francine Moens
+
+12:15–12:30 Research Talks 2
+
+12:15–12:30
+
+Affordance Extraction and Inference based on Semantic Role Labeling
+Daniel Loureiro and Alípio Jorge
+
+14:00–14:45
+
+Invited Talk: Building a broad knowledge graph for products
+Luna Dong
+
+x
+
+Thursday, November 1, 2018 (continued)
+
+14:45–15:30
+
+Shared Task Flash Talks
+
+14:45–14:50
+
+The Fact Extraction and VERiﬁcation (FEVER) Shared Task
+Organizers
+
+14:50–15:00 Combining Fact Extraction and Claim Veriﬁcation in an NLI Model
+
+Yixin Nie, Haonan Chen and Mohit Bansal
+
+15:00–15:10 UCL Machine Reading Group: Four Factor Framework For Fact Finding (HexaF)
+Takuma Yoneda, Jeff Mitchell, Johannes Welbl, Pontus Stenetorp and Sebastian
+Riedel
+
+15:10–15:20 Multi-Sentence Textual Entailment for Claim Veriﬁcation
+
+Andreas Hanselowski, Hao Zhang, Zile Li, Daniil Sorokin, Benjamin Schiller, Clau-
+dia Schulz and Iryna Gurevych
+
+15:20–15:30
+
+Team Papelo: Transformer Networks at FEVER
+Christopher Malon
+
+15:30–16:30
+
+Shared Task Posters
+
+Uni-DUE Student Team: Tackling fact checking through decomposable attention
+neural network
+Jan Kowollik and Ahmet Aker
+
+SIRIUS-LTG: An Entity Linking Approach to Fact Extraction and Veriﬁcation
+Farhad Nooralahzadeh and Lilja Øvrelid
+
+Integrating Entity Linking and Evidence Ranking for Fact Extraction and Veriﬁca-
+tion
+Motoki Taniguchi, Tomoki Taniguchi, Takumi Takahashi, Yasuhide Miura and
+Tomoko Ohkuma
+
+Robust Document Retrieval and Individual Evidence Modeling for Fact Extraction
+and Veriﬁcation.
+Tuhin Chakrabarty, Tariq Alhindi and Smaranda Muresan
+
+DeFactoNLP: Fact Veriﬁcation using Entity Recognition, TFIDF Vector Compari-
+son and Decomposable Attention
+Aniketh Janardhan Reddy, Gil Rocha and Diego Esteves
+
+xi
+
+Thursday, November 1, 2018 (continued)
+
+An End-to-End Multi-task Learning Model for Fact Checking
+sizhen li, Shuai Zhao, Bo Cheng and Hao Yang
+
+Team GESIS Cologne: An all in all sentence-based approach for FEVER
+Wolfgang Otto
+
+Team SWEEPer: Joint Sentence Extraction and Fact Checking with Pointer Net-
+works
+Christopher Hidey and Mona Diab
+
+QED: A fact veriﬁcation system for the FEVER shared task
+Jackson Luken, Nanjiang Jiang and Marie-Catherine de Marneffe
+
+Team UMBC-FEVER : Claim veriﬁcation using Semantic Lexical Resources
+Ankur Padia, Francis Ferraro and Tim Finin
+
+A mostly unlexicalized model for recognizing textual entailment
+Mithun Paul, Rebecca Sharp and Mihai Surdeanu
+
+16:30–17:15
+
+Invited Talk: Call for Help: Putting Computation in Computational Fact Checking
+Delip Rao
+
+17:15–17:30
+
+Prizes + Closing Remarks
+Organizers
+
+xii
+
+
