@@ -6,3 +6,5 @@ NLTK
 wordcloud
 json
 bibtexparser
+
+Run: Analysis.py
